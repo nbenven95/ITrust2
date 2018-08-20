@@ -1,0 +1,39 @@
+---
+name: iTrust2
+vm:
+  memory: 2048
+  ip: 172.16.3.26
+vars:
+  - mysql_password:
+      prompt: Type your password for mysql server
+tools:
+  - maven
+
+# Install mysql with settings
+services:
+  - mysql:
+      version: 8
+      service_conf: env/templates/mysql.cfg
+      client_conf: env/templates/my.cnf
+lang:
+  - java8
+
+# Copy over our password in db.properites
+config:
+  - template: 
+      src: env/templates/db.properties.template
+      dest: /iTrust2-v3/iTrust2/src/main/java/db.properties
+
+# Install headless chrome for selenium tests
+packages:
+  - apt:
+    - google-chrome-stable:
+        deb: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+
+commands:
+  serve: cd iTrust2 && mvn clean jetty:run
+  debug: cd iTrust2 && mvnDebug jetty:run
+  build-db: cd iTrust2/ && mvn -f pom-data.xml process-test-classes
+  test: cd iTrust2 && mvn test
+  # Runs unit tests, builds the war, runs on Jetty
+  verify: cd iTrust2 && mvn clean test verify -Dtest=\!EmailUtilTest* install
