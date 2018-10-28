@@ -1,16 +1,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head th:include="layout :: head(title=~{::title},links=~{})">
-  <title>View My Office Visits</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<title>View My Office Visits</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 </head>
 
 <body th:include="layout :: body" th:with="content=~{::content}">
-  <div th:fragment="content">
-    <div class="container">
+	<div th:fragment="content">
+		<div class="container">
 
-      <script th:inline="javascript">
+			<script th:inline="javascript">
         /* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
         /*<![CDATA[*/
 
@@ -238,313 +240,279 @@
 
 
 
-      <div ng-app="myApp" ng-controller="viewOfficeVisitCtrl">
-        <div class="container">
-          <div class="row">
+			<div ng-app="myApp" ng-controller="viewOfficeVisitCtrl">
+				<div class="container">
+					<div class="row">
 
-            <div class="col-md-12">
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                  <h4>Select an Office Visit to View</h4>
-                </div>
-                <div class="panel-body">
-                  <div class="row">
-                    <div class="col-md-12">
-                      <ul style="list-style: none;">
-                        <li ng-repeat="visit in visits">
-                          <h4>
-                            <label>
-                              <input type="radio" ng-model="$parent.selectedVisitID" ng-click="populateVisit()" name="{{visit.id}}" value="{{visit.id}}"
-                                required="true" /> {{visit.patient.username}}'s {{visit.type}} on {{visit.formattedDate}} at {{getTime(visit.date)}}
-                            </label>
-                          </h4>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+						<div class="col-md-12">
+							<div class="panel panel-default">
+								<div class="panel-heading">
+									<h4>Select an Office Visit to View</h4>
+								</div>
+								<div class="panel-body">
+									<div class="row">
+										<div class="col-md-12">
+											<ul style="list-style: none;">
+												<li ng-repeat="visit in visits">
+													<h4>
+														<label> <input type="radio"
+															ng-model="$parent.selectedVisitID"
+															ng-click="populateVisit()" name="{{visit.id}}"
+															value="{{visit.id}}" required="true" />
+															{{visit.patient.username}}'s {{visit.type}} on
+															{{visit.formattedDate}} at {{getTime(visit.date)}}
+														</label>
+													</h4>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
-            <div class="col-md-12" ng-show="Selected">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="panel panel-primary">
-                    <div class="panel-heading">
-                      <h3>{{selectedVisit.patient}}'s {{selectedVisit.type}} on {{selectedVisit.date}} at {{selectedVisit.time}}</h3>
-                    </div>
-                    <div class="panel-body">
-                      <div class="row">
-                        <div class="form-group col-md-2">
-                          <label>Date:</label>
-                          {{selectedVisit.date}}
-                        </div>
-                        <div class="form-group col-md-2">
-                          <label>Time:</label>
-                          {{selectedVisit.time}}
-                        </div>
-                        <div class="form-group col-md-2 text-right">
-                          <div class="checkbox">
-                            <label>
-                              <input type="checkbox" name="preScheduled" class="checkbox" ng-model="selectedVisit.prescheduled">Prescheduled?
-                            </label>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="row">
-                        <div class="form-group col-md-4">
-                          <label>Patient:</label>
+						<div class="col-md-12" ng-show="Selected">
+							<div class="row">
+								<div class="col-md-12">
+									<div class="panel panel-primary">
+										<div class="panel-heading">
+											<h3>{{selectedVisit.patient}}'s {{selectedVisit.type}}
+												on {{selectedVisit.date}} at {{selectedVisit.time}}</h3>
+										</div>
+										<div class="panel-body">
+											<div class="row">
+												<div class="form-group col-md-2">
+													<label>Date:</label> {{selectedVisit.date}}
+												</div>
+												<div class="form-group col-md-2">
+													<label>Time:</label> {{selectedVisit.time}}
+												</div>
+												<div class="form-group col-md-2 text-right">
+													<div class="checkbox">
+														<label> <input type="checkbox" name="preScheduled"
+															class="checkbox" ng-model="selectedVisit.prescheduled">Prescheduled?
+														</label>
+													</div>
+												</div>
+											</div>
+											<div class="row">
+												<div class="form-group col-md-4">
+													<label>Patient:</label>
 
-                          <div class="panel panel-default">
-                            <div class="panel-body">
-                              <div class="form-check">
-                                {{selectedVisit.patient}}
-                              </div>
-                            </div>
-                          </div>
+													<div class="panel panel-default">
+														<div class="panel-body">
+															<div class="form-check">{{selectedVisit.patient}}</div>
+														</div>
+													</div>
 
-                        </div>
-                        <div class="form-group col-md-4">
-                          <label>Type of Visit:</label>
+												</div>
+												<div class="form-group col-md-4">
+													<label>Type of Visit:</label>
 
-                          <div class="panel panel-default">
-                            <div class="panel-body">
-                              <div class="form-check">
-                                {{selectedVisit.type}}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+													<div class="panel panel-default">
+														<div class="panel-body">
+															<div class="form-check">{{selectedVisit.type}}</div>
+														</div>
+													</div>
+												</div>
 
-                        <div class="form-group col-md-4">
-                          <label>Hospital:</label>
-                          <div class="panel panel-default">
-                            <div class="panel-body">
-                              <div class="form-check">
-                                {{selectedVisit.hospital}}
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
+												<div class="form-group col-md-4">
+													<label>Hospital:</label>
+													<div class="panel panel-default">
+														<div class="panel-body">
+															<div class="form-check">{{selectedVisit.hospital}}
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
 
 
 
-                      <div class="row">
+											<div class="row">
 
-                        <!-- Basic Health Metrics Panel -->
-                        <div class="col-md-4">
-                          <div class="panel panel-info">
-                            <div class="panel-heading">
-                              <h4>Basic Health Metrics</h4>
-                            </div>
-                            <div class="panel-body" ng-show="showBHM">
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Height/Length:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.height}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Weight:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.weight}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Head Circumference:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.headCircumference}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Systolic:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.systolic}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Diastolic:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.diastolic}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>HDL:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.hdl}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>LDL:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.ldl}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Triglycerides:</label>
-                                </div>
-                                <div class="col-xs-6">
-                                  {{selectedVisit.tri}}
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Household Smoking Status:</label>
-                                </div>
-                                <div class="col-xs-6 radio-box">
-                                  <div class="form-check">
-                                    {{selectedVisit.houseSmokingStatus}}
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="form-group row">
-                                <div class="col-xs-6">
-                                  <label>Patient Smoking Status:</label>
-                                </div>
-                                <div class="col-xs-6 ">
-                                  <div class="form-check">
-                                    {{selectedVisit.patientSmokingStatus}}
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+												<!-- Basic Health Metrics Panel -->
+												<div class="col-md-4">
+													<div class="panel panel-info">
+														<div class="panel-heading">
+															<h4>Basic Health Metrics</h4>
+														</div>
+														<div class="panel-body" ng-show="showBHM">
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Height/Length:</label>
+																</div>
+																<div class="col-xs-6">{{selectedVisit.height}}</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Weight:</label>
+																</div>
+																<div class="col-xs-6">{{selectedVisit.weight}}</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Head Circumference:</label>
+																</div>
+																<div class="col-xs-6">
+																	{{selectedVisit.headCircumference}}</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Systolic:</label>
+																</div>
+																<div class="col-xs-6">{{selectedVisit.systolic}}</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Diastolic:</label>
+																</div>
+																<div class="col-xs-6">{{selectedVisit.diastolic}}
+																</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>HDL:</label>
+																</div>
+																<div class="col-xs-6">{{selectedVisit.hdl}}</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>LDL:</label>
+																</div>
+																<div class="col-xs-6">{{selectedVisit.ldl}}</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Triglycerides:</label>
+																</div>
+																<div class="col-xs-6">{{selectedVisit.tri}}</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Household Smoking Status:</label>
+																</div>
+																<div class="col-xs-6 radio-box">
+																	<div class="form-check">
+																		{{selectedVisit.houseSmokingStatus}}</div>
+																</div>
+															</div>
+															<div class="form-group row">
+																<div class="col-xs-6">
+																	<label>Patient Smoking Status:</label>
+																</div>
+																<div class="col-xs-6 ">
+																	<div class="form-check">
+																		{{selectedVisit.patientSmokingStatus}}</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
 
 
-                        <!-- Diagnosis Panel  -->
-                        <div class="col-md-4">
-                          <div class="panel panel-info">
-                            <div class="panel-heading">
-                              <h4>Diagnoses</h4>
-                            </div>
-                            <div class="panel-body" ng-show="showDiagnosis">
-                              <div class="row">
-                                <div class="col-md-6">
-                                  <b>Description</b>
-                                </div>
-                                <div class="col-md-6">
-                                  <b>Note</b>
-                                </div>
-                              </div>
-                              <div class="row" ng-repeat="d in diagnoses">
-                                <div class="col-md-6">
-                                  {{d.code.description}}
-                                </div>
-                                <div class="col-md-6">
-                                  {{d.note}}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+												<!-- Diagnosis Panel  -->
+												<div class="col-md-4">
+													<div class="panel panel-info">
+														<div class="panel-heading">
+															<h4>Diagnoses</h4>
+														</div>
+														<div class="panel-body" ng-show="showDiagnosis">
+															<div class="row">
+																<div class="col-md-6">
+																	<b>Description</b>
+																</div>
+																<div class="col-md-6">
+																	<b>Note</b>
+																</div>
+															</div>
+															<div class="row" ng-repeat="d in diagnoses">
+																<div class="col-md-6">{{d.code.description}}</div>
+																<div class="col-md-6">{{d.note}}</div>
+															</div>
+														</div>
+													</div>
+												</div>
 
-                        <!-- Prescription Panel -->
-                        <div class="col-md-4">
-                          <div class="panel panel-info">
-                            <div class="panel-heading">
-                              <h4>Prescriptions</h4>
-                            </div>
-                            <div class="panel-body" ng-show="showPrescription">
-                              <div class="row" ng-repeat="p in prescriptions">
-                                <div class="col-md-6">
-                                  <b>Drug:</b> {{p.drug}}
-                                </div>
-                              </div>
-                              <div class="row" ng-repeat="p in prescriptions">
-                            		<div class="col-md-2">
-                            			<!-- "tabs" over the columns -->
-                            		</div>
-                                <div class="col-md-8">
-                                  <b>Dosage:</b> {{p.dosage}}mg
-                                <br>
-                                  <b>Start Date:</b> {{p.startDate}}
-                                <br>
-                                  <b>End Date:</b> {{p.endDate}}
-                                <br>
-                                  <b>Renewals:</b> {{p.renewals}}
-                                </div>
-                              </div>   
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <!-- Start a new row of panels -->
-                      <div class="row">
-                       <!-- Lab Procedures Panel  -->
-                        <div class="col-md-4">
-                          <div class="panel panel-info">
-                            <div class="panel-heading">
-                              <h4>Lab Procedures</h4>
-                            </div>
-                            <div class="panel-body" ng-show="showLabProcedures">
-                              <div class="row" ng-repeat="p in procedures">
-                                <div class="col-md-6">
-                                  <b>Code:</b> {{p.code}}
-                                  </div>
-                              </div>
-                             <div class="row" ng-repeat="p in procedures">
-                                <div class="col-md-2">
-                            			<!-- "tabs" over the columns -->
-                            		</div>
-                            		<div class="col-md-8">
-                                  <b>Common Name:</b> {{p.commonName}}
-                                	 <br>
-                                  <b>Priority:</b> {{p.priority}}
-                                  <br>
-                                  <b>Status:</b> {{p.status}}
-                                  <br>
-                                  <b>Comments:</b> {{p.comments}}
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                       </div>
+												<!-- Prescription Panel -->
+												<div class="col-md-4">
+													<div class="panel panel-info">
+														<div class="panel-heading">
+															<h4>Prescriptions</h4>
+														</div>
+														<div class="panel-body" ng-show="showPrescription">
+															<div class="row" ng-repeat="p in prescriptions">
+																<div class="col-md-6">
+																	<b>Drug:</b> {{p.drug}}
+																</div>
+															</div>
+															<div class="row" ng-repeat="p in prescriptions">
+																<div class="col-md-2">
+																	<!-- "tabs" over the columns -->
+																</div>
+																<div class="col-md-8">
+																	<b>Dosage:</b> {{p.dosage}}mg <br> <b>Start
+																		Date:</b> {{p.startDate}} <br> <b>End Date:</b>
+																	{{p.endDate}} <br> <b>Renewals:</b> {{p.renewals}}
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
 
-                      <!-- Notes and Error Messages -->
-                      <div class="row">
-                        <div class="form-group col-md-6">
-                          <label>Notes:</label>
-                          {{selectedVisit.notes}}
-                        </div>
-                        <div class="col-md-12 text-right">
-                          <div>
-                            <div name="errorMsg" class="text-success">
-                              {{message}}
-                            </div>
-                            <div name="success" class="text-danger">
-                              {{errorMsg}}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+											<!-- Start a new row of panels -->
+											<div class="row">
+												<!-- Lab Procedures Panel  -->
+												<div class="col-md-4">
+													<div class="panel panel-info">
+														<div class="panel-heading">
+															<h4>Lab Procedures</h4>
+														</div>
+														<div class="panel-body" ng-show="showLabProcedures">
+															<div class="row" ng-repeat="p in procedures">
+																<div class="col-md-6">
+																	<b>Code:</b> {{p.code}}
+																</div>
+															</div>
+															<div class="row" ng-repeat="p in procedures">
+																<div class="col-md-2">
+																	<!-- "tabs" over the columns -->
+																</div>
+																<div class="col-md-8">
+																	<b>Common Name:</b> {{p.commonName}} <br> <b>Priority:</b>
+																	{{p.priority}} <br> <b>Status:</b> {{p.status}} <br>
+																	<b>Comments:</b> {{p.comments}}
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+
+											<!-- Notes and Error Messages -->
+											<div class="row">
+												<div class="form-group col-md-6">
+													<label>Notes:</label> {{selectedVisit.notes}}
+												</div>
+												<div class="col-md-12 text-right">
+													<div>
+														<div name="errorMsg" class="text-success">
+															{{message}}</div>
+														<div name="success" class="text-danger">
+															{{errorMsg}}</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

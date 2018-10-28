@@ -1,16 +1,18 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head th:include="layout :: head(title=~{::title},links=~{})">
-  <title>Edit Prescriptions</title>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<title>Edit Prescriptions</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 </head>
 
 <body th:include="layout :: body" th:with="content=~{::content}">
-  <div th:fragment="content">
+	<div th:fragment="content">
 
 
-    <script th:inline="javascript">
+		<script th:inline="javascript">
       /* Otherwise Thymeleaf tries to parse Javascript as XML and breaks itself sometimes.  Sigh */
       /*<![CDATA[*/
       var app = angular.module("prescriptionsApp", []);
@@ -158,36 +160,38 @@
 
 
 
-    <div ng-app="prescriptionsApp" ng-controller="prescriptionsCtrl">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-12">
-            <div class="panel panel-primary">
-              <div class="panel-heading">
-                <h3>HCP Manage Prescriptions</h3>
-              </div>
-              <div class="panel-body">
-                <table class="table table-bordered">
-                  <caption>Existing Prescriptions:</caption>
-                  <thead>
-                    <tr>
-                      <th>Drug</th>
-                      <th>Dosage (mg)</th>
-                      <th>Start Date</th>
-                      <th>End Date</th>
-                      <th>Renewals</th>
-                      <th>Patient</th>
-                      <th>Manage</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr name="prescriptionTableRow" ng-repeat="p in prescriptions | orderBy: 'drug'" ng-include="getTemplate(p)" prescriptionId={{p.id}}>
-                    </tr>
-                  </tbody>
-                </table>
+		<div ng-app="prescriptionsApp" ng-controller="prescriptionsCtrl">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-primary">
+							<div class="panel-heading">
+								<h3>HCP Manage Prescriptions</h3>
+							</div>
+							<div class="panel-body">
+								<table class="table table-bordered">
+									<caption>Existing Prescriptions:</caption>
+									<thead>
+										<tr>
+											<th>Drug</th>
+											<th>Dosage (mg)</th>
+											<th>Start Date</th>
+											<th>End Date</th>
+											<th>Renewals</th>
+											<th>Patient</th>
+											<th>Manage</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr name="prescriptionTableRow"
+											ng-repeat="p in prescriptions | orderBy: 'drug'"
+											ng-include="getTemplate(p)" prescriptionId={{p.id}}>
+										</tr>
+									</tbody>
+								</table>
 
-                <!-- table in view mode -->
-                <script type="text/ng-template" id="view">
+								<!-- table in view mode -->
+								<script type="text/ng-template" id="view">
                   <td name="drugCell">{{p.drug.name}}</td>
                   <td name="dosageCell">{{p.dosage}}</td>
                   <td name="startCell">{{p.startDate.month + 1}}/{{p.startDate.dayOfMonth}}/{{p.startDate.year}}</td>
@@ -206,8 +210,8 @@
                   </td>
                 </script>
 
-                <!-- table in edit mode -->
-                <script type="text/ng-template" id="edit">
+								<!-- table in edit mode -->
+								<script type="text/ng-template" id="edit">
                   <td name="editDrugCell">
                     <ul style="list-style: none;">
                       <li ng-repeat="d in drugs">
@@ -254,109 +258,118 @@
 
 
 
-                <br>
-                <div class="row">
-                  <div class="col-md-12">
-                    <div class="panel panel-default">
-                      <div class="panel-heading ">Add a Prescription</div>
-                      <div class="panel-body">
-                        <form class="form-horizontal" role="form" name="addPrescriptionForm" ng-submit="addPrescription(addPrescriptionForm.$valid)">
-                          <div class="row">
+								<br>
+								<div class="row">
+									<div class="col-md-12">
+										<div class="panel panel-default">
+											<div class="panel-heading ">Add a Prescription</div>
+											<div class="panel-body">
+												<form class="form-horizontal" role="form"
+													name="addPrescriptionForm"
+													ng-submit="addPrescription(addPrescriptionForm.$valid)">
+													<div class="row">
 
-                            <!-- patient -->
-                            <div class="col-md-5 radio-box">
-                              <div class="form-check">
-                                <label>Patient:</label>
-                                <ul style="max-height:15%;overflow:auto;list-style: none;">
-                                  <li ng-repeat="patient in patients">
-                                    <label>
-                                      <input type="radio" ng-model="$parent.prescription.patient" name="name" value="{{patient.self.username}}" required="true"
-                                      />&nbsp; {{patient.self.username}}
-                                    </label>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
+														<!-- patient -->
+														<div class="col-md-5 radio-box">
+															<div class="form-check">
+																<label>Patient:</label>
+																<ul
+																	style="max-height: 15%; overflow: auto; list-style: none;">
+																	<li ng-repeat="patient in patients"><label>
+																			<input type="radio"
+																			ng-model="$parent.prescription.patient" name="name"
+																			value="{{patient.self.username}}" required="true" />&nbsp;
+																			{{patient.self.username}}
+																	</label></li>
+																</ul>
+															</div>
+														</div>
 
-                            <!-- drug -->
-                            <div class="col-md-5 radio-box">
-                              <div class="form-check">
-                                <label>Drug:</label>
-                                <ul style="list-style: none;">
-                                  <li ng-repeat="d in drugs">
-                                    <label>
-                                      <input type="radio" ng-model="$parent.prescription.drug" name="drug" value="{{d.code}}" required="true" /> {{d.name}}
-                                    </label>
-                                  </li>
-                                </ul>
-                              </div>
-                            </div>
+														<!-- drug -->
+														<div class="col-md-5 radio-box">
+															<div class="form-check">
+																<label>Drug:</label>
+																<ul style="list-style: none;">
+																	<li ng-repeat="d in drugs"><label> <input
+																			type="radio" ng-model="$parent.prescription.drug"
+																			name="drug" value="{{d.code}}" required="true" />
+																			{{d.name}}
+																	</label></li>
+																</ul>
+															</div>
+														</div>
 
-                            <!-- dosage -->
-                            <div class="col-md-2">
-                              <label>Dosage:</label>
-                              <div class="row">
-                                <div class="col-md-8">
-                                  <input class="form-control" name="dosage" ng-model="prescription.dosage" required></input>
-                                </div>
-                                <div class="col-md-4">
-                                  <span id="helpBlock" class="help-block">mg</span>
-                                </div>
-                              </div>
-                            </div>
+														<!-- dosage -->
+														<div class="col-md-2">
+															<label>Dosage:</label>
+															<div class="row">
+																<div class="col-md-8">
+																	<input class="form-control" name="dosage"
+																		ng-model="prescription.dosage" required></input>
+																</div>
+																<div class="col-md-4">
+																	<span id="helpBlock" class="help-block">mg</span>
+																</div>
+															</div>
+														</div>
 
-                          </div>
-                          <br>
-                          <div class="row">
-                            <!-- start date -->
-                            <div class="col-md-5">
-                              <label>Start Date:</label>
-                              <div class="row">
-                                <div class="col-md-4">
-                                  <input type="text" class="form-control" placeholder="MM/DD/YYYY" name="startDate" ng-model="prescription.startDate" required/>
-                                </div>
-                              </div>
-                            </div>
+													</div>
+													<br>
+													<div class="row">
+														<!-- start date -->
+														<div class="col-md-5">
+															<label>Start Date:</label>
+															<div class="row">
+																<div class="col-md-4">
+																	<input type="text" class="form-control"
+																		placeholder="MM/DD/YYYY" name="startDate"
+																		ng-model="prescription.startDate" required />
+																</div>
+															</div>
+														</div>
 
-                            <!-- end date -->
-                            <div class="col-md-5">
-                              <label>End Date:</label>
-                              <div class="row">
-                                <div class="col-md-4">
-                                  <input type="text" class="form-control" placeholder="MM/DD/YYYY" name="endDate" ng-model="prescription.endDate" required/>
-                                </div>
-                              </div>
-                            </div>
+														<!-- end date -->
+														<div class="col-md-5">
+															<label>End Date:</label>
+															<div class="row">
+																<div class="col-md-4">
+																	<input type="text" class="form-control"
+																		placeholder="MM/DD/YYYY" name="endDate"
+																		ng-model="prescription.endDate" required />
+																</div>
+															</div>
+														</div>
 
-                            <!-- renewals -->
-                            <div class="col-md-2">
-                              <label>Renewals:</label>
-                              <div class="row">
-                                <div class="col-md-8">
-                                  <input class="form-control" name="renewals" ng-model="prescription.renewals" required></input>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                          <br>
-                          <br>
-                          <div class="row">
-                            <div class="col-md-12 text-center">
-                              <button type="submit" class="btn btn-success" name="submit">Add Prescription</button>
-                            </div>
-                          </div>
-                        </form>
-                        <div>
-                          <p class="text-danger" ng-model="errorAdding" id="errP">{{errorAdding}}</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+														<!-- renewals -->
+														<div class="col-md-2">
+															<label>Renewals:</label>
+															<div class="row">
+																<div class="col-md-8">
+																	<input class="form-control" name="renewals"
+																		ng-model="prescription.renewals" required></input>
+																</div>
+															</div>
+														</div>
+													</div>
+													<br> <br>
+													<div class="row">
+														<div class="col-md-12 text-center">
+															<button type="submit" class="btn btn-success"
+																name="submit">Add Prescription</button>
+														</div>
+													</div>
+												</form>
+												<div>
+													<p class="text-danger" ng-model="errorAdding" id="errP">{{errorAdding}}</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 </body>
 
 </html>

@@ -44,7 +44,7 @@
 	</dependencyManagement>
 	<dependencies>
 
-        <!-- Java EE stuff for Java 9+ -->
+		<!-- Java EE stuff for Java 9+ -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
@@ -65,7 +65,7 @@
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-        <!-- End Java EE -->
+		<!-- End Java EE -->
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>

@@ -60,8 +60,8 @@
 															<div class="col-md-7">
 																<input type="date" class="form-control"
 																	placeholder="MM/DD/YYYY" name="startDate"
-																	ng-model="ctrl.startDate"
-																	ng-max="ctrl.endDate" required />
+																	ng-model="ctrl.startDate" ng-max="ctrl.endDate"
+																	required />
 															</div>
 														</div>
 													</div>
@@ -84,8 +84,8 @@
 														<div class="row">
 															<div class="col-md-4">
 																<button type="submit" class="btn btn-success"
-																	ng-disabled="!viewLogForm.$valid"
-																	name="submit">Search By Date</button>
+																	ng-disabled="!viewLogForm.$valid" name="submit">Search
+																	By Date</button>
 															</div>
 														</div>
 													</div>
@@ -97,21 +97,21 @@
 
 												</div>
 											</form>
-											
-											<br/>
-											
-											
+
+											<br />
+
+
 										</div>
-										
-										
+
+
 									</div>
-									
+
 									<div class="row" style="width: 300px; margin: 0 auto;">
-										<button class="btn btn-success" style="float:left;"
+										<button class="btn btn-success" style="float: left;"
 											ng-click="ctrl.prevPage()">Previous</button>
-										<button class="btn btn-success" style="float:right"
+										<button class="btn btn-success" style="float: right"
 											ng-click="ctrl.nextPage()">Next</button>
-										<p style="margin: 10 auto; width: 100px; text-align:center;"
+										<p style="margin: 10 auto; width: 100px; text-align: center;"
 											ng-bind="ctrl.pageString">Page: 1</p>
 									</div>
 								</div>

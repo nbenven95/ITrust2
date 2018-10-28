@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-        <modelVersion>4.0.0</modelVersion>
-        <groupId>edu.ncsu.csc</groupId>
-        <artifactId>iTrust2</artifactId>
-        <version>1.0.0</version>
-        <packaging>war</packaging>
-        <name>iTrust2</name>
-        <organization>
-                <name>NCSU Computer Science Department</name>
-                <url>https://www.csc.ncsu.edu/</url>
-        </organization>
-        <licenses>
-                <license>
-                        <name>The Apache Software License, Version 2.0</name>
-                        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-                        <distribution>repo</distribution>
-                </license>
-        </licenses>
-        <properties>
-                <m2eclipse.wtp.contextRoot>/iTrust2</m2eclipse.wtp.contextRoot>
-                <java.version>1.8</java.version>
-                <maven.compiler.version>3.7.0</maven.compiler.version>
-        </properties>
-        
-        <repositories>
-            <repository>
-                <id>jitpack.io</id>
-                <url>https://jitpack.io</url>
-            </repository>
-        </repositories>
-        
-        <dependencyManagement>
-                <dependencies>
-                        <dependency>
-                                <groupId>org.springframework</groupId>
-                                <artifactId>spring-framework-bom</artifactId>
-                                <version>4.3.5.RELEASE</version>
-                                <type>pom</type>
-                                <scope>import</scope>
-                        </dependency>
-                </dependencies>
-        </dependencyManagement>
-       	<dependencies>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>edu.ncsu.csc</groupId>
+	<artifactId>iTrust2</artifactId>
+	<version>1.0.0</version>
+	<packaging>war</packaging>
+	<name>iTrust2</name>
+	<organization>
+		<name>NCSU Computer Science Department</name>
+		<url>https://www.csc.ncsu.edu/</url>
+	</organization>
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	<properties>
+		<m2eclipse.wtp.contextRoot>/iTrust2</m2eclipse.wtp.contextRoot>
+		<java.version>1.8</java.version>
+		<maven.compiler.version>3.7.0</maven.compiler.version>
+	</properties>
 
-        <!-- Java EE stuff for Java 9+ -->
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-framework-bom</artifactId>
+				<version>4.3.5.RELEASE</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<dependencies>
+
+		<!-- Java EE stuff for Java 9+ -->
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
@@ -66,7 +66,7 @@
 			<artifactId>activation</artifactId>
 			<version>1.1.1</version>
 		</dependency>
-        <!-- End Java EE -->
+		<!-- End Java EE -->
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -381,102 +381,102 @@
 			<groupId>javax.mail</groupId>
 			<artifactId>javax.mail-api</artifactId>
 			<version>1.5.5</version>
-        </dependency>
-		
-
-	    </dependencies>
+		</dependency>
 
 
-        <build>
-                <finalName>iTrust2</finalName>
-                <sourceDirectory>src/main/java</sourceDirectory>
-                <testSourceDirectory>src/test/java</testSourceDirectory>
-                <resources>
-                        <resource>
-                                <directory>src/main/resources</directory>
-                        </resource>
-                </resources>
-                <plugins>
-                        <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-compiler-plugin</artifactId>
-                                <version>${maven.compiler.version}</version>
-                                <configuration>
-                                        <source>${java.version}</source>
-                                        <target>${java.version}</target>
-                                </configuration>
-                        </plugin>
-                        <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>1.4.0</version>
-        <executions>
-                <execution>
-                        <id>GenerateTestData</id>
-                        <phase>process-test-classes</phase>
-                        <goals>
-                                <goal>java</goal>
-                        </goals>
-                        <configuration>
-                                <classpathScope>test</classpathScope>
-                                <mainClass>edu.ncsu.csc.itrust2.utils.HibernateDataGenerator</mainClass>
-                                <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                        </configuration>
-                </execution>
-        </executions>
-      </plugin>
-                </plugins>
-        </build>
-        <reporting>
-                <plugins>
-                        <plugin>
-                                <groupId>org.apache.maven.plugins</groupId>
-                                <artifactId>maven-checkstyle-plugin</artifactId>
-                                <version>2.17</version>
-                        </plugin>
-                </plugins>
-        </reporting>
-        <profiles>
-                <profile>
-                        <id>Eclipse</id>
-                        <activation>
-                                <property>
-                                        <name>m2e.version</name>
-                                </property>
-                        </activation>
-                        <build>
-                                <pluginManagement>
-                                        <plugins>
-                                                <plugin>
-                                                        <groupId>org.eclipse.m2e</groupId>
-                                                        <artifactId>lifecycle-mapping</artifactId>
-                                                        <version>1.0.0</version>
-                                                        <configuration>
-                                                                <lifecycleMappingMetadata>
-                                                                        <pluginExecutions>
-                                                                                <pluginExecution>
-                                                                                        <pluginExecutionFilter>
-                                                                                                <groupId>org.codehaus.mojo</groupId>
-                                                                                                <artifactId>exec-maven-plugin</artifactId>
-                                                                                                <versionRange>[1.0.0,)</versionRange>
-                                                                                                <goals>
+	</dependencies>
 
-                                                                                                        <goal>java</goal>
-                                                                                                </goals>
-                                                                                        </pluginExecutionFilter>
-                                                                                        <action>
-                                                                                                <ignore />
-                                                                                        </action>
-                                                                                </pluginExecution>
-                                                                        </pluginExecutions>
-                                                                </lifecycleMappingMetadata>
-                                                        </configuration>
-                                                </plugin>
-                                        </plugins>
-                                </pluginManagement>
-                        </build>
-                </profile>
-        </profiles>
-        <description>iTrust2 v0</description>
+
+	<build>
+		<finalName>iTrust2</finalName>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.version}</version>
+				<configuration>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>exec-maven-plugin</artifactId>
+				<version>1.4.0</version>
+				<executions>
+					<execution>
+						<id>GenerateTestData</id>
+						<phase>process-test-classes</phase>
+						<goals>
+							<goal>java</goal>
+						</goals>
+						<configuration>
+							<classpathScope>test</classpathScope>
+							<mainClass>edu.ncsu.csc.itrust2.utils.HibernateDataGenerator</mainClass>
+							<cleanupDaemonThreads>false</cleanupDaemonThreads>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.17</version>
+			</plugin>
+		</plugins>
+	</reporting>
+	<profiles>
+		<profile>
+			<id>Eclipse</id>
+			<activation>
+				<property>
+					<name>m2e.version</name>
+				</property>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.eclipse.m2e</groupId>
+							<artifactId>lifecycle-mapping</artifactId>
+							<version>1.0.0</version>
+							<configuration>
+								<lifecycleMappingMetadata>
+									<pluginExecutions>
+										<pluginExecution>
+											<pluginExecutionFilter>
+												<groupId>org.codehaus.mojo</groupId>
+												<artifactId>exec-maven-plugin</artifactId>
+												<versionRange>[1.0.0,)</versionRange>
+												<goals>
+
+													<goal>java</goal>
+												</goals>
+											</pluginExecutionFilter>
+											<action>
+												<ignore />
+											</action>
+										</pluginExecution>
+									</pluginExecutions>
+								</lifecycleMappingMetadata>
+							</configuration>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+			</build>
+		</profile>
+	</profiles>
+	<description>iTrust2 v0</description>
 </project>
 

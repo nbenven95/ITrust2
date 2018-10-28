@@ -16,6 +16,7 @@ src/main/resources/hibernate.properties
 target/
 WebRoot/
 .classpath
+test.log
 
 # External tool builders
 .externalToolBuilders/

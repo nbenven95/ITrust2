@@ -337,8 +337,19 @@ public enum TransactionType {
     /**
      * Patient views lab procedures.
      */
-    PATIENT_VIEW_PROCS ( 1711, "Patient Views Procedures", false );
-
+    PATIENT_VIEW_PROCS ( 1711, "Patient Views Procedures", false ),
+    /**
+     * Food Diary Entry is created
+     */
+    CREATE_FOOD_DIARY_ENTRY (1901, "Create a Food Diary Entry", true),
+    /**
+     * Patient views a food diary entry
+     */
+    PATIENT_VIEW_FOOD_DIARY_ENTRY (1902, "Patient Views Food Diary Entry", true),
+    /**
+     * HCP views a food diary entry
+     */
+    HCP_VIEW_FOOD_DIARY_ENTRY (1903, "HCP Views Food Diary Entry", true);
     /**
      * Creates a TransactionType for logging events
      *
