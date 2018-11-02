@@ -507,6 +507,7 @@
 				<configuration>
 					<argLine>${surefireArgLine}</argLine>
 					<skip>${skipSurefireTests}</skip>
+					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -518,6 +519,7 @@
 						<server.port>8080</server.port>
 						<cucumber.options>${cucumber.options}</cucumber.options>
 					</systemPropertyVariables>
+					<useSystemClassLoader>false</useSystemClassLoader>
 				</configuration>
 				<executions>
 					<execution>
