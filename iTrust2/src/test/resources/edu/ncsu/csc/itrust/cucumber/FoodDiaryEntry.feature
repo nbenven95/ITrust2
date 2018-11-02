@@ -70,15 +70,17 @@ Examples:
 	| 09/27/2018	| Breakfast		| bacon and eggs	| 1			| 400	   | 10		| 20		| 15	| 20	 | 0		| 40		| 
 
 Scenario Outline: Totals are calculated correctly.
-	Given There exists a patient in the system.
-	Then I log on as a patient for diaries.
-	When I navigate to the Add Diary Entry page.
-	And I choose to add a new diary entry with <date>, <type>, <food>, <servings>, <calories>, <fat>, <sodium>, <carbs>, <sugars>, <fiber>, <protein>.
-	When I navigate to the Add Diary Entry page.
-	And I choose to add a new diary entry with <date>, <type>, <food>, <servings>, <calories>, <fat>, <sodium>, <carbs>, <sugars>, <fiber>, <protein>.
-	Then The patient has navigated to food diary dashboard.
-	And The patient selects <date>.
-	Then The patient can view the proper totals based on <calories>, <fat>, <sodium>, <carbs>, <sugars>, <fiber>, <protein>.
+    Given There exists a patient in the system.
+    Then I log on as a patient for diaries.
+    When I navigate to the Add Diary Entry page.
+    And I choose to add a new diary entry with <date>, <type>, <food>, <servings>, <calories>, <fat>, <sodium>, <carbs>, <sugars>, <fiber>, <protein>.
+    Then The diary entry is added successfully.
+    When I navigate to the Add Diary Entry page.
+    And I choose to add a new diary entry with <date>, <type>, <food>, <servings>, <calories>, <fat>, <sodium>, <carbs>, <sugars>, <fiber>, <protein>.
+    Then The diary entry is added successfully.
+    Then The patient has navigated to food diary dashboard.
+    And The patient selects <date>.
+    Then The patient can view the proper totals based on <calories>, <fat>, <sodium>, <carbs>, <sugars>, <fiber>, <protein>.
 
 Examples:
 	| date			| type			| food				| servings	| calories | fat	| sodium	| carbs	| sugars | fiber	| protein	| 
