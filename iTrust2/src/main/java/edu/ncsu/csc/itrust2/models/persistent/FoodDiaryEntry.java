@@ -218,8 +218,8 @@ public class FoodDiaryEntry extends DomainObject<FoodDiaryEntry> implements Seri
     /**
      * Sets the date for this DiaryEntry
      *
-     * @param date2.getTimeInMillis()
-     *            the date as milliseconds since epoch to set
+     * @param date2
+     *            .getTimeInMillis() the date as milliseconds since epoch to set
      */
     public void setDate ( final Long date2 ) {
         if ( date2 > Calendar.getInstance().getTimeInMillis() ) {
