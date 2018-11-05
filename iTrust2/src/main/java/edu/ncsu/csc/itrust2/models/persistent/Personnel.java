@@ -16,6 +16,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 
 import edu.ncsu.csc.itrust2.forms.personnel.PersonnelForm;
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 
 /**
@@ -94,81 +95,81 @@ public class Personnel extends DomainObject<Personnel> {
      */
     @JoinColumn ( name = "self_id", columnDefinition = "varchar(100)" )
     @OneToOne
-    private User    self;
+    private User      self;
 
     /**
      * Whether or not the personnel is enabled
      */
-    private boolean enabled;
+    private boolean   enabled;
 
     /**
      * The first name of the personnel
      */
     @Length ( max = 20 )
-    private String  firstName;
+    private String    firstName;
 
     /**
      * The last name of the personnel
      */
     @Length ( max = 30 )
-    private String  lastName;
+    private String    lastName;
 
     /**
      * The address line 1 of the personnel
      */
     @Length ( max = 50 )
-    private String  address1;
+    private String    address1;
 
     /**
      * The address line 2 of the personnel
      */
     @Length ( max = 50 )
-    private String  address2;
+    private String    address2;
 
     /**
      * The city of residence of the personnel
      */
     @Length ( max = 15 )
-    private String  city;
+    private String    city;
 
     /**
      * The state of residence of the personnel
      */
     @Enumerated ( EnumType.STRING )
-    private State   state;
+    private State     state;
 
     /**
      * The zipcode of the personnel
      */
     @Length ( min = 5, max = 10 )
-    private String  zip;
+    private String    zip;
 
     /**
      * The phone number of the personnel
      */
     @Length ( min = 12, max = 12 )
-    private String  phone;
+    private String    phone;
 
     /**
      * The specialty of the personnel
      */
-    private String  specialty; /*
-                                * Possibly consider making this an enum in the
-                                * future
-                                */
+    private Specialty specialty; /*
+                                  * Possibly consider making this an enum in the
+                                  * future
+                                  */
 
     /**
      * The email of the personnel
      */
     @Length ( max = 30 )
-    private String  email;
+    private String    email;
 
     /**
      * The id of the personnel
      */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long    id;
+    private Long      id;
 
     /**
      * Create a new personnel based off of the PersonnelForm
@@ -188,7 +189,7 @@ public class Personnel extends DomainObject<Personnel> {
         setState( State.valueOf( form.getState() ) );
         setZip( form.getZip() );
         setPhone( form.getPhone() );
-        setSpecialty( form.getSpecialty() );
+        setSpecialty( Specialty.valueOf( form.getSpecialty() ) );
         setEmail( form.getEmail() );
         try {
             setId( Long.valueOf( form.getId() ) );
@@ -420,7 +421,7 @@ public class Personnel extends DomainObject<Personnel> {
      *
      * @return the specialty of this personnel
      */
-    public String getSpecialty () {
+    public Specialty getSpecialty () {
         return specialty;
     }
 
@@ -430,7 +431,7 @@ public class Personnel extends DomainObject<Personnel> {
      * @param specialty
      *            the specialty to set this personnel to
      */
-    public void setSpecialty ( final String specialty ) {
+    public void setSpecialty ( final Specialty specialty ) {
         this.specialty = specialty;
     }
 

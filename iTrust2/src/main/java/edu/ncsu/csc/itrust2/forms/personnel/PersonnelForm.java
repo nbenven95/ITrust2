@@ -146,7 +146,7 @@ public class PersonnelForm {
         }
         setZip( p.getZip() );
         setPhone( p.getPhone() );
-        setSpecialty( p.getSpecialty() );
+        setSpecialty( p.getSpecialty().toString() );
         setEmail( p.getEmail() );
         setId( p.getId().toString() );
     }
