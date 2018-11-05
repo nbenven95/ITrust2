@@ -186,4 +186,22 @@ public class APIPersonnelController extends APIController {
         return new ResponseEntity( errorResponse( "Invalid role" ), HttpStatus.BAD_REQUEST );
     }
 
+    /**
+     * Check if the current user has a 'specialty'.
+     *
+     * @param specialty
+     *            The specialty to check for the user to have.
+     * @return True if the user has the 'specialty', false otherwise.
+     */
+    protected boolean hasSpecialty ( final String specialty ) {
+        final Personnel p = Personnel.getByName( LoggerUtil.currentUser() );
+
+        // If specialty is null, they aren't a HCP and thus won't have a
+        // specialty.
+        if ( p.getSpecialty() != null ) {
+            return p.getSpecialty().equals( specialty );
+        }
+        return false;
+    }
+
 }
