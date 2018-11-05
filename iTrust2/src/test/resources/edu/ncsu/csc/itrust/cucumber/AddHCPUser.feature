@@ -1,13 +1,12 @@
 #Author Daniel Mills (demills)
 
-# Some of the glued step definitions are already provided in AddUserStepDefs,
-# while some others are provided but aren't reusable. Kai hardcoded in 
-# values that should have been in AddUser.feature into AddUserStepDefs.java. 
-# I've written this feature so that the reusable step definitions from
-# AddUserStepDefs.java can be used, but some step defs will need to be 
-# implemented in a separate AddHCPUserStepDefs file. Alternatively,
-# AddUser.feature and AddUserStepDefs.java can be refactored, but I think
-# that would be more work than is neccessary.
+# Some of the glued step definitions are already provided in AddUserStepDefs
+# but they aren't reusable. Kai hardcoded in values that should have been in 
+# AddUser.feature into AddUserStepDefs.java. I've written this feature so 
+# that the reusable step definitions from AddUserStepDefs.java can be used, 
+# but some step defs will need to be implemented in a separate AddHCPUserStepDefs 
+# file. Alternatively, AddUser.feature and AddUserStepDefs.java can be refactored, 
+# but I think that would be more work than is neccessary.
 #   ~ Daniel
 
 Feature: Add HCP Users With and Without Specialties
