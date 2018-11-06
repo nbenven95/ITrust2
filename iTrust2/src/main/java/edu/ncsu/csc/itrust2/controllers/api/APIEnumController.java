@@ -14,8 +14,12 @@ import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
 import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
+import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.Status;
+import edu.ncsu.csc.itrust2.models.persistent.Personnel;
+import edu.ncsu.csc.itrust2.models.persistent.User;
+import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
  * This class provides GET endpoints for all of the Enums, so that they can be
@@ -33,7 +37,15 @@ public class APIEnumController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/appointmenttype" )
     public List<AppointmentType> getAppointmentTypes () {
-        return Arrays.asList( AppointmentType.values() );
+        final User current = User.getByName( LoggerUtil.currentUser() );
+        final Role role = current.getRole();
+        // Patients must be able to access all appointment types on their form
+        if ( role.equals( Role.ROLE_PATIENT ) ) {
+            return Arrays.asList( AppointmentType.values() );
+        }
+
+        // HCPs only need to access the types that they are associated with
+        return AppointmentType.getAssociatedAppointmentTypes( Personnel.getByName( current ).getSpecialty() );
     }
 
     /**
