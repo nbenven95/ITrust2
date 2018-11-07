@@ -2,6 +2,7 @@ package edu.ncsu.csc.itrust2.controllers.api;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.itrust2.forms.personnel.PersonnelForm;
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
@@ -184,6 +186,28 @@ public class APIPersonnelController extends APIController {
         }
 
         return new ResponseEntity( errorResponse( "Invalid role" ), HttpStatus.BAD_REQUEST );
+    }
+
+    /**
+     * Returns only personnel of a specific specialty, based on what the user
+     * wants.
+     *
+     * @param specialty
+     *            the specialty to filter out personnel by
+     * @return response and list of personnel matching query
+     */
+    @GetMapping ( BASE_PATH + "/personnel/getbyspecialty/{specialty}" )
+    public ResponseEntity getQualifiedHCPs ( @PathVariable ( "specialty" ) final String specialty ) {
+        final List<Personnel> specialists;
+        try {
+            specialists = Personnel.getPersonnel().stream()
+                    .filter( personnel -> Specialty.valueOf( specialty ).equals( personnel.getSpecialty() ) )
+                    .collect( Collectors.toList() );
+            return new ResponseEntity( specialists, HttpStatus.OK );
+        }
+        catch ( final IllegalArgumentException e ) {
+            return new ResponseEntity( errorResponse( "Invalid specialty" ), HttpStatus.BAD_REQUEST );
+        }
     }
 
     /**
