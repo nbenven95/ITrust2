@@ -15,6 +15,7 @@ import javax.persistence.Table;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 
+import edu.ncsu.csc.itrust2.forms.admin.UserForm;
 import edu.ncsu.csc.itrust2.forms.personnel.PersonnelForm;
 import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
@@ -153,10 +154,8 @@ public class Personnel extends DomainObject<Personnel> {
     /**
      * The specialty of the personnel
      */
-    private Specialty specialty; /*
-                                  * Possibly consider making this an enum in the
-                                  * future
-                                  */
+    @Enumerated ( EnumType.STRING )
+    private Specialty specialty;
 
     /**
      * The email of the personnel
@@ -197,6 +196,20 @@ public class Personnel extends DomainObject<Personnel> {
         catch ( NullPointerException | NumberFormatException npe ) {
             /* Will not have ID set if fresh form */
         }
+    }
+
+    /**
+     * Create a new personnel based off of the User
+     *
+     * @param user
+     *            the user to base the personnel off of.
+     * @param userForm
+     *            The userForm associated with the created user
+     */
+    public Personnel ( final User user, final UserForm userForm ) {
+        setSelf( user );
+        setSpecialty( Specialty.valueOf( userForm.getSpecialty() ) );
+        setEnabled( user.getEnabled() == 1 ? true : false );
     }
 
     /**

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.itrust2.forms.admin.UserForm;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
+import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
@@ -93,10 +94,15 @@ public class APIUserController extends APIController {
         }
         try {
             user.save();
+            if ( !user.getRole().equals( ROLE_PATIENT ) ) {
+                final Personnel personnel = new Personnel( user, userF );
+                personnel.save();
+            }
             LoggerUtil.log( TransactionType.CREATE_USER, LoggerUtil.currentUser(), user.getUsername(), null );
             return new ResponseEntity( user, HttpStatus.OK );
         }
         catch ( final Exception e ) {
+            e.printStackTrace();
             return new ResponseEntity(
                     errorResponse( "Could not create " + user.toString() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );

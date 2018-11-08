@@ -15,6 +15,7 @@ import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.Status;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
@@ -108,6 +109,16 @@ public class APIEnumController extends APIController {
         final List<HouseholdSmokingStatus> ret = Arrays.asList( HouseholdSmokingStatus.values() ).subList( 1,
                 HouseholdSmokingStatus.values().length );
         return ret;
+    }
+
+    /**
+     * Get specialty types
+     * 
+     * @return HCP specialties
+     */
+    @GetMapping ( BASE_PATH + "/specialty" )
+    public List<Specialty> getSpecialties () {
+        return Arrays.asList( Specialty.values() );
     }
 
     /**

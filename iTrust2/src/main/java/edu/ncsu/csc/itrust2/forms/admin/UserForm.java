@@ -30,15 +30,19 @@ public class UserForm {
      *            Password of the new user
      * @param role
      *            Role of the new User
+     * @param specialty
+     *            Specialty (Specialty Enum) of the new user
      * @param enabled
      *            Whether the new User is enabled or not
      *
      */
-    public UserForm ( final String username, final String password, final String role, final String enabled ) {
+    public UserForm ( final String username, final String password, final String role, final String specialty,
+            final String enabled ) {
         setUsername( username );
         setPassword( password );
         setPassword2( password );
         setRole( role );
+        setSpecialty( specialty );
         setEnabled( enabled );
     }
 
@@ -51,11 +55,14 @@ public class UserForm {
      *            Password of the new user
      * @param role
      *            Role (Role Enum) of the new user
+     * @param specialty
+     *            Specialty (Specialty Enum) of the new user
      * @param enabled
      *            Whether the user is enabled; 1 for enabled, 0 for disabled.
      */
-    public UserForm ( final String username, final String password, final Role role, final Integer enabled ) {
-        this( username, password, role.toString(), enabled != 0 ? "true" : null );
+    public UserForm ( final String username, final String password, final Role role, final String specialty,
+            final Integer enabled ) {
+        this( username, password, role.toString(), specialty, enabled != 0 ? "true" : null );
     }
 
     /**
@@ -148,6 +155,14 @@ public class UserForm {
         this.role = role;
     }
 
+    public String getSpecialty () {
+        return specialty;
+    }
+
+    public void setSpecialty ( final String specialty ) {
+        this.specialty = specialty;
+    }
+
     /**
      * Gets whether the new User created is to be enabled or not
      *
@@ -193,6 +208,11 @@ public class UserForm {
      */
     @NotEmpty
     private String role;
+
+    /**
+     * Specialty of the user
+     */
+    private String specialty;
 
     /**
      * Whether the User is enabled or not
