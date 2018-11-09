@@ -18,15 +18,15 @@ Scenario Outline: Add HCP user with Ophthalmology
 Given The user <username> does not exist in the database
 When I log in as admin
 When I navigate to the Add User page
-When I submit the Add User form with the values: <username> <role> 
+When I add <username> as a <role> with <specialty>
 Then The user is created successfully
 Then The new user <username> can login
 # These expected tabs are defined in expected results of the UC20 system tests.
 And  The expected tabs are available to the user
 
 Examples:
-  | username  |        role         |
-  | JaneDoe   | Ophthalmologist HCP | 
-  | JohnDoe   | Optometrist HCP     | 
-  | JoeSchmoe | Healthcare Provider |
+  | username  |        role         | specialty 		|
+  | JaneDoe   | Healthcare Provider	| Ophthalmology |
+  | JohnDoe   | Healthcare Provider | Optometry     |
+  | JoeSchmoe | Healthcare Provider | None          |
   
