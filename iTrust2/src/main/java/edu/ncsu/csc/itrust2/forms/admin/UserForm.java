@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 
 /**
@@ -36,6 +37,25 @@ public class UserForm {
      *            Whether the new User is enabled or not
      *
      */
+    public UserForm ( final String username, final String password, final Role role, final Integer enabled ) {
+        this( username, password, role.toString(), Specialty.SPECIALTY_NONE.toString(), enabled.toString() );
+    }
+
+    /**
+     * Create a UserForm from all of its fields.
+     *
+     * @param username
+     *            Username of the new user.
+     * @param password
+     *            Password of the new user
+     * @param role
+     *            Role of the new User
+     * @param specialty
+     *            Specialty (Specialty Enum) of the new user
+     * @param enabled
+     *            Whether the new User is enabled or not
+     *
+     */
     public UserForm ( final String username, final String password, final String role, final String specialty,
             final String enabled ) {
         setUsername( username );
@@ -43,7 +63,7 @@ public class UserForm {
         setPassword2( password );
         setRole( role );
         setSpecialty( specialty );
-        setEnabled( enabled );
+        setEnabled( enabled.toString() );
     }
 
     /**
@@ -60,9 +80,9 @@ public class UserForm {
      * @param enabled
      *            Whether the user is enabled; 1 for enabled, 0 for disabled.
      */
-    public UserForm ( final String username, final String password, final Role role, final String specialty,
+    public UserForm ( final String username, final String password, final Role role, final Specialty specialty,
             final Integer enabled ) {
-        this( username, password, role.toString(), specialty, enabled != 0 ? "true" : null );
+        this( username, password, role.toString(), specialty.toString(), enabled.toString() );
     }
 
     /**

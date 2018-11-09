@@ -39,6 +39,12 @@ public class APIEnumController extends APIController {
     @GetMapping ( BASE_PATH + "/appointmenttype" )
     public List<AppointmentType> getAppointmentTypes () {
         final User current = User.getByName( LoggerUtil.currentUser() );
+
+        // If no one is logged in, they want all appointment types.
+        if ( current == null ) {
+            return Arrays.asList( AppointmentType.values() );
+        }
+
         final Role role = current.getRole();
         // Patients must be able to access all appointment types on their form
         if ( role.equals( Role.ROLE_PATIENT ) ) {
@@ -113,7 +119,7 @@ public class APIEnumController extends APIController {
 
     /**
      * Get specialty types
-     * 
+     *
      * @return HCP specialties
      */
     @GetMapping ( BASE_PATH + "/specialty" )

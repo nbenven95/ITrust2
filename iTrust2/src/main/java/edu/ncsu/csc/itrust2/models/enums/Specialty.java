@@ -39,11 +39,27 @@ public enum Specialty {
 
     /**
      * Gets the numeric code of the Specialty
-     * 
+     *
      * @return Code of the specialty
      */
     public int getCode () {
         return this.code;
+    }
+
+    /**
+     * Parse a string into its equivalent specialty enumeration.
+     *
+     * @param specialty
+     *            The string to parse.
+     * @return The enumeriation.
+     */
+    public static Specialty parse ( final String specialty ) {
+        try {
+            return Specialty.valueOf( Specialty.class, specialty );
+        }
+        catch ( final Exception e ) {
+            return Specialty.SPECIALTY_NONE;
+        }
     }
 
 }

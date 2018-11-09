@@ -17,6 +17,7 @@ import org.hibernate.validator.constraints.Length;
 
 import edu.ncsu.csc.itrust2.forms.admin.UserForm;
 import edu.ncsu.csc.itrust2.forms.personnel.PersonnelForm;
+import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 
@@ -188,7 +189,7 @@ public class Personnel extends DomainObject<Personnel> {
         setState( State.valueOf( form.getState() ) );
         setZip( form.getZip() );
         setPhone( form.getPhone() );
-        setSpecialty( Specialty.valueOf( form.getSpecialty() ) );
+        setSpecialty( Specialty.parse( form.getSpecialty() ) );
         setEmail( form.getEmail() );
         try {
             setId( Long.valueOf( form.getId() ) );
@@ -208,7 +209,9 @@ public class Personnel extends DomainObject<Personnel> {
      */
     public Personnel ( final User user, final UserForm userForm ) {
         setSelf( user );
-        setSpecialty( Specialty.valueOf( userForm.getSpecialty() ) );
+        if ( user.getRole().equals( Role.ROLE_HCP ) ) {
+            setSpecialty( Specialty.valueOf( userForm.getSpecialty() ) );
+        }
         setEnabled( user.getEnabled() == 1 ? true : false );
     }
 

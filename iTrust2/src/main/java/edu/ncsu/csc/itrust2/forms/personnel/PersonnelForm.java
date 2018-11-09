@@ -5,6 +5,7 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 
@@ -357,6 +358,10 @@ public class PersonnelForm {
      *            Personnel's specialty
      */
     public void setSpecialty ( final String specialty ) {
+        if ( specialty == null ) {
+            this.specialty = Specialty.SPECIALTY_NONE.toString();
+            return;
+        }
         this.specialty = specialty;
     }
 
