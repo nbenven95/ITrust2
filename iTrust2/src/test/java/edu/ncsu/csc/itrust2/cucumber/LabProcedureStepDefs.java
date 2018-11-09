@@ -96,7 +96,7 @@ public class LabProcedureStepDefs extends CucumberTest {
         setTextField( By.name( "notes" ), "Billy has been experiencing symptoms of a cold or flu" );
         waitForAngular();
 
-        driver.findElement( By.id( "patient" ) ).click();
+        driver.findElement( By.id( "BillyBob" ) ).click();
         waitForAngular();
         driver.findElement( By.name( "type" ) ).click();
         waitForAngular();

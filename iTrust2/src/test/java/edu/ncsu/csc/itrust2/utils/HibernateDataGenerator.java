@@ -133,21 +133,25 @@ public class HibernateDataGenerator {
         final User svang = new User( "svang", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_HCP, 1 );
         svang.save();
+        saveAsGeneralHCP( svang );
 
         // generate users for testing password change & reset
         for ( int i = 1; i <= 5; i++ ) {
             final User pwtestuser = new User( "pwtestuser" + i,
                     "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, 1 );
             pwtestuser.save();
+            saveAsGeneralHCP( pwtestuser );
         }
 
         final User lockoutUser = new User( "lockoutUser",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, 1 );
         lockoutUser.save();
+        saveAsGeneralHCP( lockoutUser );
 
         final User lockoutUser2 = new User( "lockoutUser2",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, 1 );
         lockoutUser2.save();
+        saveAsGeneralHCP( lockoutUser2 );
 
         final User knightSolaire = new User( "knightSolaire",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_ER, 1 );
@@ -435,5 +439,13 @@ public class HibernateDataGenerator {
         form.setDiagnoses( diagnoses );
         final OfficeVisit siegOffVisit = new OfficeVisit( form );
         siegOffVisit.save();
+    }
+
+    private static void saveAsGeneralHCP ( final User u ) {
+        final Personnel p = new Personnel();
+        p.setSelf( u );
+        p.setSpecialty( Specialty.SPECIALTY_NONE );
+        p.setEnabled( u.getEnabled() == 1 );
+        p.save();
     }
 }
