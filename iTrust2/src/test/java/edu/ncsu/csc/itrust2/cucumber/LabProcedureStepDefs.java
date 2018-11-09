@@ -8,6 +8,7 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
@@ -96,7 +97,7 @@ public class LabProcedureStepDefs extends CucumberTest {
         setTextField( By.name( "notes" ), "Billy has been experiencing symptoms of a cold or flu" );
         waitForAngular();
 
-        driver.findElement( By.id( "BillyBob" ) ).click();
+        driver.findElement( By.id( "patient" ) ).click();
         waitForAngular();
         driver.findElement( By.name( "type" ) ).click();
         waitForAngular();
@@ -156,6 +157,11 @@ public class LabProcedureStepDefs extends CucumberTest {
         driver.findElement( By.name( "submit" ) ).click();
     }
 
+    @And ( "there is a patient" )
+    public void createPatient () {
+        HibernateDataGenerator.generateUsers();
+    }
+
     /**
      * Navigate Lab Tech from home page to assigned procedures.
      */
@@ -174,6 +180,11 @@ public class LabProcedureStepDefs extends CucumberTest {
     public void changeToInProgress () {
         waitForAngular();
 
+        HibernateDataGenerator.generateTestLOINC();
+
+        driver.navigate().refresh();
+
+        waitForAngular();
         driver.findElement( By.id( "update-806-0" ) ).click();
         waitForAngular();
 

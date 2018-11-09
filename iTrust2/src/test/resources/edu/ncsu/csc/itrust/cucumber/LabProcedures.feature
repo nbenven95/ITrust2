@@ -12,6 +12,7 @@ Then I recieve a message that office visit details were changed successfully
 
 Scenario: View assigned lab procedures
 Given I log in to iTrust2 as a Lab Tech
+And there is a patient
 When I navigate to Assigned Procedures
 And I change my newest procedures status to In-Progress
 Then I recieve a message that lab procedure details were changed successfully
