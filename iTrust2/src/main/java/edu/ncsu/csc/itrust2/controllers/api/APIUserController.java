@@ -102,7 +102,7 @@ public class APIUserController extends APIController {
             return new ResponseEntity( user, HttpStatus.OK );
         }
         catch ( final Exception e ) {
-            e.printStackTrace();
+            org.apache.log4j.Logger.getInstance( APIUserController.class ).error( e.getMessage() );
             return new ResponseEntity(
                     errorResponse( "Could not create " + user.toString() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );
