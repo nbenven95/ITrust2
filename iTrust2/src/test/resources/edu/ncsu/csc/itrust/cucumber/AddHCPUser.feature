@@ -22,6 +22,7 @@ When I add <username> as a <role> with <specialty>
 Then The user is created successfully
 Then The new user <username> can login
 # These expected tabs are defined in expected results of the UC20 system tests.
+# They should be the same for each HealthCare provider. 
 And  The expected tabs are available to the user
 
 Examples:
