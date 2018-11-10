@@ -205,7 +205,9 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         final Calendar future = Calendar.getInstance();
         future.setTimeInMillis( value );
         final String dateString = sdf.format( future.getTime() );
+        waitForAngular();
         assertTrue( driver.getPageSource().contains( dateString ) );
+        waitForAngular();
         assertTrue( driver.getPageSource().contains( "patient" ) );
     }
 

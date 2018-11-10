@@ -4,6 +4,7 @@ import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 
 /**
@@ -30,16 +31,39 @@ public class UserForm {
      *            Password of the new user
      * @param role
      *            Role of the new User
+     * @param specialty
+     *            Specialty (Specialty Enum) of the new user
      * @param enabled
      *            Whether the new User is enabled or not
      *
      */
-    public UserForm ( final String username, final String password, final String role, final String enabled ) {
+    public UserForm ( final String username, final String password, final Role role, final Integer enabled ) {
+        this( username, password, role.toString(), Specialty.SPECIALTY_NONE.toString(), enabled.toString() );
+    }
+
+    /**
+     * Create a UserForm from all of its fields.
+     *
+     * @param username
+     *            Username of the new user.
+     * @param password
+     *            Password of the new user
+     * @param role
+     *            Role of the new User
+     * @param specialty
+     *            Specialty (Specialty Enum) of the new user
+     * @param enabled
+     *            Whether the new User is enabled or not
+     *
+     */
+    public UserForm ( final String username, final String password, final String role, final String specialty,
+            final String enabled ) {
         setUsername( username );
         setPassword( password );
         setPassword2( password );
         setRole( role );
-        setEnabled( enabled );
+        setSpecialty( specialty );
+        setEnabled( enabled.toString() );
     }
 
     /**
@@ -51,11 +75,14 @@ public class UserForm {
      *            Password of the new user
      * @param role
      *            Role (Role Enum) of the new user
+     * @param specialty
+     *            Specialty (Specialty Enum) of the new user
      * @param enabled
      *            Whether the user is enabled; 1 for enabled, 0 for disabled.
      */
-    public UserForm ( final String username, final String password, final Role role, final Integer enabled ) {
-        this( username, password, role.toString(), enabled != 0 ? "true" : null );
+    public UserForm ( final String username, final String password, final Role role, final Specialty specialty,
+            final Integer enabled ) {
+        this( username, password, role.toString(), specialty.toString(), enabled.toString() );
     }
 
     /**
@@ -148,6 +175,14 @@ public class UserForm {
         this.role = role;
     }
 
+    public String getSpecialty () {
+        return specialty;
+    }
+
+    public void setSpecialty ( final String specialty ) {
+        this.specialty = specialty;
+    }
+
     /**
      * Gets whether the new User created is to be enabled or not
      *
@@ -193,6 +228,11 @@ public class UserForm {
      */
     @NotEmpty
     private String role;
+
+    /**
+     * Specialty of the user
+     */
+    private String specialty;
 
     /**
      * Whether the User is enabled or not
