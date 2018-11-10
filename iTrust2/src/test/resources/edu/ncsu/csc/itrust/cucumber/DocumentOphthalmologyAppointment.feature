@@ -14,40 +14,40 @@ Feature: Document Ophthalmology Appointment Office Visit
 	I want to document an Ophthalmology Appointment office visit
 	So that a record exists of a Patient visiting the doctor
 
-
+# This scenario covers behavior described in UC22 acceptance scenarios 1, 2, and 3.
 Scenario Outline: OPTHCP or OPHHCP documents an Ophthalmology Appointment - Valid Input
-Given There is an HCP <name> with <specialty> in the database
+Given There is an HCP user with <name> and <specialty> in the database
 And The required facilities exist
-When I log in to iTrust2 as <name>
+And A patient with <patientName> exists with no documented office visits
+And I am logged in to iTrust2 as <name>
 When I navigate to the Document Office Visit page
-# Some input values that aren't relevant to new functionality (like date,
-# birth date, and notes) are omitted to limit the number of parameters,
-# since the Cucumber wiki recommends that "The matcher has at most two 
-# value parameters" for a good step definition.
-When I document an ophthalmology appointment with values: <visActyODOS> <sphereODOS> <cylndrODOS> <axisODOS> <diagnosis>
+And I document an ophthalmology appointment with values: <patientName> <date> <time> <visAcuityODOS> <sphereODOS> <cylinderODOS> <axisODOS> <diagnosis> 
 Then The office visit is documented successfully
+# This corresponds to UC22's acc. scenario 3. It requires logging in as the 
+# patient, navigating to the View Office Visit page and checking values.
+And  <patientName> can view the appointment on <date> at <time> with values: <visAcuityODOS> <sphereODOS> <cylinderODOS> <axisODOS> <diagnosis>
 Examples: 
-| name          | specialty               | visAcuityODOS | sphereODOS | cylinderODOS | axisODOS | diagnosis |
-| YuriZhivago   | SPECIALTY_OPHTHALMOLOGY |     15/20     |    -2.00   |     3.00     |    1.00  |    NULL   | 
-| YuriZhivago   | SPECIALTY_OPHTHALMOLOGY |     15/20     |    -2.00   |     3.00     |    1.00  |    NULL   |
-| SaltmanPepper | SPECIALTY_OPTOMETRY     |     15/20     |    -2.00   |     NULL     |    NULL  | cataracts |
-| SaltmanPepper | SPECIALTY_OPTOMETRY     |     15/20     |    -2.00   |     NULL     |    NULL  | glaucoma  |
+| name          | specialty               | patientName   | date       | time     | visAcuityODOS  | sphereODOS | cylinderODOS | axisODOS | diagnosis | 
+| SeanMurphy    | SPECIALTY_OPHTHALMOLOGY | TomRiddle     | 10/26/1993 |  6:00 AM |    15/20       |    -2.00   |     3.00     |    1.00  |    NULL   |
+| SeanMurphy    | SPECIALTY_OPHTHALMOLOGY | TomRiddle     | 10/26/1993 |  7:00 AM |    15/20       |    -2.00   |     3.00     |    1.00  |    NULL   |
+| MeredithGray  | SPECIALTY_OPTOMETRY     | HarryPotter   | 10/26/1993 |  8:00 PM |    15/20       |    -2.00   |     NULL     |    NULL  | cataracts |
+| MeredithGray  | SPECIALTY_OPTOMETRY     | HarryPotter   | 10/26/1993 |  9:00 PM |    15/20       |    -2.00   |     NULL     |    NULL  | glaucoma  |
 
-
+# This scenario doesn't correspond to an acceptance scenario, 
+# but covers the behavior described in UC22.4 [E1].
 Scenario Outline: OPTHCP or OPHHCP documents an Ophthalmology Appointment - Invalid Input
 Given There is an HCP <name> with <specialty> in the database
 And The required facilities exist
-When I log in to iTrust2 as <name>
+And A patient with <patientName> exists with no documented office visits
+And I am logged in to iTrust2 as <name>
 When I navigate to the Document Office Visit page
-# Some input values that aren't relevant to new functionality (like date,
-# birth date, and notes) are omitted to limit the number of parameters,
-# since the Cucumber wiki recommends that "The matcher has at most two 
-# value parameters" for a good step definition.
-When I document an ophthalmology appointment with values: <visAcuityODOS> <sphereODOS> <cylinderODOS> <axisODOS> <diagnosis>
+# Note: In the step defs, for the date field, the regex should match 
+# two strings to account for the space between the time and AM/PM.
+And I document an ophthalmology appointment with values: <patientName> <date> <time> <visAcuityODOS> <sphereODOS> <cylinderODOS> <axisODOS> <diagnosis>
 Then The ophthalmology appointment is not documented
 Examples: 
-| name          | specialty               | visAcuityODOS | sphereODOS | cylinderODOS | axisODOS | diagnosis |
-| YuriZhivago   | SPECIALTY_OPHTHALMOLOGY |     1.23      |    -2.00   |     3.00     |    1.00  |    NULL   |
-| YuriZhivago   | SPECIALTY_OPHTHALMOLOGY |     15/20     |    "abc"   |     3.00     |    1.00  |    NULL   |
-| SaltmanPepper | SPECIALTY_OPTOMETRY     |     15/20     |    -2.00   |     2.00     |    NULL  | cataracts |
-| SaltmanPepper | SPECIALTY_OPTOMETRY     |     15/20     |    -2.00   |     NULL     |    NULL  | notValid  |
+| name          | specialty               | patientName |    date    | time     | visAcuityODOS | sphereODOS | cylinderODOS | axisODOS | diagnosis |
+| SeanMurphy    | SPECIALTY_OPHTHALMOLOGY | TomRiddle   | 10/26/1993 |  1:00 PM |    1.23       |    -2.00   |     3.00     |    1.00  |    NULL   |
+| SeanMurphy    | SPECIALTY_OPHTHALMOLOGY | TomRiddle   | 10/26/1993 |  2:00 PM |   15/20       |    "abc"   |     3.00     |    1.00  |    NULL   |
+| MeredithGray  | SPECIALTY_OPTOMETRY     | HarryPotter | 10/26/1993 |  3:00 PM |   15/20       |    -2.00   |     2.00     |    NULL  | cataracts |
+| MeredithGray  | SPECIALTY_OPTOMETRY     | HarryPotter | 10/26/1993 |  4:00 PM |   15/20       |    -2.00   |     NULL     |    NULL  | notValid  |
