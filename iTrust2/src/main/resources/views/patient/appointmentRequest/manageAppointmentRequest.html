@@ -18,7 +18,15 @@
 			app.controller('manageAppointmentRequestCtrl', function($scope, $http) {
 				$scope.appointment = {};
 				$scope.hcps = [];
-				$http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_HCP").then(
+				
+				/**
+					Called when the "Type" dropdown box changes values (i.e. 
+					when $scope.appointment.type is changed). Loads the list
+					of HCPs with the Specialty required to service the currently
+					selected AppointmentType.
+				*/
+				$scope.getHCPs = function() {
+						$http.get("/iTrust2/api/v1/personnel/getbyspecialty/" + $scope.appointment.type).then(
 						function(response) {
 							$scope.hcps = response.data;
 							$scope.message = "";
@@ -26,6 +34,7 @@
 							$scope.hcps = [];
 							$scope.message = "HCP not found";
 						});
+				}
 				
 				$http.get("/iTrust2/api/v1/appointmenttype")
 	              .then(function (response) {
@@ -175,9 +184,9 @@
 
 						<table>
 							<tr>
-								<td>HCP:</td>
-								<td><select ng-model="appointment.hcp" name="hcp" id="hcp">
-										<option ng-repeat="hcp in hcps">{{hcp.username}}</option>
+								<td>Type:</td>
+								<td><select ng-change="getHCPs()" ng-model="appointment.type" name="type">
+										<option ng-repeat="type in types">{{type}}</option>
 								</select></td>
 							</tr>
 
@@ -198,11 +207,11 @@
 								<td><input id="comments" type="text"
 									ng-model="appointment.comments" name="comments" /></td>
 							</tr>
-
-							<tr>
-								<td>Type:</td>
-								<td><select ng-model="appointment.type" name="type">
-										<option ng-repeat="type in types">{{type}}</option>
+							
+							<tr ng-show="appointment.type">
+								<td>HCP:</td>
+								<td><select ng-model="appointment.hcp" name="hcp" id="hcp">
+										<option ng-repeat="hcp in hcps">{{hcp.self.username}}</option>
 								</select></td>
 							</tr>
 
