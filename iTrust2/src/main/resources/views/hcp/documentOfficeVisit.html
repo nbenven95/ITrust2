@@ -155,6 +155,7 @@
             $http.get("/iTrust2/api/v1/appointmenttype")
               .then(function (response) {
                 $scope.types = response.data;
+                $scope.type = $scope.types[0];
               });
             $http.get("/iTrust2/api/v1/housesmoking")
               .then(function (response) {
@@ -177,6 +178,13 @@
               function (response) {
                 $scope.icdcodes = response.data;
               });
+            
+            $scope.icdcodes_oph = [
+            	{"id":100,"code":"O10","description":"cataracts"},
+            	{"id":100,"code":"O11","description":"age-related macular degeneration"},
+            	{"id":100,"code":"O12","description":"amblyopia"},
+            	{"id":100,"code":"O13","description":"glaucoma"}
+            	];
             
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
                     function (response) {
@@ -310,6 +318,7 @@
             
             $scope.procedure = {};
             $scope.procedures = [];
+            $scope.appointmentType = "GENERAL_CHECKUP";
 
 
             //clears local variables for diagnosis form
@@ -398,6 +407,20 @@
             $scope.removeProcedure = function ($index) {
               $scope.procedures.splice($index, 1);
             }
+            
+            $scope.typeChange = function (type) {
+            	$scope.appointmentType = type;
+            	if ($scope.appointmentType === 'GENERAL_CHECKUP') {
+            		$scope.visit.basicEyeMetrics = null;
+            	} else {
+            		$scope.visit.basicEyeMetrics = {
+            				visualAcuity: {od: '', os: ''},
+            				sphere: {od: '', os: ''},
+            				cylinder: {od: '', os: ''},
+            				axis: {od: '', os: ''}
+            		};
+            	}
+            }
 
             //call initally
             resetDiagnosisForm();
@@ -469,7 +492,7 @@
 														style="max-height: 15%; overflow: auto; list-style: none;">
 														<li ng-repeat="type in types"><label> <input
 																type="radio" ng-model="$parent.visit.type" name="type"
-																value="{{type}}" required="true" />{{type}}
+																value="{{type}}" required="true" ng-change='typeChange(type)'/>{{type}}
 														</label></li>
 													</ul>
 												</div>
@@ -617,7 +640,7 @@
 									</div>
 
 									<!-- Diagnosis Panel  -->
-									<div class="col-md-4">
+									<div  ng-hide="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Diagnosis</h4>
@@ -688,7 +711,7 @@
 									</div>
 
 									<!-- Prescription Panel -->
-									<div class="col-md-4">
+									<div ng-hide="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Prescription</h4>
@@ -785,10 +808,160 @@
 											</div>
 										</div>
 									</div>
+									
+									<!-- Basic Eye Metrics Panel -->
+									<div ng-show="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h4>Basic Eye Metrics</h4>
+											</div>
+											<div class="panel-body">
+												<div class="form-group row">
+													<div class="col-xs-4"></div>
+													<div class="col-xs-4">OD</div>
+													<div class="col-xs-4">OS</div>
+												</div>
+											</div>
+											<div class="panel-body">
+												<div class="form-group row">
+													<div class="col-xs-4">
+														<label>Visual Acuity:</label>
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="visualAcuity_od"
+															ng-model="visit.basicEyeMetrics.visualAcuity.od" required="true" type="text">
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="visualAcuity_os"
+															ng-model="visit.basicEyeMetrics.visualAcuity.os" required="true" type="text">
+													</div>
+												</div>
+											</div>
+											<div class="panel-body">
+												<div class="form-group row">
+													<div class="col-xs-4">
+														<label>Sphere:</label>
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="sphere_od"
+															ng-model="visit.basicEyeMetrics.sphere.od" required="false" type="text">
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="sphere_os"
+															ng-model="visit.basicEyeMetrics.sphere.os" required="false" type="text">
+													</div>
+												</div>
+											</div>
+											<div class="panel-body">
+												<div class="form-group row">
+													<div class="col-xs-4">
+														<label>Cylinder:</label>
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="cylinder_od"
+															ng-model="visit.basicEyeMetrics.cylinder.od" required="false" type="text">
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="cylinder_os"
+															ng-model="visit.basicEyeMetrics.cylinder.os" required="false" type="text">
+													</div>
+												</div>
+											</div>
+											<div class="panel-body">
+												<div class="form-group row">
+													<div class="col-xs-4">
+														<label>Axis:</label>
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="axis_od"
+															ng-model="visit.basicEyeMetrics.axis.od" required="false" type="text">
+															<!-- TODO ADD REQUIRED IF cylinder is included -->
+													</div>
+													<div class="col-xs-4">
+														<input class="form-control" name="axis_os"
+															ng-model="visit.basicEyeMetrics.axis.os" required="false" type="text">
+															<!-- TODO ADD REQUIRED IF cylinder is included -->
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									
+									<!-- Ophthalmology Diagnosis Panel  -->
+									<div ng-show="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h4>Ophthamology Diagnoses</h4>
+											</div>
+											<div class="panel-body">
+												<div class="form-group row">
+													<div class="col-xs-4">
+														<label>Diagnosis:</label>
+													</div>
+													<div class="col-xs-8 radio-box">
+														<div class="form-check">
+															<ul style="list-style: none;">
+																<li ng-repeat="i in icdcodes_oph"><label> <input
+																		type="radio" ng-model="$parent.codeEntry"
+																		id="{{i.code}}" name="{{i.description}}" ng-value="i"
+																		required="true" /> {{i.description}}
+																</label></li>
+															</ul>
+														</div>
+													</div>
+												</div>
+												<div class="form-group row">
+													<div class="col-xs-4">
+														<label>Date:</label>
+													</div>
+													<div class="col-xs-6">{{visit.date}}</div>
+												</div>
+												<div class="form-group row">
+													<div class="col-xs-4">
+														<label>Notes:</label>
+													</div>
+													<div class="col-xs-6">
+														<input class="form-control" name="notesEntry"
+															ng-model="noteEntry" required="true" type="text">
+													</div>
+												</div>
+
+												<div class="form-group row text-center">
+													<div class="col-md-12">
+														<button class="btn btn-success" ng-click="fillDiagnosis()"
+															name="fillDiagnosis">Add Diagnosis</button>
+													</div>
+												</div>
+
+												<div class="form-group row">
+													<div class="col-md-12">
+														<div class="panel panel-default">
+															<div class="panel-heading">Added Diagnoses</div>
+															<div class="panel-body">
+																<div class="row" ng-repeat="d in diagnoses">
+																	<div class="col-md-4">{{d.code.code}}</div>
+																	<div class="col-md-4">{{d.note}}</div>
+																	<div class="col-md-4">
+																		<button class="btn btn-danger btn-xs"
+																			ng-click="removeDiagnosis($index)"
+																			name="removeDiagnosis">
+																			<b>x</b>
+																		</button>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
+											</div>
+										</div>
+									</div>
+									
 								</div>
 
 								<!-- Lab Procedures Panel -->
-								<div class="row">
+								<div ng-hide="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="row">
 									<div class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
