@@ -106,6 +106,24 @@ public class HibernateDataGenerator {
         p.setSpecialty( Specialty.SPECIALTY_NONE );
         p.save();
 
+        // Create an opthalmology HCP
+        final User ophhcp = new User( "ophhcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                Role.ROLE_HCP, 1 );
+        ophhcp.save();
+
+        final Personnel ophp = new Personnel();
+        ophp.setSelf( ophhcp );
+        ophp.setFirstName( "P" );
+        ophp.setLastName( "Sherman" );
+        ophp.setEmail( "csc326.201.1@gmail.com" );
+        ophp.setAddress1( "42 Wallaby Way" );
+        ophp.setCity( "Sydney" );
+        ophp.setState( State.NC );
+        ophp.setZip( "12345" );
+        ophp.setPhone( "111-222-3333" );
+        ophp.setSpecialty( Specialty.SPECIALTY_OPTOMETRY );
+        ophp.save();
+
         final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
         patient.save();
