@@ -15,7 +15,7 @@ public enum AppointmentType {
     /**
      * General Checkup
      */
-    GENERAL_CHECKUP ( 1 ),
+    GENERAL_CHECKUP ( 1, Specialty.SPECIALTY_NONE, Specialty.SPECIALTY_OPTOMETRY, Specialty.SPECIALTY_OPHTHALMOLOGY ),
 
     /**
      * Optometry visit
@@ -69,6 +69,15 @@ public enum AppointmentType {
      */
     public int getCode () {
         return code;
+    }
+
+    /**
+     * Gets the appointment's associated specialties
+     * 
+     * @return The appointment's associated specialties
+     */
+    public List<Specialty> getAssociatedSpecialties () {
+        return associatedSpecialties;
     }
 
     /**

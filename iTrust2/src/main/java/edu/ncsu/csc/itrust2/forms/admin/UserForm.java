@@ -31,8 +31,6 @@ public class UserForm {
      *            Password of the new user
      * @param role
      *            Role of the new User
-     * @param specialty
-     *            Specialty (Specialty Enum) of the new user
      * @param enabled
      *            Whether the new User is enabled or not
      *
@@ -175,10 +173,21 @@ public class UserForm {
         this.role = role;
     }
 
+    /**
+     * Gets the specialty of the User
+     * 
+     * @return Specialty of the user
+     */
     public String getSpecialty () {
         return specialty;
     }
 
+    /**
+     * Sets the Specialty of the new User
+     * 
+     * @param specialty
+     *            Specialty of the user
+     */
     public void setSpecialty ( final String specialty ) {
         this.specialty = specialty;
     }

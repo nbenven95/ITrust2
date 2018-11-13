@@ -58,6 +58,19 @@ public class APIAppointmentRequestController extends APIController {
     }
 
     /**
+     * Retrieves the list of approved appointment requests for the currently
+     * logged in Patient.
+     *
+     * @return list of approved appointment requests
+     */
+    @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
+    @GetMapping ( BASE_PATH + "/approvedRequests" )
+    public List<AppointmentRequest> getApprovedAppointmentRequestsForPatient () {
+        return AppointmentRequest.getAppointmentRequestsForPatient( LoggerUtil.currentUser() ).stream()
+                .filter( e -> e.getStatus().equals( Status.APPROVED ) ).collect( Collectors.toList() );
+    }
+
+    /**
      * Retrieves the AppointmentRequest specified by the username provided
      *
      * @return list of appointment requests for the logged in hcp

@@ -15,8 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.itrust2.forms.personnel.PersonnelForm;
+import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.Role;
-import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
@@ -189,43 +189,26 @@ public class APIPersonnelController extends APIController {
     }
 
     /**
-     * Returns only personnel of a specific specialty, based on what the user
-     * wants.
+     * Returns only personnel that can participate in a given appointment type,
+     * based on what the user wants.
      *
-     * @param specialty
-     *            the specialty to filter out personnel by
+     * @param appointmentType
+     *            the appointment type to filter out personnel by
      * @return response and list of personnel matching query
      */
-    @GetMapping ( BASE_PATH + "/personnel/getbyspecialty/{specialty}" )
-    public ResponseEntity getQualifiedHCPs ( @PathVariable ( "specialty" ) final String specialty ) {
+    @GetMapping ( BASE_PATH + "/personnel/getbyspecialty/{appointmentType}" )
+    public ResponseEntity getQualifiedHCPs ( @PathVariable ( "appointmentType" ) final String appointmentType ) {
         final List<Personnel> specialists;
         try {
-            specialists = Personnel.getPersonnel().stream()
-                    .filter( personnel -> Specialty.valueOf( specialty ).equals( personnel.getSpecialty() ) )
+            specialists = Personnel
+                    .getPersonnel().stream().filter( personnel -> AppointmentType.valueOf( appointmentType )
+                            .getAssociatedSpecialties().contains( personnel.getSpecialty() ) )
                     .collect( Collectors.toList() );
             return new ResponseEntity( specialists, HttpStatus.OK );
         }
         catch ( final IllegalArgumentException e ) {
             return new ResponseEntity( errorResponse( "Invalid specialty" ), HttpStatus.BAD_REQUEST );
         }
-    }
-
-    /**
-     * Check if the current user has a 'specialty'.
-     *
-     * @param specialty
-     *            The specialty to check for the user to have.
-     * @return True if the user has the 'specialty', false otherwise.
-     */
-    protected boolean hasSpecialty ( final String specialty ) {
-        final Personnel p = Personnel.getByName( LoggerUtil.currentUser() );
-
-        // If specialty is null, they aren't a HCP and thus won't have a
-        // specialty.
-        if ( p.getSpecialty() != null ) {
-            return p.getSpecialty().equals( specialty );
-        }
-        return false;
     }
 
 }
