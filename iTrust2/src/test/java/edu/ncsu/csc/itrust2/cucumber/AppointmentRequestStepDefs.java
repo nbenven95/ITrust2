@@ -132,6 +132,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         waitForAngular();
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('requestappointment').click();" );
 
+        waitForAngular();
         final SimpleDateFormat sdf = new SimpleDateFormat( "yyyy", Locale.ENGLISH );
         final Long value = Calendar.getInstance().getTimeInMillis()
                 + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
