@@ -88,7 +88,51 @@
           	  	return err.join(". ");
             }
 
+            var nullOrEmpty = function(str) {
+            	if (str !== null) {
+            		return str.length === 0;
+            	}
+            	return true;
+            }
 
+            var checkValidBasicEyeMetrics = function (bem) {
+            	var err = [];
+            	var sphCylMatcher = /^[-|+]?\d\.\d{2}$/;
+            	
+            	// also enfore sphere matchers
+            	if (!sphCylMatcher.test(String(bem.sphere.os))) {
+            		err.push("Sphere OS must be a decimal number with an optional sign");
+            	}
+            	if (!sphCylMatcher.test(String(bem.sphere.od))) {
+            		err.push("Sphere OD must be a decimal number with an optional sign");
+            	}
+            	
+            	// only enforce these matchers if the user decided to enter cylinder
+            	if (!nullOrEmpty(bem.cylinder.od) && !sphCylMatcher.test(String(bem.cylinder.os))) {
+            		err.push("Cylinder OS must be a decimal number with an optional sign");
+            	}
+            	if (!nullOrEmpty(bem.cylinder.os) && !sphCylMatcher.test(String(bem.cylinder.od))) {
+            		err.push("Cylinder OD must be a decimal number with an optional sign");
+            	}
+
+            	// only enforce the matchers for axis if the user decided to enter cylinder
+            	if (!nullOrEmpty(bem.cylinder.od)) {
+                	if (typeof Number(bem.axis.os) === "number") {
+                    	bem.axis.os = Number(bem.axis.os);
+                    	if (bem.axis.os < 1 || bem.axis.os > 180) {
+                    		err.push("Axis OS must be an integer between 1 and 180");
+                    	}
+                	}
+                	if (typeof Number(bem.axis.od) === "number") {
+                    	bem.axis.od = Number(bem.axis.od);
+                    	if (bem.axis.od < 1 || bem.axis.od > 180) {
+                    		err.push("Axis OD must be an integer between 1 and 180");
+                    	}
+                	}
+            	}
+            	return err.join(".<br/>");
+            }
+              
             $scope.three = false;
             $scope.threeAndUp = false;
             $scope.twelveAndUp = false;
@@ -178,13 +222,19 @@
               function (response) {
                 $scope.icdcodes = response.data;
               });
+           
+            /* TODO uncomment and delete manually entered diagnonses below 
+              $http.get("/iTrust2/api/v1/icdcodes_oph").then(
+              function (response) {
+                $scope.icdcodes_oph = response.data;
+   			  });*/
             
             $scope.icdcodes_oph = [
             	{"id":100,"code":"O10","description":"cataracts"},
             	{"id":100,"code":"O11","description":"age-related macular degeneration"},
             	{"id":100,"code":"O12","description":"amblyopia"},
             	{"id":100,"code":"O13","description":"glaucoma"}
-            	];
+           	];
             
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
                     function (response) {
@@ -208,27 +258,32 @@
                       $scope.loinccodes = response.data;
             });
             
-
+			/**
+			 * Runs when the user clicks submit office visit.
+			 */
             $scope.submit = function () {
               $scope.errorMsg = "";
               $scope.visit.hcp = /*[[${#httpServletRequest.remoteUser}]]*/null; /* Ugly hack; use this to retrieve the name of the HCP who is currently logged in.  This grabs it from Thymeleaf */
               $scope.visit.status = "PENDING";
 
-              if ($scope.visit.type == null) {
+              /* Validation required for all types of office visits */
+              if ($scope.visit.type == null) { // appointment type is selected
                 $scope.errorMsg += "Please select a visit type\n";
               }
 
-              if ($scope.visit.type == null) {
+              if ($scope.visit.type == null) { // hospital is selected
                 $scope.errorMsg += "Please select a hospital\n";
               }
 
               if (/(\d{1,2})\/(\d{1,2})\/(\d{4})/.test($scope.visit.date) == false) {
-                $scope.errorMsg += "Please input a valid date as MM/dd/yyyy"
+                $scope.errorMsg += "Please input a valid date as MM/dd/yyyy" // date is valid
               }
+              
               if (/(\d{1,2}):(\d{1,2}) (am|pm|AM|PM)/.test($scope.visit.time) == false) {
-                $scope.errorMsg += "Please input a valid time as hh:mm aa"
+                $scope.errorMsg += "Please input a valid time as hh:mm aa" // time is valid
               }
-              //info on date usage comes from here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
+              
+              // info on date usage comes from here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
               var dateInput = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec($scope.visit.date);
               dateInput[1] = (parseInt(dateInput[1]) - 1) + '';//months are 0 indexed
               var timeInput = /(\d{1,2}):(\d{1,2}) (am|pm|AM|PM)/.exec($scope.visit.time);
@@ -240,57 +295,79 @@
                 $scope.errorMsg += "Please input a valid date and time\n";
               }
 
-              if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.height).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Height/length can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+              /* Basic health metrics data validation */
+              /* TODO handle basic health metrics for eye related visits */
+              if ( $scope.visit.appointmentType === "GENERAL_CHECKUP" || true ) {
+                 if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.height).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "Height/length can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+                   }
+                   if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+                   }
+                   if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+                   }
+                   if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
+                   }
+                   if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
+                   }
+                   //handle invalid and outside of range
+                   if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+                   } else if ($scope.twelveAndUp) {
+                     var hdlInt = parseInt($scope.visit.hdl);
+                     if (hdlInt > 90) {
+                       $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+                     }
+                   }
+                   //handle invalid and outside of range
+                   if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+                   } else if ($scope.twelveAndUp) {
+                     var ldlInt = parseInt($scope.visit.ldl);
+                     if (ldlInt > 600) {
+                       $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+                     }
+                   }
+                   //handle invalid and outside of range
+                   if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
+                     $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+                   } else if ($scope.twelveAndUp) {
+                     var triInt = parseInt($scope.visit.tri);
+                     if (triInt > 600 || triInt < 100) {
+                       $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+                     }
+                   }
               }
-              if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-              }
-              if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-              }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
-              }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-              } else if ($scope.twelveAndUp) {
-                var hdlInt = parseInt($scope.visit.hdl);
-                if (hdlInt > 90) {
-                  $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-                }
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-              } else if ($scope.twelveAndUp) {
-                var ldlInt = parseInt($scope.visit.ldl);
-                if (ldlInt > 600) {
-                  $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-                }
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-              } else if ($scope.twelveAndUp) {
-                var triInt = parseInt($scope.visit.tri);
-                if (triInt > 600 || triInt < 100) {
-                  $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-                }
-              }
-
-              $scope.visit.diagnoses = $scope.diagnoses;
-              $scope.visit.prescriptions = $scope.prescriptions;
-              $scope.visit.prescriptions.forEach(function (p) {
-                p.patient = $scope.visit.patient;
-              });
               
-              $scope.visit.labProcedures = $scope.procedures;
-
+              /* Handle appointment type unique fields */
+              if ($scope.visit.type === "GENERAL_CHECKUP") {
+                $scope.visit.labProcedures = $scope.procedures;
+                $scope.visit.diagnoses = $scope.diagnoses;
+                $scope.visit.prescriptions = $scope.prescriptions;
+                $scope.visit.prescriptions.forEach(function (p) {
+                  p.patient = $scope.visit.patient;
+                });
+                
+          		$scope.visit.basicEyeMetrics = null;
+          		$scope.visit.surguryType = null;
+              } else if ($scope.visit.type === "OPTOMETRY_VISIT") {
+            	// visit.basicEyeMetrics is set by form
+              	console.log($scope.visit.basicEyeMetrics);
+            	var err = checkValidBasicEyeMetrics($scope.visit.basicEyeMetrics);
+            	$scope.errorMsg += err;
+            	console.log(err);
+           		$scope.visit.diagnoses = $scope.diagnoses;
+              } else if ($scope.visit.type === "OPHTHALMOLOGY_SURGERY") {
+              	// visit.basicEyeMetrics is set by form
+              	var err = checkValidBasicEyeMetrics($scope.visit.basicEyeMetrics);
+            	$scope.errorMsg += err;
+             	$scope.visit.surguryType = $scope.surguryType;
+              }
+              
+			/* TODO uncomment when OfficeVisit has been implemented backend
               $http({
                 method: 'POST',
                 url: '/iTrust2/api/v1/officevisits',
@@ -300,6 +377,10 @@
               }, function (rejection) {
                 $scope.message = "Error occurred creating office visit";
               })
+              */
+              console.log("OFFICE VISIT:");
+              console.log($scope.visit);
+              $scope.message = "Office visit created successfully";
 
             } //end submit function
 
@@ -410,9 +491,7 @@
             
             $scope.typeChange = function (type) {
             	$scope.appointmentType = type;
-            	if ($scope.appointmentType === 'GENERAL_CHECKUP') {
-            		$scope.visit.basicEyeMetrics = null;
-            	} else {
+            	if ($scope.appointmentType !== 'GENERAL_CHECKUP') {
             		$scope.visit.basicEyeMetrics = {
             				visualAcuity: {od: '', os: ''},
             				sphere: {od: '', os: ''},
