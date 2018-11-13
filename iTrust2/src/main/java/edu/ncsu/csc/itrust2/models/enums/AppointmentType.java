@@ -20,7 +20,7 @@ public enum AppointmentType {
     /**
      * Optometry visit
      */
-    OPTOMETRY_VISIT ( 2, Specialty.SPECIALTY_OPTOMETRY, Specialty.SPECIALTY_OPHTHALMOLOGY ),
+    OPHTHALMOLOGY_VISIT ( 2, Specialty.SPECIALTY_OPTOMETRY, Specialty.SPECIALTY_OPHTHALMOLOGY ),
 
     /**
      * Ophthalmology visit
