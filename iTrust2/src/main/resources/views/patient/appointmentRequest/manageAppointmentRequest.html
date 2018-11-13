@@ -180,28 +180,6 @@
 						<table>
 							
 							<tr>
-								<h3>Delete Medical Appointment</h3>
-								<div class="col-xs-6 radio-box">
-									<div class="form-check">
-										<ul style="list-style: none;">
-											<li ng-repeat="appt in appointments"><label> <input
-													type="radio" ng-model="selectedAppointment.id" name="appt"
-													value="{{appt.id}}" required="true" /> Type: {{appt.type}} </br>
-													Date: {{getDate(appt.date)}} </br> Time: {{getTime(appt.date)}}
-											</label></li>
-										</ul>
-									</div>
-		
-									<button class="btn btn-danger" ng-if="appointments.length > 0"
-										ng-click="deleteAppointment()" name="submit">Delete</button>
-								</div>	
-								
-								<div name="success" class="text-success" align="left">{{message1}}</div>
-								<div name="errorMsg" class="text-danger" align="left">{{errorMsg1}}</div>
-								
-							</tr>
-							
-							<tr>
 								<h3>Upcoming Medical Appointment</h3>
 								<ul style="list-style: none;">
 									<li ng-repeat="appt in incomingAppointments"><label>
@@ -211,7 +189,33 @@
 								</ul>
 							</tr>
 							
+							<tr>
+								<h3>Delete Medical Appointment</h3>
+								<td>
+									<div class="col-xs-6 radio-box">
+										<div class="form-check">
+											<ul style="list-style: none;">
+												<li ng-repeat="appt in appointments"><label> <input
+														type="radio" ng-model="selectedAppointment.id" name="appt"
+														value="{{appt.id}}" required="true" /> Type: {{appt.type}} </br>
+														Date: {{getDate(appt.date)}} </br> Time: {{getTime(appt.date)}}
+												</label></li>
+											</ul>
+										</div>
+			
+										<button class="btn btn-danger" ng-if="appointments.length > 0"
+											ng-click="deleteAppointment()" name="submit">Delete</button>
+									</div>	
+									
+								</td>
+								
+							</tr>
+							
 						</table>
+						
+						<div name="success" class="text-success" align="left">{{message1}}</div>
+						<div name="errorMsg" class="text-danger" align="left">{{errorMsg1}}</div>
+						
 					</td>
 					<td style="width: 35%; vertical-align: top">
 						<h3>Request Medical Appointment</h3>
