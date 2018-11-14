@@ -1,7 +1,9 @@
 package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -20,10 +22,25 @@ import edu.ncsu.csc.itrust2.models.enums.Status;
 import edu.ncsu.csc.itrust2.models.persistent.AppointmentRequest;
 import edu.ncsu.csc.itrust2.models.persistent.DomainObject;
 import edu.ncsu.csc.itrust2.models.persistent.User;
+import edu.ncsu.csc.itrust2.utils.HibernateDataGenerator;
 
 public class AppointmentRequestStepDefs extends CucumberTest {
 
     private final String baseUrl = "http://localhost:8080/iTrust2";
+
+    /**
+     * Refreshes the database
+     */
+    @Given ( "^The DB has been obliterated$" )
+    public void annihilateDB () {
+        try {
+            HibernateDataGenerator.refreshDB();
+        }
+        catch ( NumberFormatException | ParseException e ) {
+            fail();
+            e.printStackTrace();
+        }
+    }
 
     @Given ( "There is a sample HCP and sample Patient in the database" )
     public void startingUsers () {
