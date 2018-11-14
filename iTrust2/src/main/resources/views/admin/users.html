@@ -9,7 +9,7 @@
 		/*<![CDATA[*/
  			var app = angular.module("manageUsersApp", []);
 			app.controller("manageUsersCtrl", function($scope, $http) {
-				
+
 				var checkValidUserForm = function(user) {
 					var err = [];
 					for(var i = 0; i < $scope.users.length; i++ ) {
@@ -27,8 +27,18 @@
 	 					err.push("Password must be more than 6 characters long");
 					return err.join(".  ");
 				}
-				
-			
+
+				$scope.specialties = [];
+				$http.get("/iTrust2/api/v1/specialty").then(
+					function(response) {
+						$scope.specialties = response.data;
+					}, function (rejection) {
+						$scope.specialties = [];
+						$scope.message = "Could not get HCP specialties."
+					}
+				)
+
+
 		    $scope.users = [];
 	        $scope.loadUsers = function () {
 	          $http.get("/iTrust2/api/v1/users").then(
@@ -40,7 +50,7 @@
 	              $scope.message = "Could not display users";
 	            });
 	        }
-	        
+
 	        $scope.addUser = function () {
 		          var err = checkValidUserForm($scope.user);
 		          if (err) {
@@ -64,7 +74,7 @@
 		              });
 		          }
 	        }
-			
+
 	        $scope.deleteUser = function(user) {
 	            $http.delete('/iTrust2/api/v1/users/' + user.username).then(
 	              function (response) {
@@ -78,15 +88,15 @@
 	        $scope.getTemplate = function (user) {
 	          return 'view';
 	        };
-	        
+
 	        $scope.enabledText = function(user) {
 	        	  if(user.enabled) {
-	        		  return 'yes';        		  
+	        		  return 'yes';
 	        	  } else {
 	        		  return 'no';
 	        	  }
 	        }
-	        
+
 	        $scope.getRole = function(user) {
 	        	  if(user.role === "ROLE_PATIENT") {
 	        		  return 'Patient';
@@ -100,10 +110,10 @@
 	        		  return 'Lab Tech';
 	        	  }
 	        }
-			
+
 		$scope.loadUsers();
 		});
-			
+
 </script>
 		<div ng-app="manageUsersApp" ng-controller="manageUsersCtrl">
 			<div class="container">
@@ -135,10 +145,10 @@
                 <td name="nameCell">{{u.username}}</td>
 			    <td name="roleCell">{{getRole(u)}}</td>
 				<td name="enabledCell">{{enabledText(u)}}</td>
-                <td> 
+                <td>
                   <div class="row text-center">
                     <div class="col-md-6">
-                      <input type="button" value="Delete" class="btn btn-danger" name="deleteUser" ng-click="deleteUser(u)"/>                          
+                      <input type="button" value="Delete" class="btn btn-danger" name="deleteUser" ng-click="deleteUser(u)"/>
                     </div>
                   </div>
                 </td>
@@ -204,6 +214,14 @@ input[type=password] {
 														<option value="ROLE_ER">Emergency Responder</option>
 														<option value="ROLE_LABTECH">Lab Technician</option>
 													</select> <br>
+													<br>
+													<div ng-if="user.role==='ROLE_HCP'">
+														<b>Specialty:</b>
+														<select class="label" id="specialty" name="specialty" ng-model="user.specialty">
+															<option ng-repeat="specialty in specialties" value="{{specialty}}">{{specialty}}</option>
+														</select>
+													</div>
+													</br>
 													<br> <b>Enabled?:</b> <input type="checkbox"
 														name="enabled" class="checkbox" ng-model="user.enabled" />
 													<br> <input type="submit" id="submit" value="Add User" />
