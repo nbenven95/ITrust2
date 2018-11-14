@@ -95,37 +95,38 @@
             	return true;
             }
 
-            var checkValidBasicEyeMetrics = function (bem) {
+            var checkValidBasicEyeMetrics = function () {
             	var err = [];
             	var sphCylMatcher = /^[-|+]?\d\.\d{2}$/;
+            	var visit = $scope.visit;
             	
             	// also enfore sphere matchers
-            	if (!sphCylMatcher.test(String(bem.sphere.os))) {
+            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
             		err.push("Sphere OS must be a decimal number with an optional sign");
             	}
-            	if (!sphCylMatcher.test(String(bem.sphere.od))) {
+            	if (!sphCylMatcher.test(String(visit.sphereOD))) {
             		err.push("Sphere OD must be a decimal number with an optional sign");
             	}
             	
             	// only enforce these matchers if the user decided to enter cylinder
-            	if (!nullOrEmpty(bem.cylinder.od) && !sphCylMatcher.test(String(bem.cylinder.os))) {
+            	if (!nullOrEmpty(visit.cylinderOD) && !sphCylMatcher.test(String(visit.cylinderOS))) {
             		err.push("Cylinder OS must be a decimal number with an optional sign");
             	}
-            	if (!nullOrEmpty(bem.cylinder.os) && !sphCylMatcher.test(String(bem.cylinder.od))) {
+            	if (!nullOrEmpty(visit.cylinderOS) && !sphCylMatcher.test(String(visit.cylinderOD))) {
             		err.push("Cylinder OD must be a decimal number with an optional sign");
             	}
 
             	// only enforce the matchers for axis if the user decided to enter cylinder
-            	if (!nullOrEmpty(bem.cylinder.od)) {
-                	if (typeof Number(bem.axis.os) === "number") {
-                    	bem.axis.os = Number(bem.axis.os);
-                    	if (bem.axis.os < 1 || bem.axis.os > 180) {
+            	if (!nullOrEmpty(visit.cylinderOD)) {
+                	if (typeof Number(visit.axisOS) === "number") {
+                		visit.axisOS = Number(visit.axisOS);
+                    	if (visit.axisOS < 1 || visit.axisOS > 180) {
                     		err.push("Axis OS must be an integer between 1 and 180");
                     	}
                 	}
-                	if (typeof Number(bem.axis.od) === "number") {
-                    	bem.axis.od = Number(bem.axis.od);
-                    	if (bem.axis.od < 1 || bem.axis.od > 180) {
+                	if (typeof Number(visit.axisOD) === "number") {
+                		visit.axisOD = Number(visit.axisOD);
+                    	if (visit.axisOD < 1 || visit.axisOD > 180) {
                     		err.push("Axis OD must be an integer between 1 and 180");
                     	}
                 	}
@@ -198,8 +199,8 @@
 
             $http.get("/iTrust2/api/v1/appointmenttype")
               .then(function (response) {
-                $scope.types = response.data;
-                $scope.type = $scope.types[0];
+                $scope.appointmentTypes = response.data;
+                $scope.appointmentType = $scope.appointmentTypes[0];
               });
             $http.get("/iTrust2/api/v1/housesmoking")
               .then(function (response) {
@@ -298,73 +299,86 @@
               /* Basic health metrics data validation */
               /* TODO handle basic health metrics for eye related visits */
               if ( $scope.visit.appointmentType === "GENERAL_CHECKUP" || true ) {
-                 if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.height).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "Height/length can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-                   }
-                   if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-                   }
-                   if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-                   }
-                   if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
-                   }
-                   if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
-                   }
-                   //handle invalid and outside of range
-                   if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-                   } else if ($scope.twelveAndUp) {
-                     var hdlInt = parseInt($scope.visit.hdl);
-                     if (hdlInt > 90) {
-                       $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-                     }
-                   }
-                   //handle invalid and outside of range
-                   if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-                   } else if ($scope.twelveAndUp) {
-                     var ldlInt = parseInt($scope.visit.ldl);
-                     if (ldlInt > 600) {
-                       $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-                     }
-                   }
-                   //handle invalid and outside of range
-                   if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
-                     $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-                   } else if ($scope.twelveAndUp) {
-                     var triInt = parseInt($scope.visit.tri);
-                     if (triInt > 600 || triInt < 100) {
-                       $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-                     }
-                   }
+	            if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.height).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "Height/length can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+	            }
+	            if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+	            }
+	            if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+	            }
+	            if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
+	            }
+	            if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
+	            }
+	            //handle invalid and outside of range
+	            if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+	            } else if ($scope.twelveAndUp) {
+	              var hdlInt = parseInt($scope.visit.hdl);
+	              if (hdlInt > 90) {
+	                $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+	              }
+	            }
+	            //handle invalid and outside of range
+	            if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+	            } else if ($scope.twelveAndUp) {
+	              var ldlInt = parseInt($scope.visit.ldl);
+	              if (ldlInt > 600) {
+	                $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+	              }
+	            }
+	            //handle invalid and outside of range
+	            if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
+	              $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+	            } else if ($scope.twelveAndUp) {
+	              var triInt = parseInt($scope.visit.tri);
+	              if (triInt > 600 || triInt < 100) {
+	                $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+	              }
+	            }
               }
               
               /* Handle appointment type unique fields */
-              if ($scope.visit.type === "GENERAL_CHECKUP") {
+              $scope.visit.type = $scope.visit.appointmentType; /* remove if the backend varname gets changed */
+              if ($scope.visit.appointmentType === "GENERAL_CHECKUP") {
                 $scope.visit.labProcedures = $scope.procedures;
                 $scope.visit.diagnoses = $scope.diagnoses;
                 $scope.visit.prescriptions = $scope.prescriptions;
                 $scope.visit.prescriptions.forEach(function (p) {
                   p.patient = $scope.visit.patient;
                 });
-                
-          		$scope.visit.basicEyeMetrics = null;
-          		$scope.visit.surguryType = null;
-              } else if ($scope.visit.type === "OPTOMETRY_VISIT") {
-            	// visit.basicEyeMetrics is set by form
-              	console.log($scope.visit.basicEyeMetrics);
-            	var err = checkValidBasicEyeMetrics($scope.visit.basicEyeMetrics);
-            	$scope.errorMsg += err;
-            	console.log(err);
-           		$scope.visit.diagnoses = $scope.diagnoses;
-              } else if ($scope.visit.type === "OPHTHALMOLOGY_SURGERY") {
+             	
+             	delete $scope.visit.visualAcuityOD;
+             	delete $scope.visit.visualAcuityOS;
+             	delete $scope.visit.sphereOD;
+             	delete $scope.visit.sphereOS;
+             	delete $scope.visit.cylinderOD;
+             	delete $scope.visit.cylinderOS;
+             	delete $scope.visit.axisOD;
+             	delete $scope.visit.axisOS;
+          		delete $scope.visit.surguryType;
+              } else if ($scope.visit.appointmentType === "OPTOMETRY_VISIT") {
+            	// visit.<eye metrics> is set by form
+            	
+            	$scope.errorMsg += checkValidBasicEyeMetrics();
+           		$scope.visit.diagnoses = $scope.diagnoses_oph;
+           		
+           		delete $scope.visit.labProcedures;
+           		delete $scope.visit.prescriptions;
+           		
+              } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_SURGERY") {
               	// visit.basicEyeMetrics is set by form
-              	var err = checkValidBasicEyeMetrics($scope.visit.basicEyeMetrics);
-            	$scope.errorMsg += err;
+            	$scope.errorMsg += checkValidBasicEyeMetrics();
              	$scope.visit.surguryType = $scope.surguryType;
+             	
+           		delete $scope.visit.labProcedures;
+           		delete $scope.visit.prescriptions;
+           		delete $scope.visit.diagnoses;
               }
               
 			/* TODO uncomment when OfficeVisit has been implemented backend
@@ -488,18 +502,6 @@
             $scope.removeProcedure = function ($index) {
               $scope.procedures.splice($index, 1);
             }
-            
-            $scope.typeChange = function (type) {
-            	$scope.appointmentType = type;
-            	if ($scope.appointmentType !== 'GENERAL_CHECKUP') {
-            		$scope.visit.basicEyeMetrics = {
-            				visualAcuity: {od: '', os: ''},
-            				sphere: {od: '', os: ''},
-            				cylinder: {od: '', os: ''},
-            				axis: {od: '', os: ''}
-            		};
-            	}
-            }
 
             //call initally
             resetDiagnosisForm();
@@ -569,9 +571,9 @@
 												<div class="form-check">
 													<ul
 														style="max-height: 15%; overflow: auto; list-style: none;">
-														<li ng-repeat="type in types"><label> <input
-																type="radio" ng-model="$parent.visit.type" name="type"
-																value="{{type}}" required="true" ng-change='typeChange(type)'/>{{type}}
+														<li ng-repeat="type in appointmentTypes"><label> <input
+																type="radio" ng-model="$parent.visit.appointmentType" name="appointmentType"
+																value="{{type}}" required="true"/>{{type}}
 														</label></li>
 													</ul>
 												</div>
@@ -719,7 +721,7 @@
 									</div>
 
 									<!-- Diagnosis Panel  -->
-									<div  ng-hide="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Diagnosis</h4>
@@ -790,7 +792,7 @@
 									</div>
 
 									<!-- Prescription Panel -->
-									<div ng-hide="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Prescription</h4>
@@ -889,7 +891,7 @@
 									</div>
 									
 									<!-- Basic Eye Metrics Panel -->
-									<div ng-show="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'OPTOMETRY_VISIT' || visit.appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Basic Eye Metrics</h4>
@@ -967,10 +969,10 @@
 									</div>
 									
 									<!-- Ophthalmology Diagnosis Panel  -->
-									<div ng-show="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'OPTOMETRY_VISIT'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
-												<h4>Ophthamology Diagnoses</h4>
+												<h4>Ophthalmology Diagnoses</h4>
 											</div>
 											<div class="panel-body">
 												<div class="form-group row">
@@ -1040,7 +1042,7 @@
 								</div>
 
 								<!-- Lab Procedures Panel -->
-								<div ng-hide="appointmentType === 'OPTOMETRY_VISIT' || appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="row">
+								<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="row">
 									<div class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
