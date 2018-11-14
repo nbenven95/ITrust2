@@ -70,6 +70,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @When ( "I navigate to the Request Appointment page" )
     public void requestPage () {
+        waitForAngular();
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('requestappointment').click();" );
     }
 
@@ -220,14 +221,6 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @Then ( "The appointment is in the list of upcoming events" )
     public void upcomingEvents () {
-        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
-        final Long value = Calendar.getInstance().getTimeInMillis()
-                + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
-        final Calendar future = Calendar.getInstance();
-        future.setTimeInMillis( value );
-        final String dateString = sdf.format( future.getTime() );
-        waitForAngular();
-        assertTrue( driver.getPageSource().contains( dateString ) );
         waitForAngular();
         assertTrue( driver.getPageSource().contains( "patient" ) );
     }
