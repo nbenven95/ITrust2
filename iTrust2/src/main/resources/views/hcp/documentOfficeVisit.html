@@ -89,18 +89,32 @@
             }
 
             var nullOrEmpty = function(str) {
-            	if (str !== null) {
-            		return str.length === 0;
+            	if (str === null || str === undefined ) {
+                	return true;
             	}
-            	return true;
+        		return str.length === 0;
             }
 
             var checkValidBasicEyeMetrics = function () {
             	var err = [];
-            	var sphCylMatcher = /^[-|+]?\d\.\d{2}$/;
+            	var sphCylMatcher = /^[-|+]?\d{1,2}\.?\d{0,2}$/;
             	var visit = $scope.visit;
             	
-            	// also enfore sphere matchers
+            	// check visual acuity to be integers
+            	var visualAcuityOS = Number(visit.visualAcuityOS);
+            	if (typeof visualAcuityOS !== "number" || visualAcuityOS % 1 !== 0) {
+            		console.log(visit.visualAcuityOS);
+            		console.log(visualAcuityOS);
+            		console.log(typeof visualAcuityOS);
+            		console.log(visualAcuityOS % 1);
+                	err.push("Visual Acuity OS must be an integer");
+            	}
+            	var visualAcuityOD = Number(visit.visualAcuityOD);
+            	if (typeof visualAcuityOD !== "number" || visualAcuityOD % 1 !== 0) {
+                	err.push("Visual Acuity OD must be an integer");
+            	}
+            	
+            	// also enforce sphere matchers
             	if (!sphCylMatcher.test(String(visit.sphereOS))) {
             		err.push("Sphere OS must be a decimal number with an optional sign");
             	}
@@ -118,20 +132,16 @@
 
             	// only enforce the matchers for axis if the user decided to enter cylinder
             	if (!nullOrEmpty(visit.cylinderOD)) {
-                	if (typeof Number(visit.axisOS) === "number") {
-                		visit.axisOS = Number(visit.axisOS);
-                    	if (visit.axisOS < 1 || visit.axisOS > 180) {
-                    		err.push("Axis OS must be an integer between 1 and 180");
-                    	}
+            		var axisOS = Number(visit.axisOS);
+                	if (typeof axisOS !== "number" || axisOS % 1 !== 0 || axisOS < 1 || axisOS > 180) {
+                    	err.push("Axis OS must be an integer between 1 and 180");
                 	}
-                	if (typeof Number(visit.axisOD) === "number") {
-                		visit.axisOD = Number(visit.axisOD);
-                    	if (visit.axisOD < 1 || visit.axisOD > 180) {
-                    		err.push("Axis OD must be an integer between 1 and 180");
-                    	}
-                	}
+               		var axisOD = Number(visit.axisOD);
+                   	if (typeof axisOD !== "number" || axisOD % 1 !== 0 || axisOD < 1 || axisOD > 180) {
+                       	err.push("Axis OD must be an integer between 1 and 180");
+                   	}
             	}
-            	return err.join(".<br/>");
+            	return err.join(". ");
             }
               
             $scope.three = false;
@@ -268,11 +278,11 @@
               $scope.visit.status = "PENDING";
 
               /* Validation required for all types of office visits */
-              if ($scope.visit.type == null) { // appointment type is selected
+              if ($scope.visit.appointmentType == null) { // appointment type is selected
                 $scope.errorMsg += "Please select a visit type\n";
               }
 
-              if ($scope.visit.type == null) { // hospital is selected
+              if ($scope.visit.hospital == null) { // hospital is selected
                 $scope.errorMsg += "Please select a hospital\n";
               }
 
@@ -362,7 +372,7 @@
              	delete $scope.visit.axisOD;
              	delete $scope.visit.axisOS;
           		delete $scope.visit.surguryType;
-              } else if ($scope.visit.appointmentType === "OPTOMETRY_VISIT") {
+              } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_VISIT") {
             	// visit.<eye metrics> is set by form
             	
             	$scope.errorMsg += checkValidBasicEyeMetrics();
@@ -891,7 +901,7 @@
 									</div>
 									
 									<!-- Basic Eye Metrics Panel -->
-									<div ng-show="visit.appointmentType === 'OPTOMETRY_VISIT' || visit.appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'OPHTHALMOLOGY_VISIT' || visit.appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Basic Eye Metrics</h4>
@@ -909,12 +919,12 @@
 														<label>Visual Acuity:</label>
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="visualAcuity_od"
-															ng-model="visit.basicEyeMetrics.visualAcuity.od" required="true" type="text">
+														<input class="form-control" name="visualAcuityOD"
+															ng-model="visit.visualAcuityOD" required="true" type="text">
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="visualAcuity_os"
-															ng-model="visit.basicEyeMetrics.visualAcuity.os" required="true" type="text">
+														<input class="form-control" name="visualAcuityOS"
+															ng-model="visit.visualAcuityOS" required="true" type="text">
 													</div>
 												</div>
 											</div>
@@ -924,12 +934,12 @@
 														<label>Sphere:</label>
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="sphere_od"
-															ng-model="visit.basicEyeMetrics.sphere.od" required="false" type="text">
+														<input class="form-control" name="sphereOD"
+															ng-model="visit.sphereOD" required="false" type="text">
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="sphere_os"
-															ng-model="visit.basicEyeMetrics.sphere.os" required="false" type="text">
+														<input class="form-control" name="sphereOS"
+															ng-model="visit.sphereOS" required="false" type="text">
 													</div>
 												</div>
 											</div>
@@ -939,12 +949,12 @@
 														<label>Cylinder:</label>
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="cylinder_od"
-															ng-model="visit.basicEyeMetrics.cylinder.od" required="false" type="text">
+														<input class="form-control" name="cylinderOD"
+															ng-model="visit.cylinderOD" required="false" type="text">
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="cylinder_os"
-															ng-model="visit.basicEyeMetrics.cylinder.os" required="false" type="text">
+														<input class="form-control" name="cylinderOS"
+															ng-model="visit.cylinderOS" required="false" type="text">
 													</div>
 												</div>
 											</div>
@@ -954,14 +964,12 @@
 														<label>Axis:</label>
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="axis_od"
-															ng-model="visit.basicEyeMetrics.axis.od" required="false" type="text">
-															<!-- TODO ADD REQUIRED IF cylinder is included -->
+														<input class="form-control" name="axisOD"
+															ng-model="visit.axisOD" required="false" type="text">
 													</div>
 													<div class="col-xs-4">
-														<input class="form-control" name="axis_os"
-															ng-model="visit.basicEyeMetrics.axis.os" required="false" type="text">
-															<!-- TODO ADD REQUIRED IF cylinder is included -->
+														<input class="form-control" name="axisOS"
+															ng-model="visit.axisOS" required="false" type="text">
 													</div>
 												</div>
 											</div>
@@ -969,7 +977,7 @@
 									</div>
 									
 									<!-- Ophthalmology Diagnosis Panel  -->
-									<div ng-show="visit.appointmentType === 'OPTOMETRY_VISIT'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Ophthalmology Diagnoses</h4>
