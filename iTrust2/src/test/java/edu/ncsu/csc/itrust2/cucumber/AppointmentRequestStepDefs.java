@@ -232,6 +232,12 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         // final Calendar future = Calendar.getInstance();
         // future.setTimeInMillis( value );
         final String dateString = sdf.format( futureDate.getTime() );
+        System.out.println( "============CHECK HERE=========" );
+        System.out.println( dateString );
+        waitForAngular();
+        System.out.println( driver.getPageSource() );
+
+        System.exit( 0 );
         waitForAngular();
         assertTrue( driver.getPageSource().contains( dateString ) );
         waitForAngular();
