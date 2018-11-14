@@ -57,6 +57,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @When ( "I log in as patient" )
     public void loginPatient () {
+        waitForAngular();
         driver.get( baseUrl );
         final WebElement username = driver.findElement( By.name( "username" ) );
         username.clear();
@@ -221,7 +222,15 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @Then ( "The appointment is in the list of upcoming events" )
     public void upcomingEvents () {
-        waitForAngular();
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
+        final Long value = Calendar.getInstance().getTimeInMillis()
+                + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
+        final Calendar future = Calendar.getInstance();
+        future.setTimeInMillis( value );
+        final String dateString = sdf.format( future.getTime() );
+        // waitForAngular();
+        assertTrue( driver.getPageSource().contains( dateString ) );
+        // waitForAngular();
         assertTrue( driver.getPageSource().contains( "patient" ) );
     }
 
