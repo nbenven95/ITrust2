@@ -57,6 +57,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @When ( "I log in as patient" )
     public void loginPatient () {
+        waitForAngular();
         driver.get( baseUrl );
         final WebElement username = driver.findElement( By.name( "username" ) );
         username.clear();
@@ -70,6 +71,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @When ( "I navigate to the Request Appointment page" )
     public void requestPage () {
+        waitForAngular();
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('requestappointment').click();" );
     }
 
@@ -226,9 +228,9 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         final Calendar future = Calendar.getInstance();
         future.setTimeInMillis( value );
         final String dateString = sdf.format( future.getTime() );
-        waitForAngular();
+        // waitForAngular();
         assertTrue( driver.getPageSource().contains( dateString ) );
-        waitForAngular();
+        // waitForAngular();
         assertTrue( driver.getPageSource().contains( "patient" ) );
     }
 
