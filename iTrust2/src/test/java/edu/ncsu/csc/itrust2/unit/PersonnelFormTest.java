@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.forms.personnel.PersonnelForm;
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
@@ -33,7 +34,7 @@ public class PersonnelFormTest {
         person.setState( State.NC );
         person.setZip( "27606" );
         person.setPhone( "111-111-1111" );
-        person.setSpecialty( "special" );
+        person.setSpecialty( Specialty.SPECIALTY_NONE );
         person.setEmail( "email@email.com" );
         person.setId( 1L );
         final PersonnelForm form = new PersonnelForm( person );
@@ -46,7 +47,7 @@ public class PersonnelFormTest {
         assertEquals( State.NC.getAbbrev(), form.getState() );
         assertEquals( "27606", form.getZip() );
         assertEquals( "111-111-1111", form.getPhone() );
-        assertEquals( "special", form.getSpecialty() );
+        assertEquals( Specialty.SPECIALTY_NONE.toString(), form.getSpecialty() );
         assertEquals( "email@email.com", form.getEmail() );
         assertEquals( "1", form.getId() );
     }

@@ -1,7 +1,9 @@
 package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
@@ -20,10 +22,27 @@ import edu.ncsu.csc.itrust2.models.enums.Status;
 import edu.ncsu.csc.itrust2.models.persistent.AppointmentRequest;
 import edu.ncsu.csc.itrust2.models.persistent.DomainObject;
 import edu.ncsu.csc.itrust2.models.persistent.User;
+import edu.ncsu.csc.itrust2.utils.HibernateDataGenerator;
 
 public class AppointmentRequestStepDefs extends CucumberTest {
 
     private final String baseUrl = "http://localhost:8080/iTrust2";
+
+    private Calendar     futureDate;
+
+    /**
+     * Refreshes the database
+     */
+    @Given ( "^The DB has been obliterated$" )
+    public void annihilateDB () {
+        try {
+            HibernateDataGenerator.refreshDB();
+        }
+        catch ( NumberFormatException | ParseException e ) {
+            fail();
+            e.printStackTrace();
+        }
+    }
 
     @Given ( "There is a sample HCP and sample Patient in the database" )
     public void startingUsers () {
@@ -40,6 +59,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @When ( "I log in as patient" )
     public void loginPatient () {
+        waitForAngular();
         driver.get( baseUrl );
         final WebElement username = driver.findElement( By.name( "username" ) );
         username.clear();
@@ -53,12 +73,16 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
     @When ( "I navigate to the Request Appointment page" )
     public void requestPage () {
+        waitForAngular();
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('requestappointment').click();" );
     }
 
     @When ( "I fill in values in the Appointment Request Fields" )
     public void fillFields () {
         waitForAngular();
+
+        final Select type = new Select( driver.findElement( By.name( "type" ) ) );
+        type.selectByVisibleText( "GENERAL_CHECKUP" );
         final Select hcp = new Select( driver.findElement( By.id( "hcp" ) ) );
         hcp.selectByVisibleText( "hcp" );
 
@@ -69,6 +93,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
                 + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
         final Calendar future = Calendar.getInstance();
         future.setTimeInMillis( value );
+        futureDate = future;
         date.sendKeys( sdf.format( future.getTime() ) );
         final WebElement time = driver.findElement( By.id( "time" ) );
         time.clear();
@@ -132,12 +157,13 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         waitForAngular();
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('requestappointment').click();" );
 
+        waitForAngular();
         final SimpleDateFormat sdf = new SimpleDateFormat( "yyyy", Locale.ENGLISH );
-        final Long value = Calendar.getInstance().getTimeInMillis()
-                + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
-        final Calendar future = Calendar.getInstance();
-        future.setTimeInMillis( value );
-        final String dateString = sdf.format( future.getTime() );
+        // final Long value = Calendar.getInstance().getTimeInMillis()
+        // + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
+        // final Calendar future = Calendar.getInstance();
+        // future.setTimeInMillis( value );
+        final String dateString = sdf.format( futureDate.getTime() );
         waitForAngular();
 
         assertTrue( driver.getPageSource().contains( dateString ) );
@@ -156,6 +182,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         ar.setHcp( User.getByNameAndRole( "hcp", Role.ROLE_HCP ) );
         final Calendar time = Calendar.getInstance();
         time.setTimeInMillis( Calendar.getInstance().getTimeInMillis() + 1000 * 60 * 60 * 24 * 14 );
+        futureDate = time;
         ar.setDate( time );
         ar.setStatus( Status.PENDING );
         ar.setType( AppointmentType.GENERAL_CHECKUP );
@@ -200,12 +227,14 @@ public class AppointmentRequestStepDefs extends CucumberTest {
     @Then ( "The appointment is in the list of upcoming events" )
     public void upcomingEvents () {
         final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
-        final Long value = Calendar.getInstance().getTimeInMillis()
-                + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
-        final Calendar future = Calendar.getInstance();
-        future.setTimeInMillis( value );
-        final String dateString = sdf.format( future.getTime() );
+        // final Long value = Calendar.getInstance().getTimeInMillis()
+        // + 1000 * 60 * 60 * 24 * 14; /* Two weeks */
+        // final Calendar future = Calendar.getInstance();
+        // future.setTimeInMillis( value );
+        final String dateString = sdf.format( futureDate.getTime() );
+        waitForAngular();
         assertTrue( driver.getPageSource().contains( dateString ) );
+        waitForAngular();
         assertTrue( driver.getPageSource().contains( "patient" ) );
     }
 

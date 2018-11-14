@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 
+import org.eclipse.jetty.util.log.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,6 +56,19 @@ public class APIAppointmentRequestController extends APIController {
     public List<AppointmentRequest> getAppointmentRequestsForPatient () {
         return AppointmentRequest.getAppointmentRequestsForPatient( LoggerUtil.currentUser() ).stream()
                 .filter( e -> e.getStatus().equals( Status.PENDING ) ).collect( Collectors.toList() );
+    }
+
+    /**
+     * Retrieves the list of approved appointment requests for the currently
+     * logged in Patient.
+     *
+     * @return list of approved appointment requests
+     */
+    @PreAuthorize ( "hasRole('ROLE_PATIENT')" )
+    @GetMapping ( BASE_PATH + "/approvedRequests" )
+    public List<AppointmentRequest> getApprovedAppointmentRequestsForPatient () {
+        return AppointmentRequest.getAppointmentRequestsForPatient( LoggerUtil.currentUser() ).stream()
+                .filter( e -> e.getStatus().equals( Status.APPROVED ) ).collect( Collectors.toList() );
     }
 
     /**
@@ -215,6 +229,7 @@ public class APIAppointmentRequestController extends APIController {
             return new ResponseEntity( request, HttpStatus.OK );
         }
         catch ( final Exception e ) {
+            Log.getLogger( this.getClass() ).info( e );
             return new ResponseEntity(
                     errorResponse( "Could not update " + requestF.toString() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );
