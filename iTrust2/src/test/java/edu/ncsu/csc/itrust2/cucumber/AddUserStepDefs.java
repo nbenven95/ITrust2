@@ -174,7 +174,10 @@ public class AddUserStepDefs extends CucumberTest {
      */
     @Then ( "The new user can login" )
     public void tryLoginRandomUser () {
+        waitForAngular();
         driver.findElement( By.id( "logout" ) ).click();
+
+        waitForAngular();
 
         final WebElement username = driver.findElement( By.name( "username" ) );
         username.clear();
