@@ -4,6 +4,9 @@ Feature: Request Appointment
 	I want to request an appointment
 	So that I have a scheduled time to visit the doctor
 
+Background:
+Given The DB has been obliterated
+
 Scenario: Valid appointment requested
 Given There is a sample HCP and sample Patient in the database
 When I log in as patient
