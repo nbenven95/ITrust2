@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.mail.MessagingException;
 
+import org.eclipse.jetty.util.log.Log;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -228,6 +229,7 @@ public class APIAppointmentRequestController extends APIController {
             return new ResponseEntity( request, HttpStatus.OK );
         }
         catch ( final Exception e ) {
+            Log.getLogger( this.getClass() ).info( e );
             return new ResponseEntity(
                     errorResponse( "Could not update " + requestF.toString() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );

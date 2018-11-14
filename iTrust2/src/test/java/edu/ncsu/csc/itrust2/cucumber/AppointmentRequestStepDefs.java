@@ -59,6 +59,9 @@ public class AppointmentRequestStepDefs extends CucumberTest {
     @When ( "I fill in values in the Appointment Request Fields" )
     public void fillFields () {
         waitForAngular();
+
+        final Select type = new Select( driver.findElement( By.name( "type" ) ) );
+        type.selectByVisibleText( "GENERAL_CHECKUP" );
         final Select hcp = new Select( driver.findElement( By.id( "hcp" ) ) );
         hcp.selectByVisibleText( "hcp" );
 
