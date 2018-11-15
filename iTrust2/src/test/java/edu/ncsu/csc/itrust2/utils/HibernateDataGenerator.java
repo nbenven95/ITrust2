@@ -53,7 +53,6 @@ public class HibernateDataGenerator {
      */
     public static void main ( final String args[] ) throws NumberFormatException, ParseException {
         refreshDB();
-        generateUsers();
 
         System.exit( 0 );
         return;
