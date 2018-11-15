@@ -2,8 +2,12 @@ package edu.ncsu.csc.itrust2.models.persistent;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Vector;
@@ -64,7 +68,7 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
     @SuppressWarnings ( "unchecked" )
     public static List<AppointmentRequest> getAppointmentRequests () {
         final List<AppointmentRequest> requests = (List<AppointmentRequest>) getAll( AppointmentRequest.class );
-        requests.sort( (x1, x2) -> x1.getDate().compareTo(x2.getDate()));
+        requests.sort( ( x1, x2 ) -> x1.getDate().compareTo( x2.getDate() ) );
         return requests;
     }
 
@@ -144,10 +148,12 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
         setHcp( User.getByNameAndRole( raf.getHcp(), Role.ROLE_HCP ) );
         setComments( raf.getComments() );
 
-        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
-        final Date parsedDate = sdf.parse( raf.getDate() + " " + raf.getTime() );
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa z", Locale.ENGLISH );
+        final Date parsedDate = sdf.parse( raf.getDate() + " " + raf.getTime() + " UTC" );
+        System.out.println( "Parsed Date: " + parsedDate );
         final Calendar c = Calendar.getInstance();
         c.setTime( parsedDate );
+        System.out.println( "Calendar Date: " + c );
         if ( c.before( Calendar.getInstance() ) ) {
             throw new IllegalArgumentException( "Cannot request an appointment before the current time" );
         }
@@ -225,7 +231,7 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      * When this AppointmentRequest has been scheduled to take place
      */
     @NotNull
-    private Calendar        date;
+    private Long            date;
 
     /**
      * Store the Enum in the DB as a string as it then makes the DB info more
@@ -310,7 +316,11 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      * @return Calendar for when the Request takes place
      */
     public Calendar getDate () {
-        return date;
+        // Taken from https://stackoverflow.com/a/28779549/10247651
+        final Instant instant = Instant.ofEpochMilli( date );
+        final ZonedDateTime zdt = ZonedDateTime.ofInstant( instant, ZoneId.systemDefault() );
+        final Calendar cal1 = GregorianCalendar.from( zdt );
+        return cal1;
     }
 
     /**
@@ -320,7 +330,8 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      *            Calendar object for the Date & Time of the request
      */
     public void setDate ( final Calendar date ) {
-        this.date = date;
+        this.date = date.toInstant().toEpochMilli();
+        System.out.println( "Stored unix time: " + this.date );
     }
 
     /**
@@ -359,6 +370,11 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      */
     public void setType ( final AppointmentType type ) {
         this.type = type;
+    }
+
+    @Override
+    public String toString () {
+        return this.getDate().toString();
     }
 
 }

@@ -54,6 +54,7 @@ public class APIAppointmentRequestController extends APIController {
      */
     @GetMapping ( BASE_PATH + "/appointmentrequest" )
     public List<AppointmentRequest> getAppointmentRequestsForPatient () {
+        AppointmentRequest.getAppointmentRequests().forEach( System.out::println );
         return AppointmentRequest.getAppointmentRequestsForPatient( LoggerUtil.currentUser() ).stream()
                 .filter( e -> e.getStatus().equals( Status.PENDING ) ).collect( Collectors.toList() );
     }

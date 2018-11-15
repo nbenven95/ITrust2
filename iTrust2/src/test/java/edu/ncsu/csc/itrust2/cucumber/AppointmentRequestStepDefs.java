@@ -237,7 +237,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         waitForAngular();
         System.out.println( driver.getPageSource() );
 
-        System.exit( 0 );
+        // System.exit( 0 );
         waitForAngular();
         assertTrue( driver.getPageSource().contains( dateString ) );
         waitForAngular();
