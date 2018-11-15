@@ -97,20 +97,17 @@
 
             var checkValidBasicEyeMetrics = function () {
             	var err = [];
+            	var visualAcuityMatcher = /^\d{1,2}\/\d{2,3}$/;
             	var sphCylMatcher = /^[-|+]?\d{1,2}\.?\d{0,2}$/;
             	var visit = $scope.visit;
             	
             	// check visual acuity to be integers
             	var visualAcuityOS = Number(visit.visualAcuityOS);
-            	if (typeof visualAcuityOS !== "number" || visualAcuityOS % 1 !== 0) {
-            		console.log(visit.visualAcuityOS);
-            		console.log(visualAcuityOS);
-            		console.log(typeof visualAcuityOS);
-            		console.log(visualAcuityOS % 1);
+            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
                 	err.push("Visual Acuity OS must be an integer");
             	}
             	var visualAcuityOD = Number(visit.visualAcuityOD);
-            	if (typeof visualAcuityOD !== "number" || visualAcuityOD % 1 !== 0) {
+            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
                 	err.push("Visual Acuity OD must be an integer");
             	}
             	
@@ -481,21 +478,20 @@
             }
             
             $scope.addProcedure = function() {
-	            	var procCopy = {};
-	            	$scope.errorMsg = "";
-	            	$scope.procedure.patient = $scope.visit.actualPatient.self;
-	            	$scope.procedure.status = "ASSIGNED";
-	            	angular.copy($scope.procedure, procCopy);
-	            	var err = checkValidProcedure($scope.procedure);
-	            	if (err) {
-	            		$scope.errorMsg = err;
-	            		$scope.message = "";
-	            	} else {
-		            	$scope.procedures.push(procCopy);
-		            	$scope.procedure = {};
-		            	$scope.message = "Lab procedure added successfully";
-	            	}
-            
+            	var procCopy = {};
+            	$scope.errorMsg = "";
+            	$scope.procedure.patient = $scope.visit.actualPatient.self;
+            	$scope.procedure.status = "ASSIGNED";
+            	angular.copy($scope.procedure, procCopy);
+            	var err = checkValidProcedure($scope.procedure);
+            	if (err) {
+            		$scope.errorMsg = err;
+            		$scope.message = "";
+            	} else {
+	            	$scope.procedures.push(procCopy);
+	            	$scope.procedure = {};
+	            	$scope.message = "Lab procedure added successfully";
+            	}
             }
 
             //remove local diagnosis from list
