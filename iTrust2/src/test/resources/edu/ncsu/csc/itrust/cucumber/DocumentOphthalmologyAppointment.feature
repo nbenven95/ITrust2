@@ -17,7 +17,7 @@ Feature: Document Ophthalmology Appointment Office Visit
 # This scenario covers behavior described in UC22 acceptance scenarios 1, 2, and 3.
 Scenario Outline: OPTHCP or OPHHCP documents an Ophthalmology Appointment - Valid Input
 Given There is an HCP user with <name> and <specialty> in the database
-And The required facilities exist
+# TODO NEEDED? --> And The required facilities exist
 And A patient with <patientName> exists with no documented office visits
 And I am logged in to iTrust2 as <username>
 When I navigate to the Document Office Visit page
@@ -46,7 +46,7 @@ When I navigate to the Document Office Visit page
 # Note: In the step defs, for the date field, the regex should match 
 # two strings to account for the space between the time and AM/PM.
 And I document an ophthalmology appointment with values: <patientName> <date> <time> <visAcuityODOS> <sphereODOS> <cylinderODOS> <axisODOS> <diagnosis>
-Then The ophthalmology appointment is not documented
+Then The office visit is not documented
 Examples: 
 | username      | specialty               | patientName |    date    | time     | visAcuityODOS | sphereODOS | cylinderODOS | axisODOS | diagnosis |
 | SeanMurphy    | SPECIALTY_OPHTHALMOLOGY | TomRiddle   | 10/26/1993 |  1:00 PM |    1.23       |    -2.00   |     3.00     |    1.00  |    NULL   |

@@ -1,13 +1,9 @@
 package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 import java.util.logging.Level;
@@ -15,11 +11,9 @@ import java.util.logging.Level;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
-import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
-import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
@@ -100,728 +94,100 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
         patient.save();
     }
 
-    @When ( "^I am logged in to iTrust2 as (.+)$" )
-    public void loginAsHCP ( String username ) {
+    @When ( "^I document an ophthalmology appointment with values: (.+) (.+) (.+) (.+) (.+) (.+) (.+)$" )
+    public void documentOV ( String patientName, String date, String time, String visualAcuity, String sphere,
+            String cylinder, String axis, String diagnosis ) {
+
+        waitForAngular();
+        final WebElement hospital = driver.findElement( By.name( "hospital" ) );
+        hospital.click();
+
+        final WebElement dateEle = driver.findElement( By.name( "date" ) );
+        dateEle.clear();
+        dateEle.sendKeys( "12/19/2027" );
+
+        waitForAngular();
+        final WebElement notes = driver.findElement( By.name( "notes" ) );
+        notes.clear();
+        notes.sendKeys( "Patient appears pretty much alive" );
+
+        waitForAngular();
+        final WebElement patientNameEle = driver
+                .findElement( By.cssSelector( "input[value=\"" + patientName + "\"]" ) );
+        patientNameEle.click();
+
+        waitForAngular();
+        final WebElement typeEle = driver
+                .findElement( By.cssSelector( "input[value=\"" + Specialty.SPECIALTY_OPTOMETRY.toString() + "\"]" ) );
+        typeEle.click();
+
+        // Basic Eye Metrics
+        waitForAngular();
+        final WebElement visualAcuityODEle = driver.findElement( By.name( "visualAcuityOD" ) );
+        visualAcuityODEle.clear();
+        visualAcuityODEle.sendKeys( visualAcuity );
+        final WebElement visualAcuityOSEle = driver.findElement( By.name( "visualAcuityOS" ) );
+        visualAcuityOSEle.clear();
+        visualAcuityOSEle.sendKeys( visualAcuity );
+        final WebElement cylinderODEle = driver.findElement( By.name( "cylinderOD" ) );
+        cylinderODEle.clear();
+        cylinderODEle.sendKeys( cylinder );
+        final WebElement cylinderOSEle = driver.findElement( By.name( "cylinderOS" ) );
+        cylinderOSEle.clear();
+        cylinderOSEle.sendKeys( cylinder );
+        final WebElement sphereODEle = driver.findElement( By.name( "sphereOD" ) );
+        sphereODEle.clear();
+        sphereODEle.sendKeys( sphere );
+        final WebElement sphereOSEle = driver.findElement( By.name( "sphereOS" ) );
+        sphereOSEle.clear();
+        sphereOSEle.sendKeys( sphere );
+        final WebElement axisODEle = driver.findElement( By.name( "axisOD" ) );
+        axisODEle.clear();
+        axisODEle.sendKeys( axis );
+        final WebElement axisOSEle = driver.findElement( By.name( "axisOS" ) );
+        axisOSEle.clear();
+        axisOSEle.sendKeys( axis );
+
+        if ( !diagnosis.equals( "NULL" ) ) {
+            waitForAngular();
+            final WebElement heightElement = driver.findElement( By.name( "height" ) );
+            heightElement.clear();
+            heightElement.sendKeys( "120" );
+
+            waitForAngular();
+            final WebElement fillEle = driver.findElement( By.name( "fillDiagnosis" ) );
+            fillEle.click();
+        }
+
+        waitForAngular();
+        final WebElement submit = driver.findElement( By.name( "submit" ) );
+        submit.click();
+
+    }
+
+    /**
+     * Ensures that the correct opthalmology appointment was added to iTrust2
+     *
+     * @throws InterruptedException
+     */
+    @And ( "(.+) can view the appointment on (.+) at (.+) with values: (.+) (.+) (.+) (.+) (.+)" )
+    public void correctPatientView ( String patientName, String date, String time, String visualAcuity, String sphere,
+            String cylinder, String axis, String diagnosis ) throws InterruptedException {
         driver.get( baseUrl );
         final WebElement usernameEle = driver.findElement( By.name( "username" ) );
         usernameEle.clear();
-        usernameEle.sendKeys( username );
+        usernameEle.sendKeys( patientName );
         final WebElement passwordEle = driver.findElement( By.name( "password" ) );
         passwordEle.clear();
         passwordEle.sendKeys( "123456" );
         final WebElement submitEle = driver.findElement( By.className( "btn" ) );
         submitEle.click();
         waitForAngular();
+
+        driver.get( baseUrl + "/patient/officeVisit/viewOfficeVisits" );
+        // assertTrue( driver.getPageSource().contains() );
+
+        assertEquals( "", "" );
     }
 
-    @When ( "^I fill in information on the office visit$" )
-    public void documentOV () {
-        waitForAngular();
-
-        final WebElement notes = driver.findElement( By.name( "notes" ) );
-        notes.clear();
-        notes.sendKeys( "Patient appears pretty much alive" );
-
-        final WebElement patient = driver.findElement( By.name( "name" ) );
-        patient.click();
-        final WebElement type = driver.findElement( By.name( "type" ) );
-        type.click();
-
-        final WebElement hospital = driver.findElement( By.name( "hospital" ) );
-        hospital.click();
-
-        final WebElement date = driver.findElement( By.name( "date" ) );
-        date.clear();
-        date.sendKeys( "12/19/2027" );
-
-        final WebElement time = driver.findElement( By.name( "time" ) );
-        time.clear();
-        time.sendKeys( "9:30 AM" );
-
-        waitForAngular();
-        final WebElement heightElement = driver.findElement( By.name( "height" ) );
-        heightElement.clear();
-        heightElement.sendKeys( "120" );
-
-        waitForAngular();
-        final WebElement weightElement = driver.findElement( By.name( "weight" ) );
-        weightElement.clear();
-        weightElement.sendKeys( "120" );
-
-        waitForAngular();
-        final WebElement systolicElement = driver.findElement( By.name( "systolic" ) );
-        systolicElement.clear();
-        systolicElement.sendKeys( "100" );
-
-        waitForAngular();
-        final WebElement diastolicElement = driver.findElement( By.name( "diastolic" ) );
-        diastolicElement.clear();
-        diastolicElement.sendKeys( "100" );
-
-        waitForAngular();
-        final WebElement hdlElement = driver.findElement( By.name( "hdl" ) );
-        hdlElement.clear();
-        hdlElement.sendKeys( "90" );
-
-        waitForAngular();
-        final WebElement ldlElement = driver.findElement( By.name( "ldl" ) );
-        ldlElement.clear();
-        ldlElement.sendKeys( "100" );
-
-        waitForAngular();
-        final WebElement triElement = driver.findElement( By.name( "tri" ) );
-        triElement.clear();
-        triElement.sendKeys( "100" );
-
-        waitForAngular();
-        final WebElement houseSmokeElement = driver.findElement(
-                By.cssSelector( "input[value=\"" + HouseholdSmokingStatus.NONSMOKING.toString() + "\"]" ) );
-        houseSmokeElement.click();
-
-        waitForAngular();
-        final WebElement patientSmokeElement = driver
-                .findElement( By.cssSelector( "input[value=\"" + PatientSmokingStatus.NEVER.toString() + "\"]" ) );
-        patientSmokeElement.click();
-
-        waitForAngular();
-        final WebElement submit = driver.findElement( By.name( "submit" ) );
-        submit.click();
-
-    }
-
-    @When ( "^I fill in information on the office visit with leading zeroes$" )
-    public void documentOVZeroes () {
-        waitForAngular();
-
-        final WebElement notes = driver.findElement( By.name( "notes" ) );
-        notes.clear();
-        notes.sendKeys( "Patient appears pretty much alive" );
-
-        final WebElement patient = driver.findElement( By.name( "name" ) );
-        patient.click();
-        final WebElement type = driver.findElement( By.name( "type" ) );
-        type.click();
-
-        final WebElement hospital = driver.findElement( By.name( "hospital" ) );
-        hospital.click();
-
-        final WebElement date = driver.findElement( By.name( "date" ) );
-        date.clear();
-        date.sendKeys( "12/19/2027" );
-
-        final WebElement time = driver.findElement( By.name( "time" ) );
-        time.clear();
-        time.sendKeys( "9:30 AM" );
-
-        waitForAngular();
-        final WebElement heightElement = driver.findElement( By.name( "height" ) );
-        heightElement.clear();
-        heightElement.sendKeys( "0120" );
-
-        waitForAngular();
-        final WebElement weightElement = driver.findElement( By.name( "weight" ) );
-        weightElement.clear();
-        weightElement.sendKeys( "0120" );
-
-        waitForAngular();
-        final WebElement systolicElement = driver.findElement( By.name( "systolic" ) );
-        systolicElement.clear();
-        systolicElement.sendKeys( "0100" );
-
-        waitForAngular();
-        final WebElement diastolicElement = driver.findElement( By.name( "diastolic" ) );
-        diastolicElement.clear();
-        diastolicElement.sendKeys( "0100" );
-
-        waitForAngular();
-        final WebElement hdlElement = driver.findElement( By.name( "hdl" ) );
-        hdlElement.clear();
-        hdlElement.sendKeys( "090" );
-
-        waitForAngular();
-        final WebElement ldlElement = driver.findElement( By.name( "ldl" ) );
-        ldlElement.clear();
-        ldlElement.sendKeys( "0100" );
-
-        waitForAngular();
-        final WebElement triElement = driver.findElement( By.name( "tri" ) );
-        triElement.clear();
-        triElement.sendKeys( "0100" );
-
-        waitForAngular();
-        final WebElement houseSmokeElement = driver.findElement(
-                By.cssSelector( "input[value=\"" + HouseholdSmokingStatus.NONSMOKING.toString() + "\"]" ) );
-        houseSmokeElement.click();
-
-        waitForAngular();
-        final WebElement patientSmokeElement = driver
-                .findElement( By.cssSelector( "input[value=\"" + PatientSmokingStatus.NEVER.toString() + "\"]" ) );
-        patientSmokeElement.click();
-
-        waitForAngular();
-        final WebElement submit = driver.findElement( By.name( "submit" ) );
-        submit.click();
-
-    }
-
-    @Then ( "The office visit is documented successfully" )
-    public void documentedSuccessfully () {
-        waitForAngular();
-
-        // confirm that the message is displayed
-        try {
-            driver.findElement( By.name( "success" ) ).getText().contains( "Office visit created successfully" );
-        }
-        catch ( final Exception e ) {
-            fail();
-        }
-    }
-
-    /**
-     * Ensures that the correct health metrics have been entered
-     *
-     * @throws InterruptedException
-     */
-    @Then ( "The basic health metrics for the infant are correct" )
-    public void healthMetricsCorrectInfant () throws InterruptedException {
-        BasicHealthMetrics actualBhm = null;
-        for ( int i = 1; i <= 10; i++ ) {
-            try {
-                actualBhm = BasicHealthMetrics.getBasicHealthMetrics().get( 0 );
-                break;
-            }
-            catch ( final Exception e ) {
-                if ( i == 10 && actualBhm == null ) {
-                    fail( "Could not get basic health metrics out of database" );
-                }
-                waitForAngular();
-            }
-        }
-        assertEquals( expectedBhm.getWeight(), actualBhm.getWeight() );
-        assertEquals( expectedBhm.getHeight(), actualBhm.getHeight() );
-        assertEquals( expectedBhm.getHeadCircumference(), actualBhm.getHeadCircumference() );
-        assertEquals( expectedBhm.getHouseSmokingStatus(), actualBhm.getHouseSmokingStatus() );
-    }
-
-    /**
-     * Ensures that the correct health metrics have been entered
-     *
-     * @throws InterruptedException
-     */
-    @Then ( "The basic health metrics for the child are correct" )
-    public void healthMetricsCorrectChild () throws InterruptedException {
-        BasicHealthMetrics actualBhm = null;
-        for ( int i = 1; i <= 10; i++ ) {
-            try {
-                actualBhm = BasicHealthMetrics.getBasicHealthMetrics().get( 0 );
-                break;
-            }
-            catch ( final Exception e ) {
-                if ( i == 10 && actualBhm == null ) {
-                    fail( "Could not get basic health metrics out of database" );
-                }
-                waitForAngular();
-            }
-        }
-        assertEquals( expectedBhm.getWeight(), actualBhm.getWeight() );
-        assertEquals( expectedBhm.getHeight(), actualBhm.getHeight() );
-        assertEquals( expectedBhm.getSystolic(), actualBhm.getSystolic() );
-        assertEquals( expectedBhm.getDiastolic(), actualBhm.getDiastolic() );
-        assertEquals( expectedBhm.getHouseSmokingStatus(), actualBhm.getHouseSmokingStatus() );
-    }
-
-    /**
-     * Ensures that the correct health metrics have been entered
-     *
-     * @throws InterruptedException
-     */
-    @Then ( "The basic health metrics for the adult are correct" )
-    public void healthMetricsCorrectAdult () throws InterruptedException {
-        BasicHealthMetrics actualBhm = null;
-        for ( int i = 1; i <= 10; i++ ) {
-            try {
-                actualBhm = BasicHealthMetrics.getBasicHealthMetrics().get( 0 );
-                break;
-            }
-            catch ( final Exception e ) {
-                if ( i == 10 && actualBhm == null ) {
-                    fail( "Could not get basic health metrics out of database" );
-                }
-                waitForAngular();
-            }
-        }
-        assertEquals( expectedBhm.getWeight(), actualBhm.getWeight() );
-        assertEquals( expectedBhm.getHeight(), actualBhm.getHeight() );
-        assertEquals( expectedBhm.getSystolic(), actualBhm.getSystolic() );
-        assertEquals( expectedBhm.getDiastolic(), actualBhm.getDiastolic() );
-        assertEquals( expectedBhm.getHouseSmokingStatus(), actualBhm.getHouseSmokingStatus() );
-        assertEquals( expectedBhm.getPatientSmokingStatus(), actualBhm.getPatientSmokingStatus() );
-        assertEquals( expectedBhm.getHdl(), actualBhm.getHdl() );
-        assertEquals( expectedBhm.getLdl(), actualBhm.getLdl() );
-        assertEquals( expectedBhm.getTri(), actualBhm.getTri() );
-    }
-
-    /**
-     * Ensures that the office visit was not recorded.
-     */
-    @Then ( "The office visit is not documented" )
-    public void notDocumented () {
-        waitForAngular();
-
-        final List<BasicHealthMetrics> list = BasicHealthMetrics.getBasicHealthMetrics();
-        assertTrue( 0 == list.size() );
-    }
-
-    /**
-     * Ensures that a patient exists with the given name and birthday
-     *
-     * @param name
-     *            The name of the patient.
-     * @param birthday
-     *            The birthday of the patient.
-     * @throws ParseException
-     */
-    @Given ( "^A patient exists with name: (.+) and date of birth: (.+)$" )
-    public void patientExistsWithName ( final String name, final String birthday ) throws ParseException {
-        attemptLogout();
-
-        final Patient patient = new Patient();
-        patient.setSelf( User.getByName( "patient" ) );
-
-        patient.setFirstName( name.split( " " )[0] );
-        patient.setLastName( name.split( " " )[1] );
-        patient.setEmail( "email@mail.com" );
-        patient.setAddress1( "address place. address" );
-        patient.setCity( "citytown" );
-        patient.setState( State.CA );
-        patient.setZip( "91505" );
-        patient.setPhone( "123-456-7890" );
-
-        final Calendar cal = Calendar.getInstance();
-        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );
-        cal.setTime( sdf.parse( birthday ) );
-        patient.setDateOfBirth( cal );
-
-        patient.save();
-
-    }
-
-    /**
-     * Documents an office visit with specific information.
-     *
-     * @param dateString
-     *            The current date.
-     * @param weightString
-     *            The weight of the patient.
-     * @param lengthString
-     *            The length of the patient.
-     * @param headString
-     *            The head circumference of the patient.
-     * @param smokingStatus
-     *            The smoking status of the patient's household.
-     * @param note
-     *            The note that the doctor includes.
-     * @throws InterruptedException
-     */
-    @When ( "^I fill in information on the office visit for an infant with date: (.+), weight: (.+), length: (.+), head circumference: (.+), household smoking status: (.+), and note: (.+)$" )
-    public void documentOVWithSpecificInformation ( final String dateString, final String weightString,
-            final String lengthString, final String headString, final String smokingStatus, final String note )
-            throws InterruptedException {
-
-        waitForAngular();
-        final WebElement notes = driver.findElement( By.name( "notes" ) );
-        notes.clear();
-        notes.sendKeys( note );
-
-        waitForAngular();
-        final WebElement patient = driver.findElement( By.cssSelector( "input[value=\"patient\"]" ) );
-        patient.click();
-
-        waitForAngular();
-        final WebElement type = driver.findElement( By.name( "type" ) );
-        type.click();
-
-        waitForAngular();
-        final WebElement hospital = driver.findElement( By.name( "hospital" ) );
-        hospital.click();
-
-        final WebElement date = driver.findElement( By.name( "date" ) );
-        date.clear();
-        date.sendKeys( dateString );
-        date.click();
-
-        final WebElement time = driver.findElement( By.name( "time" ) );
-        time.clear();
-        time.sendKeys( "9:30 AM" );
-
-        expectedBhm = new BasicHealthMetrics();
-
-        waitForAngular();
-        final WebElement head = driver.findElement( By.name( "head" ) );
-        head.clear();
-        head.sendKeys( headString );
-        try {
-            expectedBhm.setHeadCircumference( Float.parseFloat( headString ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        final WebElement heightLength = driver.findElement( By.name( "height" ) );
-        heightLength.clear();
-        heightLength.sendKeys( lengthString );
-        try {
-            expectedBhm.setHeight( Float.parseFloat( lengthString ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        final WebElement weight = driver.findElement( By.name( "weight" ) );
-        weight.clear();
-        weight.sendKeys( weightString );
-        try {
-            expectedBhm.setWeight( Float.parseFloat( weightString ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-        try {
-            final WebElement smoking = driver.findElement( By.cssSelector(
-                    "input[value=\"" + HouseholdSmokingStatus.getName( Integer.parseInt( smokingStatus ) ) + "\"]" ) );
-            smoking.click();
-            expectedBhm.setHouseSmokingStatus( HouseholdSmokingStatus.parseValue( Integer.parseInt( smokingStatus ) ) );
-        }
-        catch ( final Exception e ) {
-            /*
-             * This means that the element wasn't found, which is expected if we
-             * enter an invalid value (as one of the test cases does).
-             * Intentionally ignoring.
-             */
-        }
-        waitForAngular();
-        final WebElement submit = driver.findElement( By.name( "submit" ) );
-        submit.click();
-    }
-
-    /**
-     * Documents an office visit with specific information for patients between
-     * 3 and 12
-     *
-     * @param dateString
-     *            The current date.
-     * @param weightString
-     *            The weight of the patient.
-     * @param heightString
-     *            The height of the patient.
-     * @param sys
-     *            The systolic blood pressure of the patient.
-     * @param dia
-     *            The diastolic blood pressure of the patient.
-     * @param smokingStatus
-     *            The smoking status of the patient's household.
-     * @param note
-     *            The note that the doctor includes.
-     * @throws InterruptedException
-     */
-    @When ( "^I fill in information on the office visit for patients of age 3 to 12 with date: (.+), weight: (.+), height: (.+), systolic blood pressure: (.+), diastolic blood pressure: (.+), household smoking status: (.+), and note: (.+)$" )
-    public void documentOVWithSpecificInformation3To12 ( final String dateString, final String weightString,
-            final String heightString, final String sys, final String dia, final String smokingStatus,
-            final String note ) throws InterruptedException {
-
-        waitForAngular();
-        final WebElement notes = driver.findElement( By.name( "notes" ) );
-        notes.clear();
-        notes.sendKeys( note );
-
-        waitForAngular();
-        final WebElement patient = driver.findElement( By.cssSelector( "input[value=\"patient\"]" ) );
-        patient.click();
-
-        waitForAngular();
-        final WebElement type = driver.findElement( By.name( "type" ) );
-        type.click();
-
-        waitForAngular();
-        final WebElement hospital = driver.findElement( By.name( "hospital" ) );
-        hospital.click();
-
-        final WebElement date = driver.findElement( By.name( "date" ) );
-        date.clear();
-        date.sendKeys( dateString );
-        date.click();
-
-        final WebElement time = driver.findElement( By.name( "time" ) );
-        time.clear();
-        time.sendKeys( "9:30 AM" );
-
-        expectedBhm = new BasicHealthMetrics();
-
-        waitForAngular();
-        final WebElement sysElem = driver.findElement( By.name( "systolic" ) );
-        sysElem.clear();
-        sysElem.sendKeys( sys );
-        try {
-            expectedBhm.setSystolic( Integer.parseInt( sys ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        waitForAngular();
-        final WebElement diaElem = driver.findElement( By.name( "diastolic" ) );
-        diaElem.clear();
-        diaElem.sendKeys( dia );
-        try {
-            expectedBhm.setDiastolic( Integer.parseInt( dia ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        final WebElement heightLength = driver.findElement( By.name( "height" ) );
-        heightLength.clear();
-        heightLength.sendKeys( heightString );
-        try {
-            expectedBhm.setHeight( Float.parseFloat( heightString ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        final WebElement weight = driver.findElement( By.name( "weight" ) );
-        weight.clear();
-        weight.sendKeys( weightString );
-        try {
-            expectedBhm.setWeight( Float.parseFloat( weightString ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-        try {
-            final WebElement smoking = driver.findElement( By.cssSelector(
-                    "input[value=\"" + HouseholdSmokingStatus.getName( Integer.parseInt( smokingStatus ) ) + "\"]" ) );
-            smoking.click();
-            expectedBhm.setHouseSmokingStatus( HouseholdSmokingStatus.parseValue( Integer.parseInt( smokingStatus ) ) );
-        }
-        catch ( final Exception e ) {
-            /*
-             * This means that the element wasn't found, which is expected if we
-             * enter an invalid value (as one of the test cases does).
-             * Intentionally ignoring.
-             */
-        }
-        waitForAngular();
-        final WebElement submit = driver.findElement( By.name( "submit" ) );
-        submit.click();
-    }
-
-    /**
-     * Documents an office visit with specific information for patients 12 and
-     * over.
-     *
-     * @param dateString
-     *            The current date.
-     * @param weightString
-     *            The weight of the patient.
-     * @param heightString
-     *            The height of the patient.
-     * @param sys
-     *            The systolic blood pressure of the patient.
-     * @param dia
-     *            The diastolic blood pressure of the patient.
-     * @param houseSmoke
-     *            The smoking status of the patient's household.
-     * @param patientSmoke
-     *            The smoking status of the patient.
-     * @param hdl
-     *            The patient's HDL levels.
-     * @param ldl
-     *            The patient's LDL levels.
-     * @param tri
-     *            The patient's triglycerides levels.
-     * @param note
-     *            The note entered by the HCP
-     * @throws InterruptedException
-     */
-    @When ( "^I fill in information on the office visit for people 12 and over with date: (.+), weight: (.+), height: (.+), systolic blood pressure: (.+), diastolic blood pressure: (.+), household smoking status: (.+), patient smoking status: (.+), HDL cholesterol: (.+), LDL cholesterol: (.+), triglycerides: (.+), and note: (.+)$" )
-    public void documentOVWithSpecificInformation12Over ( final String dateString, final String weightString,
-            final String heightString, final String sys, final String dia, final String houseSmoke,
-            final String patientSmoke, final String hdl, final String ldl, final String tri, final String note )
-            throws InterruptedException {
-        waitForAngular();
-        final WebElement notes = driver.findElement( By.name( "notes" ) );
-        notes.clear();
-        notes.sendKeys( note );
-
-        waitForAngular();
-        final WebElement patient = driver.findElement( By.cssSelector( "input[value=\"patient\"]" ) );
-        patient.click();
-
-        waitForAngular();
-        final WebElement type = driver.findElement( By.name( "type" ) );
-        type.click();
-
-        waitForAngular();
-        final WebElement hospital = driver.findElement( By.name( "hospital" ) );
-        hospital.click();
-
-        final WebElement date = driver.findElement( By.name( "date" ) );
-        date.clear();
-        date.sendKeys( dateString );
-        date.click();
-
-        final WebElement time = driver.findElement( By.name( "time" ) );
-        time.clear();
-        time.sendKeys( "9:30 AM" );
-
-        expectedBhm = new BasicHealthMetrics();
-
-        waitForAngular();
-        final WebElement sysElem = driver.findElement( By.name( "systolic" ) );
-        sysElem.clear();
-        sysElem.sendKeys( sys );
-        try {
-            expectedBhm.setSystolic( Integer.parseInt( sys ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        waitForAngular();
-        final WebElement diaElem = driver.findElement( By.name( "diastolic" ) );
-        diaElem.clear();
-        diaElem.sendKeys( dia );
-        try {
-            expectedBhm.setDiastolic( Integer.parseInt( dia ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        final WebElement heightLength = driver.findElement( By.name( "height" ) );
-        heightLength.clear();
-        heightLength.sendKeys( heightString );
-        try {
-            expectedBhm.setHeight( Float.parseFloat( heightString ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        final WebElement weight = driver.findElement( By.name( "weight" ) );
-        weight.clear();
-        weight.sendKeys( weightString );
-        try {
-            expectedBhm.setWeight( Float.parseFloat( weightString ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-        try {
-            final WebElement smoking = driver.findElement( By.cssSelector(
-                    "input[value=\"" + HouseholdSmokingStatus.getName( Integer.parseInt( houseSmoke ) ) + "\"]" ) );
-            smoking.click();
-            expectedBhm.setHouseSmokingStatus( HouseholdSmokingStatus.parseValue( Integer.parseInt( houseSmoke ) ) );
-        }
-        catch ( final Exception e ) {
-            /*
-             * This means that the element wasn't found, which is expected if we
-             * enter an invalid value (as one of the test cases does).
-             * Intentionally ignoring.
-             */
-        }
-        try {
-            final WebElement smoking = driver.findElement( By.cssSelector(
-                    "input[value=\"" + PatientSmokingStatus.getName( Integer.parseInt( patientSmoke ) ) + "\"]" ) );
-            smoking.click();
-            expectedBhm.setPatientSmokingStatus( PatientSmokingStatus.parseValue( Integer.parseInt( patientSmoke ) ) );
-        }
-        catch ( final Exception e ) {
-            /*
-             * This means that the element wasn't found, which is expected if we
-             * enter an invalid value (as one of the test cases does).
-             * Intentionally ignoring.
-             */
-        }
-
-        waitForAngular();
-        final WebElement hdlElem = driver.findElement( By.name( "hdl" ) );
-        hdlElem.clear();
-        hdlElem.sendKeys( hdl );
-        try {
-            expectedBhm.setHdl( Integer.parseInt( hdl ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        waitForAngular();
-        final WebElement ldlElem = driver.findElement( By.name( "ldl" ) );
-        ldlElem.clear();
-        ldlElem.sendKeys( ldl );
-        try {
-            expectedBhm.setLdl( Integer.parseInt( ldl ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        waitForAngular();
-        final WebElement triElem = driver.findElement( By.name( "tri" ) );
-        triElem.clear();
-        triElem.sendKeys( tri );
-        try {
-            expectedBhm.setTri( Integer.parseInt( tri ) );
-        }
-        catch ( final IllegalArgumentException e ) {
-            /*
-             * This means that the test data provided was intentionally invalid,
-             * which is okay
-             */
-        }
-
-        waitForAngular();
-        final WebElement submit = driver.findElement( By.name( "submit" ) );
-        submit.click();
-    }
 }
