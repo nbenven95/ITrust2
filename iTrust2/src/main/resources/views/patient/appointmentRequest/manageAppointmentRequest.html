@@ -18,9 +18,9 @@
 			app.controller('manageAppointmentRequestCtrl', function($scope, $http) {
 				$scope.appointment = {};
 				$scope.hcps = [];
-
+				
 				/**
-					Called when the "Type" dropdown box changes values (i.e.
+					Called when the "Type" dropdown box changes values (i.e. 
 					when $scope.appointment.type is changed). Loads the list
 					of HCPs with the Specialty required to service the currently
 					selected AppointmentType.
@@ -35,7 +35,7 @@
 							$scope.message = "HCP not found";
 						});
 				}
-
+				
 				$scope.incomingAppointments = [];
 				$scope.loadIncomingAppointments = function() {
 					$http
@@ -53,12 +53,12 @@
 				}
 
 				$scope.loadIncomingAppointments();
-
+				
 				$http.get("/iTrust2/api/v1/appointmenttype")
 	              .then(function (response) {
 	                $scope.types = response.data;
 	              });
-
+				
 				$scope.submit = function() {
 					$scope.errorMsg = "";
 					$scope.appointment.patient = /*[[${#httpServletRequest.remoteUser}]]*/null;
@@ -72,22 +72,19 @@
 		                $scope.message = "";
 		                $scope.message1 = "";
 		            }
-
+		            
 		            if ($scope.appointment.comments != null && $scope.appointment.comments.length > 50) {
 		            	$scope.errorMsg += "Comments should be upto 50 characters\n";
 		            	$scope.message = "";
 		                $scope.message1 = "";
 		            }
-
+		            
 		            if ($scope.appointment.hcp == null) {
 		            	$scope.errorMsg += "Please select an HCP\n";
 		            	$scope.message = "";
 		                $scope.message1 = "";
 		            }
-
-								// Taken from https://stackoverflow.com/a/38708623/10247651
-								$scope.appointment.timezoneAbbrev = /.*\s(.+)/.exec((new Date()).toLocaleDateString(navigator.language, { timeZoneName:'short' }))[1];
-
+		            
 		            //info on date usage comes from here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 		            var dateInput = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec($scope.appointment.date);
 		            dateInput[1] = (parseInt(dateInput[1]) - 1) + '';//months are 0 indexed
@@ -101,8 +98,8 @@
 		            	$scope.message = "";
 		            	$scope.message1 = "";
 		            }
-
-					$http.post("/iTrust2/api/v1/appointmentrequests", $scope.appointment).then(
+		            
+					$http.post("/iTrust2/api/v1/appointmentrequests", $scope.appointment).then( 
 							function(response) {
 								$scope.loadAppointments();
 								$scope.message = "Your appointment has been requested successfully."
@@ -111,36 +108,37 @@
 								$scope.errorMsg1 = "";
 								$scope.selectedAppointment = {};
 							}, function(rejection) {
-								console.error(rejection);
 								$scope.errorMsg += "Cannot request an appointment before the current time"
 				    			$scope.message = "";
 				                $scope.message1 = "";
 							});
 				}
-
+				
 				function twoDigit(num) {
 		              if (num < 10) {
 		            	  return "0" + num;
 		              }
 		              return num;
 		            }
-
+				
 				$scope.getTime = function getTime(date) {
-					var hour = date.hourOfDay;
-					var suffix;
-					if (hour > 12) {
-						hour = hour - 12;
-						suffix = "PM";
-					} else {
-						suffix = "AM";
-					}
-					return twoDigit(hour) + ":" + twoDigit(date.minute) + " " + suffix;
-		    }
-
-				$scope.getDate = function getDate(date) {
-		              return twoDigit(date.month + 1) + "/" + twoDigit(date.dayOfMonth) + "/" + date.year;
+		              var hour = date.hourOfDay;
+		              var suffix;
+		              if (hour > 12) {
+		            	  hour = hour - 12;
+		            	  suffix = "PM";
+		              } else {
+		            	  suffix = "AM";
+		              }
+		              return twoDigit(hour) + ":" + twoDigit(date.minute) + " " + suffix;
 		        }
-
+				
+				$scope.getDate = function getDate(date) {
+		              /* The months start at 0... only the months.  So we have to add 1 to get the correct input.*/
+		              month = date.month + 1;
+		              return twoDigit(month) + "/" + twoDigit(date.dayOfMonth) + "/" + date.year;
+		        }
+				
 				$scope.selectedAppointment = {};
 				$scope.appointments = [];
 				$scope.patient = /*[[${#httpServletRequest.remoteUser}]]*/null;
@@ -152,9 +150,9 @@
 								if ($scope.appointments != null && $scope.appointments.length == 0 ) {
 									$scope.errorMsg1 = "No appointment requests found."
 								}
-							});
+							});	
 				}
-
+				
 				$scope.deleteAppointment = function() {
 					$http.delete("/iTrust2/api/v1/appointmentrequests/" + $scope.selectedAppointment.id).then(
 						function (response) {
@@ -166,10 +164,10 @@
 			              }, function (rejection) {
 			                $scope.errorMsg1 = "Could not remove appointment";
 			              });
-				}
-
+				} 
+				
 				$scope.loadAppointments();
-
+				
 			});
 			/*]]>*/
 		</script>
@@ -180,7 +178,7 @@
 				<tr>
 					<td>
 						<table>
-
+							
 							<tr>
 								<h3>Upcoming Medical Appointment</h3>
 								<ul style="list-style: none;">
@@ -190,7 +188,7 @@
 									</label></li>
 								</ul>
 							</tr>
-
+							
 							<tr>
 								<h3>Delete Medical Appointment</h3>
 								<td>
@@ -204,20 +202,20 @@
 												</label></li>
 											</ul>
 										</div>
-
+			
 										<button class="btn btn-danger" ng-if="appointments.length > 0"
 											ng-click="deleteAppointment()" name="submit">Delete</button>
-									</div>
-
+									</div>	
+									
 								</td>
-
+								
 							</tr>
-
+							
 						</table>
-
+						
 						<div name="success" class="text-success" align="left">{{message1}}</div>
 						<div name="errorMsg" class="text-danger" align="left">{{errorMsg1}}</div>
-
+						
 					</td>
 					<td style="width: 35%; vertical-align: top">
 						<h3>Request Medical Appointment</h3>
@@ -247,7 +245,7 @@
 								<td><input id="comments" type="text"
 									ng-model="appointment.comments" name="comments" /></td>
 							</tr>
-
+							
 							<tr ng-show="appointment.type">
 								<td>HCP:</td>
 								<td><select ng-model="appointment.hcp" name="hcp" id="hcp">

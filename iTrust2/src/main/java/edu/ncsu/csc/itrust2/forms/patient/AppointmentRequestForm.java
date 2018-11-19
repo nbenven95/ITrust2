@@ -69,9 +69,6 @@ public class AppointmentRequestForm {
     /** The comments of the appt request */
     private String comments;
 
-    /** The timezone of the appt request */
-    private String timezoneAbbrev;
-
     /**
      * Don't use this one. For Hibernate/Thymeleaf
      */
@@ -228,25 +225,6 @@ public class AppointmentRequestForm {
      */
     public void setStatus ( final String status ) {
         this.status = status;
-    }
-
-    /**
-     * Get the status of the appointment request
-     *
-     * @return the status of the appointment request
-     */
-    public String getTimezoneAbbrev () {
-        return timezoneAbbrev;
-    }
-
-    /**
-     * Set the status of the appointment to request
-     *
-     * @param timezoneAbbrev
-     *            the status of the appointment to request
-     */
-    public void setTimezoneAbbrev ( final String timezoneAbbrev ) {
-        this.timezoneAbbrev = timezoneAbbrev;
     }
 
 }
