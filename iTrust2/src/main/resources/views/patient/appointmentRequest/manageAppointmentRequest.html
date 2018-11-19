@@ -85,6 +85,9 @@
 		                $scope.message1 = "";
 		            }
 
+								// Taken from https://stackoverflow.com/a/38708623/10247651
+								$scope.appointment.timezoneAbbrev = /.*\s(.+)/.exec((new Date()).toLocaleDateString(navigator.language, { timeZoneName:'short' }))[1];
+
 		            //info on date usage comes from here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 		            var dateInput = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec($scope.appointment.date);
 		            dateInput[1] = (parseInt(dateInput[1]) - 1) + '';//months are 0 indexed
@@ -108,6 +111,7 @@
 								$scope.errorMsg1 = "";
 								$scope.selectedAppointment = {};
 							}, function(rejection) {
+								console.error(rejection);
 								$scope.errorMsg += "Cannot request an appointment before the current time"
 				    			$scope.message = "";
 				                $scope.message1 = "";
@@ -122,24 +126,19 @@
 		            }
 
 				$scope.getTime = function getTime(date) {
-									console.log(date)
-									date = new Date(date)
-									console.log(date)
-		              var hour = date.getUTCHours();
-		              var suffix;
-		              if (hour > 12) {
-		            	  hour = hour - 12;
-		            	  suffix = "PM";
-		              } else {
-		            	  suffix = "AM";
-		              }
-		              return twoDigit(hour) + ":" + twoDigit(date.getUTCMinutes()) + " " + suffix;
-		        }
+					var hour = date.hourOfDay;
+					var suffix;
+					if (hour > 12) {
+						hour = hour - 12;
+						suffix = "PM";
+					} else {
+						suffix = "AM";
+					}
+					return twoDigit(hour) + ":" + twoDigit(date.minute) + " " + suffix;
+		    }
 
 				$scope.getDate = function getDate(date) {
-									date = new Date(date)
-
-		              return twoDigit(date.getUTCMonth() + 1) + "/" + twoDigit(date.getUTCDate()) + "/" + (date.getUTCFullYear() % 100);
+		              return twoDigit(date.month + 1) + "/" + twoDigit(date.dayOfMonth) + "/" + date.year;
 		        }
 
 				$scope.selectedAppointment = {};
