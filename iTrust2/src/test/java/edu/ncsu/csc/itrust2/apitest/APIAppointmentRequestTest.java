@@ -138,6 +138,7 @@ public class APIAppointmentRequestTest {
         appointmentForm.setHcp( "hcp" );
         appointmentForm.setPatient( "patient" );
         appointmentForm.setComments( "Test appointment please ignore" );
+        appointmentForm.setTimezoneAbbrev( "EST" );
 
         /* Create the request */
         mvc.perform( post( "/api/v1/appointmentrequests" ).contentType( MediaType.APPLICATION_JSON )
