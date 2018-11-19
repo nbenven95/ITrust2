@@ -64,7 +64,7 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
     @SuppressWarnings ( "unchecked" )
     public static List<AppointmentRequest> getAppointmentRequests () {
         final List<AppointmentRequest> requests = (List<AppointmentRequest>) getAll( AppointmentRequest.class );
-        requests.sort( (x1, x2) -> x1.getDate().compareTo(x2.getDate()));
+        requests.sort( ( x1, x2 ) -> x1.getDate().compareTo( x2.getDate() ) );
         return requests;
     }
 
@@ -144,8 +144,8 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
         setHcp( User.getByNameAndRole( raf.getHcp(), Role.ROLE_HCP ) );
         setComments( raf.getComments() );
 
-        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa", Locale.ENGLISH );
-        final Date parsedDate = sdf.parse( raf.getDate() + " " + raf.getTime() );
+        final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa z", Locale.ENGLISH );
+        final Date parsedDate = sdf.parse( raf.getDate() + " " + raf.getTime() + " " + raf.getTimezoneAbbrev() );
         final Calendar c = Calendar.getInstance();
         c.setTime( parsedDate );
         if ( c.before( Calendar.getInstance() ) ) {
@@ -310,7 +310,8 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      * @return Calendar for when the Request takes place
      */
     public Calendar getDate () {
-        return date;
+        // Taken from https://stackoverflow.com/a/28779549/10247651
+        return this.date;
     }
 
     /**
@@ -359,6 +360,11 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      */
     public void setType ( final AppointmentType type ) {
         this.type = type;
+    }
+
+    @Override
+    public String toString () {
+        return this.getDate().toString();
     }
 
 }
