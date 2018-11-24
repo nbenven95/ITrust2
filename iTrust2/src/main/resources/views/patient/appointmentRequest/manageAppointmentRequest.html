@@ -73,6 +73,9 @@
 		                $scope.message1 = "";
 		            }
 
+								// Taken from https://stackoverflow.com/a/38708623/10247651
+								$scope.appointment.timezoneAbbrev = /.*\s(.+)/.exec((new Date($scope.appointment.date + " " + $scope.appointment.time)).toLocaleDateString(navigator.language, { timeZoneName:'short' }))[1];
+
 		            if ($scope.appointment.comments != null && $scope.appointment.comments.length > 50) {
 		            	$scope.errorMsg += "Comments should be upto 50 characters\n";
 		            	$scope.message = "";
@@ -84,9 +87,6 @@
 		            	$scope.message = "";
 		                $scope.message1 = "";
 		            }
-
-								// Taken from https://stackoverflow.com/a/38708623/10247651
-								$scope.appointment.timezoneAbbrev = /.*\s(.+)/.exec((new Date()).toLocaleDateString(navigator.language, { timeZoneName:'short' }))[1];
 
 		            //info on date usage comes from here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
 		            var dateInput = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec($scope.appointment.date);
@@ -148,6 +148,7 @@
 					$http.get("/iTrust2/api/v1/appointmentrequest").then(
 							function(response) {
 								$scope.appointments = response.data;
+								console.log($scope.appointments);
 								var length = $scope.appointments.length;
 								if ($scope.appointments != null && $scope.appointments.length == 0 ) {
 									$scope.errorMsg1 = "No appointment requests found."

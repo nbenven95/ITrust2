@@ -6,6 +6,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.persistence.Entity;
@@ -147,7 +148,9 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
         final SimpleDateFormat sdf = new SimpleDateFormat( "MM/dd/yyyy hh:mm aaa z", Locale.ENGLISH );
         final Date parsedDate = sdf.parse( raf.getDate() + " " + raf.getTime() + " " + raf.getTimezoneAbbrev() );
         final Calendar c = Calendar.getInstance();
+        c.setTimeZone( TimeZone.getTimeZone( raf.getTimezoneAbbrev() ) );
         c.setTime( parsedDate );
+        System.out.println( c );
         if ( c.before( Calendar.getInstance() ) ) {
             throw new IllegalArgumentException( "Cannot request an appointment before the current time" );
         }
@@ -310,7 +313,6 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      * @return Calendar for when the Request takes place
      */
     public Calendar getDate () {
-        // Taken from https://stackoverflow.com/a/28779549/10247651
         return this.date;
     }
 

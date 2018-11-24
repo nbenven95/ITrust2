@@ -112,7 +112,7 @@
 															$scope.selectedAppointment.comments = $scope.appointmentByID.comments;
 															$scope.selectedAppointment.id = $scope.appointmentByID.id;
 															// Taken from https://stackoverflow.com/a/38708623/10247651
-															$scope.selectedAppointment.timezoneAbbrev = /.*\s(.+)/.exec((new Date()).toLocaleDateString(navigator.language, { timeZoneName:'short' }))[1];
+															$scope.selectedAppointment.timezoneAbbrev = /.*\s(.+)/.exec((new Date($scope.selectedAppointment.date + " " + $scope.selectedAppointment.time)).toLocaleDateString(navigator.language, { timeZoneName:'short' }))[1];
 
 
 															$http
