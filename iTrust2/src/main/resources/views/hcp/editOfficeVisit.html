@@ -83,6 +83,28 @@
               month = date.month + 1;
               return twoDigit(month) + "/" + twoDigit(date.dayOfMonth) + "/" + date.year;
             }
+            
+            /* Temporary ariable used to test that the correct forms display for each visit type.
+               TODO: update this to set the variable by selecting selectedVisit.appointmentType so we don't
+               have to update any of the html since all of the ng-show statements check this variable */
+            $scope.visitType = "GENERAL_CHECKUP";
+            
+            /* TODO: Should probably replace this with an API call to get all
+               surgery types. */
+         	$scope.surgeryTypes = ["CATARACT", "LASER", "REFRACTIVE"];
+            
+         	/* TODO uncomment and delete manually entered diagnonses below 
+            $http.get("/iTrust2/api/v1/icdcodes_oph").then(
+            function (response) {
+              $scope.icdcodes_oph = response.data;
+ 			  });*/
+          
+          $scope.icdcodes_oph = [
+          	{"id":100,"code":"O10","description":"Cataracts"},
+          	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
+          	{"id":100,"code":"O12","description":"Amblyopia"},
+          	{"id":100,"code":"O13","description":"Glaucoma"}
+         	];
 
             $scope.noVisitSelected = true;
             $scope.loadingVisits = true;
@@ -499,15 +521,7 @@
 
 												<div class="panel panel-default">
 													<div class="panel-body">
-														<div class="form-check">
-															<ul
-																style="max-height: 15%; overflow: auto; list-style: none;">
-																<li ng-repeat="type in types"><label> <input
-																		type="radio" ng-model="$parent.selectedVisit.type"
-																		name="type" value="{{type}}" required="true" />{{type}}
-																</label></li>
-															</ul>
-														</div>
+														<div class="form-check">{{selectedVisit.type}}</div>
 													</div>
 												</div>
 											</div>
@@ -659,7 +673,7 @@
 											</div>
 
 											<!-- Diagnosis Panel  -->
-											<div class="col-md-4">
+											<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
 												<div class="panel panel-info">
 													<div class="panel-heading">
 														<h4>Diagnosis</h4>
@@ -685,7 +699,7 @@
 															<div class="col-xs-6">
 																<label>Date:</label>
 															</div>
-															<div class="col-xs-4">{{visit.date}}</div>
+															<div class="col-xs-4">{{selectedVisit.date}}</div>
 														</div>
 														<div class="form-group row">
 															<div class="col-xs-6">
@@ -731,7 +745,7 @@
 											</div>
 
 											<!-- Prescription Panel -->
-											<div class="col-md-4">
+											<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
 												<div class="panel panel-info">
 													<div class="panel-heading">
 														<h4>Prescription</h4>
@@ -826,9 +840,190 @@
 												</div>
 											</div>
 										</div>
+										
+										<!-- Basic Eye Metrics Panel -->
+										<div ng-show="visitType === 'OPHTHALMOLOGY_VISIT' || visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+											<div class="panel panel-info">
+												<div class="panel-heading">
+													<h4>Basic Eye Metrics</h4>
+												</div>
+												<div class="panel-body">
+													<div class="form-group row">
+														<div class="col-xs-4"></div>
+														<div class="col-xs-4">OD</div>
+														<div class="col-xs-4">OS</div>
+													</div>
+												</div>
+												<div class="panel-body">
+													<div class="form-group row">
+														<div class="col-xs-4">
+															<label>Visual Acuity:</label>
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="visualAcuityOD"
+																ng-model="selectedVisit.visualAcuityOD" required="true" type="text">
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="visualAcuityOS"
+																ng-model="selectedVisit.visualAcuityOS" required="true" type="text">
+														</div>
+													</div>
+												</div>
+												<div class="panel-body">
+													<div class="form-group row">
+														<div class="col-xs-4">
+															<label>Sphere:</label>
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="sphereOD"
+																ng-model="selectedVisit.sphereOD" required="false" type="text">
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="sphereOS"
+																ng-model="selectedVisit.sphereOS" required="false" type="text">
+														</div>
+													</div>
+												</div>
+												<div class="panel-body">
+													<div class="form-group row">
+														<div class="col-xs-4">
+															<label>Cylinder:</label>
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="cylinderOD"
+																ng-model="selectedVisit.cylinderOD" required="false" type="text">
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="cylinderOS"
+																ng-model="selectedVisit.cylinderOS" required="false" type="text">
+														</div>
+													</div>
+												</div>
+												<div class="panel-body">
+													<div class="form-group row">
+														<div class="col-xs-4">
+															<label>Axis:</label>
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="axisOD"
+																ng-model="selectedVisit.axisOD" required="false" type="text">
+														</div>
+														<div class="col-xs-4">
+															<input class="form-control" name="axisOS"
+																ng-model="selectedVisit.axisOS" required="false" type="text">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+
+										<!--  Ophthalmology surgery types panel -->
+										<div ng-show="visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+											<div class="panel panel-info">
+												<div class="panel-heading">
+													<h4>Surgery Type</h4>
+												</div>
+												
+												<div class="panel-body">
+													<div class="form-group row">
+														<div class="col-xs-4">
+																<label>Surgery Type:</label>
+													    </div>
+														<div class="col-xs-8 radio-box">
+															<div class="form-check">
+																<ul style="list-style: none;">
+																	<!-- TODO: not sure if name and id are needed for this field -->
+																	<li ng-repeat="t in surgeryTypes"><label> <input
+																			type="radio"
+																			name="surgerytype"
+																			ng-model="$parent.selectedVisit.surgeryType"
+																			ng-value="t"
+																			required="true" /> {{t}}
+																	</label></li>
+																</ul>
+															</div>
+														</div>
+													</div>	
+												</div>
+												
+											</div>
+										</div>
+										
+										<!-- Ophthalmology Diagnosis Panel  -->
+										<div ng-show="visitType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
+											<div class="panel panel-info">
+												<div class="panel-heading">
+													<h4>Ophthalmology Diagnoses</h4>
+												</div>
+												<div class="panel-body">
+													<div class="form-group row">
+														<div class="col-xs-4">
+															<label>Diagnosis:</label>
+														</div>
+														<div class="col-xs-6 radio-box">
+															<div class="form-check">
+																<ul style="list-style: none;">
+																	<li ng-repeat="i in icdcodes_oph"><label> <input
+																			type="radio" ng-model="$parent.codeEntry"
+																			id="{{i.code}}" name="{{i.description}}" ng-value="i"
+																			required="true" /> {{i.description}}
+																	</label></li>
+																</ul>
+															</div>
+														</div>
+													</div>
+													<div class="form-group row">
+														<div class="col-xs-4">
+															<label>Date:</label>
+														</div>
+														<div class="col-xs-6">{{selectedVisit.date}}</div>
+													</div>
+													<div class="form-group row">
+														<div class="col-xs-4">
+															<label>Notes:</label>
+														</div>
+														<div class="col-xs-6">
+															<input class="form-control" name="notesEntry"
+																ng-model="noteEntry" required="true" type="text">
+														</div>
+													</div>
+	
+													<div class="form-group row text-center">
+														<div class="col-md-12">
+															<button class="btn btn-success" ng-click="fillDiagnosis()"
+																name="fillDiagnosis">Add Diagnosis</button>
+														</div>
+													</div>
+	
+													<div class="form-group row">
+														<div class="col-md-12">
+															<div class="panel panel-default">
+																<div class="panel-heading">Added Diagnoses</div>
+																<div class="panel-body">
+																	<div class="row" ng-repeat="d in diagnoses">
+																		<div class="col-md-4">{{d.code.code}}</div>
+																		<div class="col-md-4">{{d.note}}</div>
+																		<div class="col-md-4">
+																			<button class="btn btn-danger btn-xs"
+																				ng-click="removeDiagnosis($index)"
+																				name="removeDiagnosis">
+																				<b>x</b>
+																			</button>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+	
+												</div>
+											</div>
+										</div>
+										
+									</div>
 
 										<!-- Procedures panel -->
-										<div class="row">
+										<div ng-show="visitType === 'GENERAL_CHECKUP'" class="row">
 											<div class="col-md-8">
 												<div class="panel panel-info">
 													<div class="panel-heading">
