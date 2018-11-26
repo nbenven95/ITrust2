@@ -3,24 +3,22 @@ package edu.ncsu.csc.itrust2.models.persistent;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.Vector;
 import java.util.stream.Collectors;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -28,11 +26,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.criterion.Criterion;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
-import edu.ncsu.csc.itrust2.forms.hcp.PrescriptionForm;
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.Role;
-import edu.ncsu.csc.itrust2.models.enums.TransactionType;
-import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
 /**
  * This is the validated database-persisted office visit representation
@@ -42,7 +37,71 @@ import edu.ncsu.csc.itrust2.utils.LoggerUtil;
  */
 @Entity
 @Table ( name = "OfficeVisits" )
+@Inheritance ( strategy = InheritanceType.JOINED )
 public class OfficeVisit extends DomainObject<OfficeVisit> {
+
+    /**
+     * The patient of this office visit
+     */
+    @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
+    private User               patient;
+
+    /**
+     * The hcp of this office visit
+     */
+    @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
+    private User               hcp;
+
+    /**
+     * The basic health metric data associated with this office visit.
+     */
+    @OneToOne
+    @JoinColumn ( name = "basichealthmetrics_id" )
+    private BasicHealthMetrics basicHealthMetrics;
+
+    /**
+     * The date of this office visit
+     */
+    @NotNull
+    private Calendar           date;
+
+    /**
+     * The id of this office visit
+     */
+    @Id
+    @GeneratedValue ( strategy = GenerationType.AUTO )
+    protected Long             id;
+
+    /**
+     * The type of this office visit
+     */
+    @NotNull
+    @Enumerated ( EnumType.STRING )
+    private AppointmentType    type;
+
+    /**
+     * The hospital of this office visit
+     */
+    @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "hospital_id", columnDefinition = "varchar(100)" )
+    private Hospital           hospital;
+
+    /**
+     * The notes of this office visit
+     */
+    private String             notes;
+
+    /**
+     * The appointment of this office visit
+     */
+    @OneToOne
+    @JoinColumn ( name = "appointment_id" )
+    private AppointmentRequest appointment;
 
     /**
      * Get a specific office visit by the database ID
@@ -194,22 +253,6 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
         setHospital( Hospital.getByName( ovf.getHospital() ) );
         setBasicHealthMetrics( new BasicHealthMetrics( ovf ) );
 
-        // associate all diagnoses with this visit
-        if ( ovf.getDiagnoses() != null ) {
-            setDiagnoses( ovf.getDiagnoses() );
-            for ( final Diagnosis d : diagnoses ) {
-                d.setVisit( this );
-            }
-        }
-
-        // associate all diagnoses with this visit
-        if ( ovf.getLabProcedures() != null ) {
-            setLabProcedures( ovf.getLabProcedures() );
-            for ( final LabProcedure d : labProcedures ) {
-                d.setVisit( this );
-            }
-        }
-
         final Patient p = Patient.getPatient( patient );
         if ( p == null || p.getDateOfBirth() == null ) {
             return; // we're done, patient can't be tested against
@@ -232,28 +275,6 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
         }
         else {
             validate12AndOver();
-        }
-
-        validateDiagnoses();
-
-        final List<PrescriptionForm> ps = ovf.getPrescriptions();
-        if ( ps != null ) {
-            setPrescriptions( ps.stream().map( ( final PrescriptionForm pf ) -> new Prescription( pf ) )
-                    .collect( Collectors.toList() ) );
-        }
-    }
-
-    private void validateDiagnoses () {
-        if ( diagnoses == null ) {
-            return;
-        }
-        for ( final Diagnosis d : diagnoses ) {
-            if ( d.getNote().length() > 500 ) {
-                throw new IllegalArgumentException( "Dagnosis note too long (500 character max) : " + d.getNote() );
-            }
-            if ( d.getCode() == null ) {
-                throw new IllegalArgumentException( "Diagnosis Code missing!" );
-            }
         }
     }
 
@@ -471,144 +492,6 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     }
 
     /**
-     * Sets the list of Diagnoses associated with this visit
-     *
-     * @param list
-     *            The List of Diagnoses
-     */
-    public void setDiagnoses ( final List<Diagnosis> list ) {
-        diagnoses = list;
-    }
-
-    /**
-     * Returns the list of diagnoses for this visit
-     *
-     * @return The list of diagnoses
-     */
-    public List<Diagnosis> getDiagnoses () {
-        return diagnoses;
-    }
-
-    /**
-     * Sets the list of Lab Procedures associated with this visit
-     *
-     * @param list
-     *            The List of Lab Procedures
-     */
-    public void setLabProcedures ( final List<LabProcedure> list ) {
-        labProcedures = list;
-    }
-
-    /**
-     * Returns the list of lab procedures for this visit
-     *
-     * @return The list of lab procedures
-     */
-    public List<LabProcedure> getLabProcedures () {
-        return labProcedures;
-    }
-
-    /**
-     * Sets the list of prescriptions associated with this visit
-     *
-     * @param prescriptions
-     *            The list of prescriptions
-     */
-    public void setPrescriptions ( final List<Prescription> prescriptions ) {
-        this.prescriptions = prescriptions;
-    }
-
-    /**
-     * Returns the list of prescriptions for this visit
-     *
-     * @return The list of prescriptions
-     */
-    public List<Prescription> getPrescriptions () {
-        return prescriptions;
-    }
-
-    /**
-     * The patient of this office visit
-     */
-    @NotNull
-    @ManyToOne
-    @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
-    private User                         patient;
-
-    /**
-     * The hcp of this office visit
-     */
-    @NotNull
-    @ManyToOne
-    @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
-    private User                         hcp;
-
-    /**
-     * The basic health metric data associated with this office visit.
-     */
-    @OneToOne
-    @JoinColumn ( name = "basichealthmetrics_id" )
-    private BasicHealthMetrics           basicHealthMetrics;
-
-    /**
-     * The date of this office visit
-     */
-    @NotNull
-    private Calendar                     date;
-
-    /**
-     * The id of this office visit
-     */
-    @Id
-    @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long                         id;
-
-    /**
-     * The type of this office visit
-     */
-    @NotNull
-    @Enumerated ( EnumType.STRING )
-    private AppointmentType              type;
-
-    /**
-     * The hospital of this office visit
-     */
-    @NotNull
-    @ManyToOne
-    @JoinColumn ( name = "hospital_id", columnDefinition = "varchar(100)" )
-    private Hospital                     hospital;
-
-    /**
-     * The set of diagnoses associated with this visits Marked transient so not
-     * serialized or saved in DB If removed, serializer gets into an infinite
-     * loop
-     */
-    @OneToMany ( mappedBy = "visit" )
-    public transient List<Diagnosis>     diagnoses;
-
-    /**
-     * The list of Lab Procedures associated with this Office Visit
-     */
-    @OneToMany ( mappedBy = "visit" )
-    private transient List<LabProcedure> labProcedures;
-
-    /**
-     * The notes of this office visit
-     */
-    private String                       notes;
-
-    /**
-     * The appointment of this office visit
-     */
-    @OneToOne
-    @JoinColumn ( name = "appointment_id" )
-    private AppointmentRequest           appointment;
-
-    @OneToMany ( fetch = FetchType.EAGER )
-    @JoinColumn ( name = "prescriptions_id" )
-    private List<Prescription>           prescriptions = Collections.emptyList();
-
-    /**
      * Overrides the basic domain object save in order to save basic health
      * metrics and the office visit.
      */
@@ -616,205 +499,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     public void save () {
         final BasicHealthMetrics oldBhm = BasicHealthMetrics.getById( basicHealthMetrics.getId() );
         this.basicHealthMetrics.save();
-
-        //// SAVE PRESCRIPTIONS ////
-
-        // Get saved visit
-        final OfficeVisit oldVisit = OfficeVisit.getById( id );
-
-        // Get prescription ids included in this office visit
-        final Set<Long> currentIds = this.getPrescriptions().stream().map( Prescription::getId )
-                .collect( Collectors.toSet() );
-
-        // Get prescription ids saved previously
-        final Set<Long> savedIds = oldVisit == null ? Collections.emptySet()
-                : oldVisit.getPrescriptions().stream().map( Prescription::getId ).collect( Collectors.toSet() );
-
-        // Save each of the prescriptions
-        this.getPrescriptions().forEach( p -> {
-            final boolean isSaved = savedIds.contains( p.getId() );
-            if ( isSaved ) {
-                LoggerUtil.log( TransactionType.PRESCRIPTION_EDIT, LoggerUtil.currentUser(), getPatient().getUsername(),
-                        "Editing prescription with id " + p.getId() );
-            }
-            else {
-                LoggerUtil.log( TransactionType.PRESCRIPTION_CREATE, LoggerUtil.currentUser(),
-                        getPatient().getUsername(), "Creating prescription with id " + p.getId() );
-            }
-            p.save();
-        } );
-
-        // Remove prescriptions no longer included
-        if ( !savedIds.isEmpty() ) {
-            savedIds.forEach( id -> {
-                final boolean isMissing = currentIds.contains( id );
-                if ( isMissing ) {
-                    LoggerUtil.log( TransactionType.PRESCRIPTION_DELETE, LoggerUtil.currentUser(),
-                            getPatient().getUsername(), "Deleting prescription with id " + id );
-                    Prescription.getById( id ).delete();
-                }
-            } );
-        }
-
-        //// END PRESCRIPTIONS ////
-
-        try {
-            super.save();
-
-            // get list of ids associated with this visit if this visit already
-            // exists
-            final Set<Long> previous = Diagnosis.getByVisit( id ).stream().map( Diagnosis::getId )
-                    .collect( Collectors.toSet() );
-            if ( getDiagnoses() != null ) {
-                for ( final Diagnosis d : getDiagnoses() ) {
-                    if ( d == null ) {
-                        continue;
-                    }
-
-                    final boolean had = previous.remove( d.getId() );
-                    try {
-                        if ( !had ) {
-                            // new Diagnosis
-                            LoggerUtil.log( TransactionType.DIAGNOSIS_CREATE, getHcp().getUsername(),
-                                    getPatient().getUsername(), getHcp() + " created a diagnosis for " + getPatient() );
-                        }
-                        else {
-                            // already had - check if edited
-                            final Diagnosis old = Diagnosis.getById( d.getId() );
-                            if ( !old.getCode().getCode().equals( d.getCode().getCode() )
-                                    || !old.getNote().equals( d.getNote() ) ) {
-                                // was edited:
-                                LoggerUtil.log( TransactionType.DIAGNOSIS_EDIT, getHcp().getUsername(),
-                                        getPatient().getUsername(),
-                                        getHcp() + " edit a diagnosis for " + getPatient() );
-
-                            }
-                        }
-                    }
-                    catch ( final Exception e ) {
-                        e.printStackTrace();
-                    }
-                    d.save();
-
-                }
-            }
-            // delete any previous associations - they were deleted by user.
-            for ( final Long oldId : previous ) {
-                final Diagnosis dDie = Diagnosis.getById( oldId );
-                if ( dDie != null ) {
-                    dDie.delete();
-                    try {
-                        LoggerUtil.log( TransactionType.DIAGNOSIS_DELETE, getHcp().getUsername(),
-                                getPatient().getUsername(),
-                                getHcp().getUsername() + " deleted a diagnosis for " + getPatient().getUsername() );
-                    }
-                    catch ( final Exception e ) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            // get list of ids associated with this visit if this visit already
-            // exists
-            final Set<Long> prev = LabProcedure.getByVisit( id ).stream().map( LabProcedure::getId )
-                    .collect( Collectors.toSet() );
-            if ( getLabProcedures() != null ) {
-                for ( final LabProcedure d : getLabProcedures() ) {
-                    if ( d == null ) {
-                        continue;
-                    }
-
-                    final boolean had = prev.remove( d.getId() );
-                    try {
-                        if ( !had ) {
-                            // new Lab Procedure
-                            LoggerUtil.log( TransactionType.HCP_CREATE_PROC, getHcp().getUsername(),
-                                    d.getAssignedTech().getUsername(),
-                                    getHcp() + " created a Lab Procedure for " + getPatient() );
-                        }
-                        else {
-                            // already had - check if edited
-                            final LabProcedure old = LabProcedure.getById( d.getId() );
-                            if ( !old.getLoinc().getCode().equals( d.getLoinc().getCode() )
-                                    || !old.getComments().equals( d.getComments() )
-                                    || !old.getAssignedTech().equals( d.getAssignedTech() )
-                                    || !old.getPriority().equals( d.getPriority() )
-                                    || !old.getStatus().equals( d.getStatus() ) ) {
-                                // was edited:
-                                LoggerUtil.log( TransactionType.HCP_EDIT_PROC, getHcp().getUsername(),
-                                        d.getAssignedTech().getUsername(),
-                                        getHcp() + " edited a Lab Procedure for " + getPatient() );
-
-                            }
-                        }
-                    }
-                    catch ( final Exception e ) {
-                        e.printStackTrace();
-                    }
-                    d.save();
-
-                }
-            }
-            // delete any previous associations - they were deleted by user.
-            for ( final Long oldId : previous ) {
-                final LabProcedure dDie = LabProcedure.getById( oldId );
-                if ( dDie != null ) {
-                    dDie.delete();
-                    try {
-                        LoggerUtil.log( TransactionType.HCP_DELETE_PROC, getHcp().getUsername(),
-                                dDie.getAssignedTech().getUsername(),
-                                getHcp().getUsername() + " deleted a Lab Procedure for " + getPatient().getUsername() );
-                    }
-                    catch ( final Exception e ) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        catch ( final Exception ex ) {
-            // we don't want to save the bhm if an error occurs
-            // but we also don't want to delete a valid copy if it was an
-            // invalid edit
-            if ( oldBhm != null ) {
-                this.basicHealthMetrics.copyFrom( oldBhm, true );
-            }
-            throw ex;
-        }
-
-    }
-
-    /**
-     * Deletes any diagnoses associated with this office visit, then deletes the
-     * visit entry
-     */
-    @Override
-    public void delete () {
-        if ( diagnoses != null ) {
-            for ( final Diagnosis d : diagnoses ) {
-                d.delete();
-                try {
-                    LoggerUtil.log( TransactionType.DIAGNOSIS_DELETE, getHcp().getUsername(),
-                            getPatient().getUsername(), getHcp() + " deleted a diagnosis for " + getPatient() );
-                }
-                catch ( final Exception e ) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        if ( labProcedures != null ) {
-            for ( final LabProcedure d : labProcedures ) {
-                d.delete();
-                try {
-                    LoggerUtil.log( TransactionType.HCP_DELETE_PROC, getHcp().getUsername(),
-                            d.getAssignedTech().getUsername(),
-                            getHcp().getUsername() + " deleted a Lab Procedure for " + getPatient().getUsername() );
-                }
-                catch ( final Exception e ) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        super.delete();
+        super.save();
     }
 
     /**

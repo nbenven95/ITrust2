@@ -29,6 +29,8 @@
 		<mapping class="edu.ncsu.csc.itrust2.models.persistent.User" />
 		<mapping
 			class="edu.ncsu.csc.itrust2.models.persistent.OfficeVisit" />
+    <mapping
+      class="edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup" />
 		<mapping
 			class="edu.ncsu.csc.itrust2.models.persistent.Hospital" />
 		<mapping

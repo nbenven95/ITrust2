@@ -12,6 +12,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
 import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
@@ -170,10 +171,13 @@ public class OfficeVisitForm implements Serializable {
         setNotes( ov.getNotes() );
         setId( ov.getId().toString() );
         setPreScheduled( ( (Boolean) ( ov.getAppointment() != null ) ).toString() );
-        setDiagnoses( ov.getDiagnoses() );
-        setLabProcedures( ov.getLabProcedures() );
-        setPrescriptions( ov.getPrescriptions().stream().map( ( final Prescription p ) -> new PrescriptionForm( p ) )
-                .collect( Collectors.toList() ) );
+        if ( ov instanceof GeneralCheckup ) {
+            final GeneralCheckup gc = (GeneralCheckup) ov;
+            setDiagnoses( gc.getDiagnoses() );
+            setLabProcedures( gc.getLabProcedures() );
+            setPrescriptions( gc.getPrescriptions().stream()
+                    .map( ( final Prescription p ) -> new PrescriptionForm( p ) ).collect( Collectors.toList() ) );
+        }
         setDiastolic( ov.getBasicHealthMetrics().getDiastolic() );
         setHdl( ov.getBasicHealthMetrics().getHdl() );
         setLdl( ov.getBasicHealthMetrics().getLdl() );

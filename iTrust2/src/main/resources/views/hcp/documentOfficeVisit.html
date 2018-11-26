@@ -22,11 +22,11 @@
           .controller(
           'documentOfficeVisitCtrl',
           function ($scope, $http) {
-        	  
+
         	  var isDate = function(input) {
               	if (!input) {
               		return false;
-              	}			
+              	}
               	var match = /^(\d?\d)\/(\d?\d)\/(\d{4})$/.exec(input);
               	if (!match) {
               		return false;
@@ -39,7 +39,7 @@
               	var date = new Date(parsedDate.year, parsedDate.month, parsedDate.day);
               	return date.getFullYear() === parsedDate.year && date.getMonth() === parsedDate.month && date.getDate() === parsedDate.day;
               };
-              
+
               var checkValidPrescription = function(p) {
               	var err = [];
               	if (!p.drug) {
@@ -62,10 +62,10 @@
               	if (!/^\+?\d+$/.test(p.renewals)) {
               		err.push("Renewals must be an integer zero or more");
               	}
-              	
+
               	return err.join(". ");
               }
-              
+
               var checkValidDiagnosis = function(d) {
                 	var err = [];
                 	if (!d.code) {
@@ -73,7 +73,7 @@
                 	}
                 	return err.join(". ");
                 }
-              
+
               var checkValidProcedure = function(p) {
           	  	var err = [];
           	  	if(!p.loinc) {
@@ -177,7 +177,7 @@
               function (response) {
                 $scope.icdcodes = response.data;
               });
-            
+
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
                     function (response) {
                       $scope.tech = response.data;
@@ -194,12 +194,12 @@
                       	})(i);
             			  }
                     });
-            
+
             $http.get("/iTrust2/api/v1/loinccodes").then(
                     function (response) {
                       $scope.loinccodes = response.data;
             });
-            
+
 
             $scope.submit = function () {
               $scope.errorMsg = "";
@@ -280,7 +280,7 @@
               $scope.visit.prescriptions.forEach(function (p) {
                 p.patient = $scope.visit.patient;
               });
-              
+
               $scope.visit.labProcedures = $scope.procedures;
 
               $http({
@@ -290,6 +290,7 @@
               }).then(function (response) {
                 $scope.message = "Office visit created successfully";
               }, function (rejection) {
+								console.error(rejection);
                 $scope.message = "Error occurred creating office visit";
               })
 
@@ -303,11 +304,11 @@
             $scope.startEntry = "";
             $scope.endEntry = "";
             $scope.renewalEntry = "";
-            
+
             $scope.loincEntry = "";
             $scope.priorityEntry = "";
             $scope.techEntry = "";
-            
+
             $scope.procedure = {};
             $scope.procedures = [];
 
@@ -365,7 +366,7 @@
   	              resetPrescriptionForm();
                 }
             }
-            
+
             $scope.addProcedure = function() {
 	            	var procCopy = {};
 	            	$scope.errorMsg = "";
@@ -381,7 +382,7 @@
 		            	$scope.procedure = {};
 		            	$scope.message = "Lab procedure added successfully";
 	            	}
-            
+
             }
 
             //remove local diagnosis from list
@@ -393,7 +394,7 @@
             $scope.removePrescription = function ($index) {
               $scope.prescriptions.splice($index, 1);
             }
-            
+
             //remove local procedure from list
             $scope.removeProcedure = function ($index) {
               $scope.procedures.splice($index, 1);
