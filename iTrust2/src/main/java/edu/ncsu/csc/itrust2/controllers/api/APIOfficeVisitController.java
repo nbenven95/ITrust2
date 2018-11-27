@@ -187,6 +187,9 @@ public class APIOfficeVisitController extends APIController {
                 case GENERAL_CHECKUP:
                     visit = new GeneralCheckup( form );
                     break;
+                case OPHTHALMOLOGY_VISIT:
+                    visit = new GeneralOphthalmologyVisit( form );
+                    break;
                 default:
                     return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );
             }
