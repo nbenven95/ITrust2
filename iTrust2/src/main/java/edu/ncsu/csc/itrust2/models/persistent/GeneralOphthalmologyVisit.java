@@ -14,6 +14,12 @@ import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
+/**
+ * A general ophthalmology office visit
+ *
+ * @author ndey3
+ *
+ */
 @Entity
 public class GeneralOphthalmologyVisit extends OfficeVisit {
     /**

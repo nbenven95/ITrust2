@@ -155,17 +155,17 @@ public class OfficeVisitForm implements Serializable {
 
     private List<PrescriptionForm> prescriptions;
 
-    private Float                  leftSphere;
+    private Double                 leftSphere;
 
-    private Float                  rightSphere;
+    private Double                 rightSphere;
 
-    private Float                  leftCylinder;
+    private Double                 leftCylinder;
 
-    private Float                  rightCylinder;
+    private Double                 rightCylinder;
 
-    private Float                  leftAxis;
+    private Double                 leftAxis;
 
-    private Float                  rightAxis;
+    private Double                 rightAxis;
 
     /**
      * Creates an OfficeVisitForm from the OfficeVisit provided
@@ -193,6 +193,7 @@ public class OfficeVisitForm implements Serializable {
         }
         else if ( ov instanceof GeneralOphthalmologyVisit ) {
             final GeneralOphthalmologyVisit gov = (GeneralOphthalmologyVisit) ov;
+            setDiagnoses( gov.getDiagnoses() );
             setLeftSphere( gov.getBasicEyeMetrics().getLeftSphere() );
             setRightSphere( gov.getBasicEyeMetrics().getRightSphere() );
             setLeftCylinder( gov.getBasicEyeMetrics().getLeftCylinder() );
@@ -630,51 +631,117 @@ public class OfficeVisitForm implements Serializable {
         return prescriptions;
     }
 
-    public Float getLeftSphere () {
+    /**
+     * Gets the left sphere measurement
+     *
+     * @return the left sphere measurement
+     */
+    public Double getLeftSphere () {
         return leftSphere;
     }
 
-    public void setLeftSphere ( final Float leftSphere ) {
+    /**
+     * Sets the left sphere measurement
+     *
+     * @param leftSphere
+     *            the left sphere measurement to set
+     */
+    public void setLeftSphere ( final Double leftSphere ) {
         this.leftSphere = leftSphere;
     }
 
-    public Float getRightSphere () {
+    /**
+     * Sets the right sphere measurement
+     *
+     * @return the right sphere measurement
+     */
+    public Double getRightSphere () {
         return rightSphere;
     }
 
-    public void setRightSphere ( final Float rightSphere ) {
+    /**
+     * Sets the right sphere measurement
+     *
+     * @param rightSphere
+     *            the right sphere measurement to set
+     */
+    public void setRightSphere ( final Double rightSphere ) {
         this.rightSphere = rightSphere;
     }
 
-    public Float getLeftCylinder () {
+    /**
+     * Gets the left cylinder measurement
+     *
+     * @return the left cylinder measurement
+     */
+    public Double getLeftCylinder () {
         return leftCylinder;
     }
 
-    public void setLeftCylinder ( final Float leftCylinder ) {
+    /**
+     * Sets the left cylinder measurement
+     *
+     * @param leftCylinder
+     *            the left cylinder measurement to set
+     */
+    public void setLeftCylinder ( final Double leftCylinder ) {
         this.leftCylinder = leftCylinder;
     }
 
-    public Float getRightCylinder () {
+    /**
+     * Gets the right cylinder measurement
+     *
+     * @return the left cylinder measurement
+     */
+    public Double getRightCylinder () {
         return rightCylinder;
     }
 
-    public void setRightCylinder ( final Float rightCylinder ) {
+    /**
+     * Sets the right cylinder measurement
+     *
+     * @param rightCylinder
+     *            the right cylinder measurement to set
+     */
+    public void setRightCylinder ( final Double rightCylinder ) {
         this.rightCylinder = rightCylinder;
     }
 
-    public Float getLeftAxis () {
+    /**
+     * Gets the left axis measurement
+     *
+     * @return the left axis measurement
+     */
+    public Double getLeftAxis () {
         return leftAxis;
     }
 
-    public void setLeftAxis ( final Float leftAxis ) {
+    /**
+     * Sets the left axis measurement
+     *
+     * @param leftAxis
+     *            the left axis measurement to set
+     */
+    public void setLeftAxis ( final Double leftAxis ) {
         this.leftAxis = leftAxis;
     }
 
-    public Float getRightAxis () {
+    /**
+     * Get the right axis measurement
+     *
+     * @return the right axis measurement
+     */
+    public Double getRightAxis () {
         return rightAxis;
     }
 
-    public void setRightAxis ( final Float rightAxis ) {
+    /**
+     * Sets the right axis measurement
+     *
+     * @param rightAxis
+     *            the rightAxis to set
+     */
+    public void setRightAxis ( final Double rightAxis ) {
         this.rightAxis = rightAxis;
     }
 

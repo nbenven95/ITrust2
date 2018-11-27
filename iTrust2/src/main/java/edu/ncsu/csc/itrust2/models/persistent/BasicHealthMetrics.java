@@ -28,7 +28,6 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
  * @author Matthew Gray
  * @author Kai Presler-Marshall
  */
-
 @Entity
 @Table ( name = "BasicHealthMetrics" )
 public class BasicHealthMetrics extends DomainObject<BasicHealthMetrics> {

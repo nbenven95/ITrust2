@@ -18,6 +18,12 @@ import org.hibernate.criterion.Criterion;
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 
+/**
+ * Object persisted in the database that represents the BasicEyeMetrics of a
+ * patient's office visit.
+ *
+ * @author Neil Dey
+ */
 @Entity
 @Table ( name = "BasicEyeMetrics" )
 public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
@@ -27,19 +33,37 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long  id;
+    private Long   id;
 
-    private Float leftSphere;
+    /**
+     * The left eye's sphere measurement
+     */
+    private Double leftSphere;
 
-    private Float rightSphere;
+    /**
+     * The right eye's sphere measurement
+     */
+    private Double rightSphere;
 
-    private Float leftCylinder;
+    /**
+     * The left eye's cylinder measurement
+     */
+    private Double leftCylinder;
 
-    private Float rightCylinder;
+    /**
+     * The right eye's cylinder measurement
+     */
+    private Double rightCylinder;
 
-    private Float leftAxis;
+    /**
+     * The left eye's axis measurement
+     */
+    private Double leftAxis;
 
-    private Float rightAxis;
+    /**
+     * The right eye's axis measurement
+     */
+    private Double rightAxis;
 
     /**
      * The Patient who is associated with this AppointmentRequest
@@ -47,7 +71,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
-    private User  patient;
+    private User   patient;
 
     /**
      * The HCP who is associated with this AppointmentRequest
@@ -55,7 +79,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
-    private User  hcp;
+    private User   hcp;
 
     /**
      * Retrieve an BasicHealthMetrics by its numerical ID.
@@ -172,78 +196,286 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
         setRightAxis( ovf.getRightAxis() );
     }
 
+    /**
+     * Retrieves the ID of the AppointmentRequest
+     *
+     * @return the id
+     */
     @Override
     public Long getId () {
         return id;
     }
 
-    @SuppressWarnings ( "unused" )
+    /**
+     * Sets the ID of the AppointmentRequest
+     *
+     * @param id
+     *            the id to set
+     */
     public void setId ( final Long id ) {
         this.id = id;
     }
 
-    public Float getLeftSphere () {
+    /**
+     * Gets the left sphere measurement
+     *
+     * @return the left sphere measurement
+     */
+    public Double getLeftSphere () {
         return leftSphere;
     }
 
-    public void setLeftSphere ( final Float leftSphere ) {
+    /**
+     * Sets the left sphere measurement
+     *
+     * @param leftSphere
+     *            the left sphere measurement to set
+     */
+    public void setLeftSphere ( final Double leftSphere ) {
         this.leftSphere = leftSphere;
     }
 
-    public Float getRightSphere () {
+    /**
+     * Sets the right sphere measurement
+     *
+     * @return the right sphere measurement
+     */
+    public Double getRightSphere () {
         return rightSphere;
     }
 
-    public void setRightSphere ( final Float rightSphere ) {
+    /**
+     * Sets the right sphere measurement
+     *
+     * @param rightSphere
+     *            the right sphere measurement to set
+     */
+    public void setRightSphere ( final Double rightSphere ) {
         this.rightSphere = rightSphere;
     }
 
-    public Float getLeftCylinder () {
+    /**
+     * Gets the left cylinder measurement
+     *
+     * @return the left cylinder measurement
+     */
+    public Double getLeftCylinder () {
         return leftCylinder;
     }
 
-    public void setLeftCylinder ( final Float leftCylinder ) {
+    /**
+     * Sets the left cylinder measurement
+     *
+     * @param leftCylinder
+     *            the left cylinder measurement to set
+     */
+    public void setLeftCylinder ( final Double leftCylinder ) {
         this.leftCylinder = leftCylinder;
     }
 
-    public Float getRightCylinder () {
+    /**
+     * Gets the right cylinder measurement
+     *
+     * @return the left cylinder measurement
+     */
+    public Double getRightCylinder () {
         return rightCylinder;
     }
 
-    public void setRightCylinder ( final Float rightCylinder ) {
+    /**
+     * Sets the right cylinder measurement
+     *
+     * @param rightCylinder
+     *            the right cylinder measurement to set
+     */
+    public void setRightCylinder ( final Double rightCylinder ) {
         this.rightCylinder = rightCylinder;
     }
 
-    public Float getLeftAxis () {
+    /**
+     * Gets the left axis measurement
+     *
+     * @return the left axis measurement
+     */
+    public Double getLeftAxis () {
         return leftAxis;
     }
 
-    public void setLeftAxis ( final Float leftAxis ) {
+    /**
+     * Sets the left axis measurement
+     *
+     * @param leftAxis
+     *            the left axis measurement to set
+     */
+    public void setLeftAxis ( final Double leftAxis ) {
         this.leftAxis = leftAxis;
     }
 
-    public Float getRightAxis () {
+    /**
+     * Get the right axis measurement
+     *
+     * @return the right axis measurement
+     */
+    public Double getRightAxis () {
         return rightAxis;
     }
 
-    public void setRightAxis ( final Float rightAxis ) {
+    /**
+     * Sets the right axis measurement
+     *
+     * @param rightAxis
+     *            the rightAxis to set
+     */
+    public void setRightAxis ( final Double rightAxis ) {
         this.rightAxis = rightAxis;
     }
 
+    /**
+     * Gets the patient associated with the appointment
+     *
+     * @return the patient associated with the appointment
+     */
     public User getPatient () {
         return patient;
     }
 
+    /**
+     * Sets the patient associated with the appointment
+     *
+     * @param patient
+     *            the patient to set
+     */
     public void setPatient ( final User patient ) {
         this.patient = patient;
     }
 
+    /**
+     * Gets the HCP associated with the appointment
+     *
+     * @return the hcp associated with the appointment
+     */
     public User getHcp () {
         return hcp;
     }
 
+    /**
+     * Sets the HCP associated with the appointment
+     *
+     * @param hcp
+     *            the hcp to set
+     */
     public void setHcp ( final User hcp ) {
         this.hcp = hcp;
     }
 
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode () {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ( ( hcp == null ) ? 0 : hcp.hashCode() );
+        result = prime * result + ( ( id == null ) ? 0 : id.hashCode() );
+        result = prime * result + ( ( leftAxis == null ) ? 0 : leftAxis.hashCode() );
+        result = prime * result + ( ( leftCylinder == null ) ? 0 : leftCylinder.hashCode() );
+        result = prime * result + ( ( leftSphere == null ) ? 0 : leftSphere.hashCode() );
+        result = prime * result + ( ( patient == null ) ? 0 : patient.hashCode() );
+        result = prime * result + ( ( rightAxis == null ) ? 0 : rightAxis.hashCode() );
+        result = prime * result + ( ( rightCylinder == null ) ? 0 : rightCylinder.hashCode() );
+        result = prime * result + ( ( rightSphere == null ) ? 0 : rightSphere.hashCode() );
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals ( final Object obj ) {
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
+        final BasicEyeMetrics other = (BasicEyeMetrics) obj;
+        if ( hcp == null ) {
+            if ( other.hcp != null ) {
+                return false;
+            }
+        }
+        else if ( !hcp.equals( other.hcp ) ) {
+            return false;
+        }
+        if ( id == null ) {
+            if ( other.id != null ) {
+                return false;
+            }
+        }
+        else if ( !id.equals( other.id ) ) {
+            return false;
+        }
+        if ( leftAxis == null ) {
+            if ( other.leftAxis != null ) {
+                return false;
+            }
+        }
+        else if ( !leftAxis.equals( other.leftAxis ) ) {
+            return false;
+        }
+        if ( leftCylinder == null ) {
+            if ( other.leftCylinder != null ) {
+                return false;
+            }
+        }
+        else if ( !leftCylinder.equals( other.leftCylinder ) ) {
+            return false;
+        }
+        if ( leftSphere == null ) {
+            if ( other.leftSphere != null ) {
+                return false;
+            }
+        }
+        else if ( !leftSphere.equals( other.leftSphere ) ) {
+            return false;
+        }
+        if ( patient == null ) {
+            if ( other.patient != null ) {
+                return false;
+            }
+        }
+        else if ( !patient.equals( other.patient ) ) {
+            return false;
+        }
+        if ( rightAxis == null ) {
+            if ( other.rightAxis != null ) {
+                return false;
+            }
+        }
+        else if ( !rightAxis.equals( other.rightAxis ) ) {
+            return false;
+        }
+        if ( rightCylinder == null ) {
+            if ( other.rightCylinder != null ) {
+                return false;
+            }
+        }
+        else if ( !rightCylinder.equals( other.rightCylinder ) ) {
+            return false;
+        }
+        if ( rightSphere == null ) {
+            if ( other.rightSphere != null ) {
+                return false;
+            }
+        }
+        else if ( !rightSphere.equals( other.rightSphere ) ) {
+            return false;
+        }
+        return true;
+    }
 }
