@@ -497,7 +497,6 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
      */
     @Override
     public void save () {
-        final BasicHealthMetrics oldBhm = BasicHealthMetrics.getById( basicHealthMetrics.getId() );
         this.basicHealthMetrics.save();
         super.save();
     }

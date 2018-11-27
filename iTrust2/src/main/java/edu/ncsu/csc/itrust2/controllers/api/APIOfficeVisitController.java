@@ -18,6 +18,7 @@ import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
@@ -111,6 +112,9 @@ public class APIOfficeVisitController extends APIController {
             switch ( AppointmentType.valueOf( visitF.getType() ) ) {
                 case GENERAL_CHECKUP:
                     visit = new GeneralCheckup( visitF );
+                    break;
+                case OPHTHALMOLOGY_VISIT:
+                    visit = new GeneralOphthalmologyVisit( visitF );
                     break;
                 default:
                     return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );

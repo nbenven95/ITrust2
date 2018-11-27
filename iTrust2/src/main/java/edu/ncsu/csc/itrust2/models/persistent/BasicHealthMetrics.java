@@ -34,6 +34,82 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
 public class BasicHealthMetrics extends DomainObject<BasicHealthMetrics> {
 
     /**
+     * ID of the AppointmentRequest
+     */
+    @Id
+    @GeneratedValue ( strategy = GenerationType.AUTO )
+    private Long                   id;
+
+    /**
+     * Height or length of the person. Up to a 3-digit number and potentially
+     * one digit of decimal precision. > 0
+     */
+    private Float                  height;
+
+    /**
+     * Weight of the person. Up to a 3-digit number and potentially one digit of
+     * decimal precision. > 0
+     */
+    private Float                  weight;
+
+    /**
+     * Head circumference of the person. Up to a 3-digit number and potentially
+     * one digit of decimal precision. > 0
+     */
+    private Float                  headCircumference;
+
+    /**
+     * Systolic blood pressure. 3-digit positive number.
+     */
+    private Integer                systolic;
+
+    /**
+     * Diastolic blood pressure. 3-digit positive number.
+     */
+    private Integer                diastolic;
+
+    /**
+     * HDL cholesterol. Between 0 and 90 inclusive.
+     */
+    private Integer                hdl;
+
+    /**
+     * LDL cholesterol. Between 0 and 600 inclusive.
+     */
+    private Integer                ldl;
+
+    /**
+     * Triglycerides cholesterol. Between 100 and 600 inclusive.
+     */
+    private Integer                tri;
+
+    /**
+     * Smoking status of the patient's household.
+     */
+    private HouseholdSmokingStatus houseSmokingStatus;
+
+    /**
+     * Smoking status of the patient.
+     */
+    private PatientSmokingStatus   patientSmokingStatus;
+
+    /**
+     * The Patient who is associated with this AppointmentRequest
+     */
+    @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
+    private User                   patient;
+
+    /**
+     * The HCP who is associated with this AppointmentRequest
+     */
+    @NotNull
+    @ManyToOne
+    @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
+    private User                   hcp;
+
+    /**
      * Retrieve an BasicHealthMetrics by its numerical ID.
      *
      * @param id
@@ -153,13 +229,6 @@ public class BasicHealthMetrics extends DomainObject<BasicHealthMetrics> {
     }
 
     /**
-     * ID of the AppointmentRequest
-     */
-    @Id
-    @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long id;
-
-    /**
      * Retrieves the ID of the AppointmentRequest
      */
     @Override
@@ -177,75 +246,6 @@ public class BasicHealthMetrics extends DomainObject<BasicHealthMetrics> {
     private void setId ( final Long id ) {
         this.id = id;
     }
-
-    /**
-     * Height or length of the person. Up to a 3-digit number and potentially
-     * one digit of decimal precision. > 0
-     */
-    private Float                  height;
-
-    /**
-     * Weight of the person. Up to a 3-digit number and potentially one digit of
-     * decimal precision. > 0
-     */
-    private Float                  weight;
-
-    /**
-     * Head circumference of the person. Up to a 3-digit number and potentially
-     * one digit of decimal precision. > 0
-     */
-    private Float                  headCircumference;
-
-    /**
-     * Systolic blood pressure. 3-digit positive number.
-     */
-    private Integer                systolic;
-
-    /**
-     * Diastolic blood pressure. 3-digit positive number.
-     */
-    private Integer                diastolic;
-
-    /**
-     * HDL cholesterol. Between 0 and 90 inclusive.
-     */
-    private Integer                hdl;
-
-    /**
-     * LDL cholesterol. Between 0 and 600 inclusive.
-     */
-    private Integer                ldl;
-
-    /**
-     * Triglycerides cholesterol. Between 100 and 600 inclusive.
-     */
-    private Integer                tri;
-
-    /**
-     * Smoking status of the patient's household.
-     */
-    private HouseholdSmokingStatus houseSmokingStatus;
-
-    /**
-     * Smoking status of the patient.
-     */
-    private PatientSmokingStatus   patientSmokingStatus;
-
-    /**
-     * The Patient who is associated with this AppointmentRequest
-     */
-    @NotNull
-    @ManyToOne
-    @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
-    private User                   patient;
-
-    /**
-     * The HCP who is associated with this AppointmentRequest
-     */
-    @NotNull
-    @ManyToOne
-    @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
-    private User                   hcp;
 
     /**
      * Retrieves the User object for the Patient for the AppointmentRequest

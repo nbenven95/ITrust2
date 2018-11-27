@@ -13,6 +13,7 @@ import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
 import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit;
 import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
@@ -154,6 +155,18 @@ public class OfficeVisitForm implements Serializable {
 
     private List<PrescriptionForm> prescriptions;
 
+    private Float                  leftSphere;
+
+    private Float                  rightSphere;
+
+    private Float                  leftCylinder;
+
+    private Float                  rightCylinder;
+
+    private Float                  leftAxis;
+
+    private Float                  rightAxis;
+
     /**
      * Creates an OfficeVisitForm from the OfficeVisit provided
      *
@@ -177,6 +190,15 @@ public class OfficeVisitForm implements Serializable {
             setLabProcedures( gc.getLabProcedures() );
             setPrescriptions( gc.getPrescriptions().stream()
                     .map( ( final Prescription p ) -> new PrescriptionForm( p ) ).collect( Collectors.toList() ) );
+        }
+        else if ( ov instanceof GeneralOphthalmologyVisit ) {
+            final GeneralOphthalmologyVisit gov = (GeneralOphthalmologyVisit) ov;
+            setLeftSphere( gov.getBasicEyeMetrics().getLeftSphere() );
+            setRightSphere( gov.getBasicEyeMetrics().getRightSphere() );
+            setLeftCylinder( gov.getBasicEyeMetrics().getLeftCylinder() );
+            setRightCylinder( gov.getBasicEyeMetrics().getRightCylinder() );
+            setLeftAxis( gov.getBasicEyeMetrics().getLeftAxis() );
+            setRightAxis( gov.getBasicEyeMetrics().getRightAxis() );
         }
         setDiastolic( ov.getBasicHealthMetrics().getDiastolic() );
         setHdl( ov.getBasicHealthMetrics().getHdl() );
@@ -607,4 +629,53 @@ public class OfficeVisitForm implements Serializable {
     public List<PrescriptionForm> getPrescriptions () {
         return prescriptions;
     }
+
+    public Float getLeftSphere () {
+        return leftSphere;
+    }
+
+    public void setLeftSphere ( final Float leftSphere ) {
+        this.leftSphere = leftSphere;
+    }
+
+    public Float getRightSphere () {
+        return rightSphere;
+    }
+
+    public void setRightSphere ( final Float rightSphere ) {
+        this.rightSphere = rightSphere;
+    }
+
+    public Float getLeftCylinder () {
+        return leftCylinder;
+    }
+
+    public void setLeftCylinder ( final Float leftCylinder ) {
+        this.leftCylinder = leftCylinder;
+    }
+
+    public Float getRightCylinder () {
+        return rightCylinder;
+    }
+
+    public void setRightCylinder ( final Float rightCylinder ) {
+        this.rightCylinder = rightCylinder;
+    }
+
+    public Float getLeftAxis () {
+        return leftAxis;
+    }
+
+    public void setLeftAxis ( final Float leftAxis ) {
+        this.leftAxis = leftAxis;
+    }
+
+    public Float getRightAxis () {
+        return rightAxis;
+    }
+
+    public void setRightAxis ( final Float rightAxis ) {
+        this.rightAxis = rightAxis;
+    }
+
 }
