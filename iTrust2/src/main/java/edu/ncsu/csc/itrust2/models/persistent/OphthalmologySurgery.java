@@ -40,14 +40,15 @@ public class OphthalmologySurgery extends OfficeVisit {
      *            The office visit form.
      * @throws ParseException
      */
-    public OphthalmologySurgery ( OfficeVisitForm ovf ) throws ParseException {
+    public OphthalmologySurgery ( final OfficeVisitForm ovf ) throws ParseException {
+        super( ovf );
         setBasicEyeMetrics( new BasicEyeMetrics( ovf ) );
         setSurgeryType( SurgeryType.parse( ovf.getSurgeryType() ) );
     }
 
     /**
      * Gets the surgery type.
-     * 
+     *
      * @return the surgeryType
      */
     public SurgeryType getSurgeryType () {
@@ -56,17 +57,17 @@ public class OphthalmologySurgery extends OfficeVisit {
 
     /**
      * Sets the surgery type.
-     * 
+     *
      * @param surgeryType
      *            the surgeryType to set
      */
-    public void setSurgeryType ( SurgeryType surgeryType ) {
+    public void setSurgeryType ( final SurgeryType surgeryType ) {
         this.surgeryType = surgeryType;
     }
 
     /**
      * Gets basic eye metrics.
-     * 
+     *
      * @return the basicEyeMetrics
      */
     public BasicEyeMetrics getBasicEyeMetrics () {
@@ -75,12 +76,20 @@ public class OphthalmologySurgery extends OfficeVisit {
 
     /**
      * Sets basic eye metrics.
-     * 
+     *
      * @param basicEyeMetrics
      *            the basicEyeMetrics to set
      */
-    public void setBasicEyeMetrics ( BasicEyeMetrics basicEyeMetrics ) {
+    public void setBasicEyeMetrics ( final BasicEyeMetrics basicEyeMetrics ) {
         this.basicEyeMetrics = basicEyeMetrics;
     }
 
+    /**
+     *
+     */
+    @Override
+    public void save () {
+        this.basicEyeMetrics.save();
+        super.save();
+    }
 }

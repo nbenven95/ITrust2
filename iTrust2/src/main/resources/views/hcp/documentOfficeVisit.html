@@ -389,14 +389,14 @@
               } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_SURGERY") {
               	// visit.basicEyeMetrics is set by form
             	$scope.errorMsg += checkValidBasicEyeMetrics();
-             	$scope.visit.surgeryType = $scope.surgeryType;
+             	//+$scope.visit.surgeryType = $scope.surgeryType;
              	
            		delete $scope.visit.labProcedures;
            		delete $scope.visit.prescriptions;
            		delete $scope.visit.diagnoses;
               }
               
-			/* TODO uncomment when OfficeVisit has been implemented backend
+
               if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
                 $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
               }
@@ -455,7 +455,7 @@
 								console.error(rejection);
                 $scope.message = "Error occurred creating office visit";
               })
-              */
+
               console.log("OFFICE VISIT:");
               console.log($scope.visit);
               $scope.message = "Office visit created successfully";
