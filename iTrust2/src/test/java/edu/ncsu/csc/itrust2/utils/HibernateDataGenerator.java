@@ -120,8 +120,26 @@ public class HibernateDataGenerator {
         ophp.setState( State.NC );
         ophp.setZip( "12345" );
         ophp.setPhone( "111-222-3333" );
-        ophp.setSpecialty( Specialty.SPECIALTY_OPTOMETRY );
+        ophp.setSpecialty( Specialty.SPECIALTY_OPHTHALMOLOGY );
         ophp.save();
+
+        // Create an optometry HCP
+        final User opthcp = new User( "opthcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                Role.ROLE_HCP, 1 );
+        opthcp.save();
+
+        final Personnel optp = new Personnel();
+        optp.setSelf( opthcp );
+        optp.setFirstName( "Preston" );
+        optp.setLastName( "Garvey" );
+        optp.setEmail( "csc326.201.1@gmail.com" );
+        optp.setAddress1( "123 TheresASettlementThatNeedsYourHelp Street" );
+        optp.setCity( "Sanctuary" );
+        optp.setState( State.NC );
+        optp.setZip( "12345" );
+        optp.setPhone( "111-222-3333" );
+        optp.setSpecialty( Specialty.SPECIALTY_OPTOMETRY );
+        optp.save();
 
         final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
