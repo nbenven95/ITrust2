@@ -33,37 +33,37 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long   id;
+    private Long    id;
 
     /**
      * The left eye's sphere measurement
      */
-    private Double leftSphere;
+    private Double  leftSphere;
 
     /**
      * The right eye's sphere measurement
      */
-    private Double rightSphere;
+    private Double  rightSphere;
 
     /**
      * The left eye's cylinder measurement
      */
-    private Double leftCylinder;
+    private Double  leftCylinder;
 
     /**
      * The right eye's cylinder measurement
      */
-    private Double rightCylinder;
+    private Double  rightCylinder;
 
     /**
      * The left eye's axis measurement
      */
-    private Double leftAxis;
+    private Integer leftAxis;
 
     /**
      * The right eye's axis measurement
      */
-    private Double rightAxis;
+    private Integer rightAxis;
 
     /**
      * The Patient who is associated with this AppointmentRequest
@@ -71,7 +71,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
-    private User   patient;
+    private User    patient;
 
     /**
      * The HCP who is associated with this AppointmentRequest
@@ -79,7 +79,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
-    private User   hcp;
+    private User    hcp;
 
     /**
      * Retrieve an BasicHealthMetrics by its numerical ID.
@@ -297,7 +297,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      *
      * @return the left axis measurement
      */
-    public Double getLeftAxis () {
+    public Integer getLeftAxis () {
         return leftAxis;
     }
 
@@ -307,7 +307,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      * @param leftAxis
      *            the left axis measurement to set
      */
-    public void setLeftAxis ( final Double leftAxis ) {
+    public void setLeftAxis ( final Integer leftAxis ) {
         this.leftAxis = leftAxis;
     }
 
@@ -316,7 +316,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      *
      * @return the right axis measurement
      */
-    public Double getRightAxis () {
+    public Integer getRightAxis () {
         return rightAxis;
     }
 
@@ -326,7 +326,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      * @param rightAxis
      *            the rightAxis to set
      */
-    public void setRightAxis ( final Double rightAxis ) {
+    public void setRightAxis ( final Integer rightAxis ) {
         this.rightAxis = rightAxis;
     }
 

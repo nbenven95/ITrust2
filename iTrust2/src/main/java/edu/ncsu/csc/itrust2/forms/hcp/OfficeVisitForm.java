@@ -16,6 +16,7 @@ import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
 import edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit;
 import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
+import edu.ncsu.csc.itrust2.models.persistent.OphthalmologySurgery;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 
 /**
@@ -163,9 +164,11 @@ public class OfficeVisitForm implements Serializable {
 
     private Double                 rightCylinder;
 
-    private Double                 leftAxis;
+    private Integer                leftAxis;
 
-    private Double                 rightAxis;
+    private Integer                rightAxis;
+
+    private String                 surgeryType;
 
     /**
      * Creates an OfficeVisitForm from the OfficeVisit provided
@@ -200,6 +203,16 @@ public class OfficeVisitForm implements Serializable {
             setRightCylinder( gov.getBasicEyeMetrics().getRightCylinder() );
             setLeftAxis( gov.getBasicEyeMetrics().getLeftAxis() );
             setRightAxis( gov.getBasicEyeMetrics().getRightAxis() );
+        }
+        else if ( ov instanceof OphthalmologySurgery ) {
+            final OphthalmologySurgery surg = (OphthalmologySurgery) ov;
+            setLeftSphere( surg.getBasicEyeMetrics().getLeftSphere() );
+            setRightSphere( surg.getBasicEyeMetrics().getRightSphere() );
+            setLeftCylinder( surg.getBasicEyeMetrics().getLeftCylinder() );
+            setRightCylinder( surg.getBasicEyeMetrics().getRightCylinder() );
+            setLeftAxis( surg.getBasicEyeMetrics().getLeftAxis() );
+            setRightAxis( surg.getBasicEyeMetrics().getRightAxis() );
+            setSurgeryType( surg.getSurgeryType().toString() );
         }
         setDiastolic( ov.getBasicHealthMetrics().getDiastolic() );
         setHdl( ov.getBasicHealthMetrics().getHdl() );
@@ -712,7 +725,7 @@ public class OfficeVisitForm implements Serializable {
      *
      * @return the left axis measurement
      */
-    public Double getLeftAxis () {
+    public Integer getLeftAxis () {
         return leftAxis;
     }
 
@@ -722,7 +735,7 @@ public class OfficeVisitForm implements Serializable {
      * @param leftAxis
      *            the left axis measurement to set
      */
-    public void setLeftAxis ( final Double leftAxis ) {
+    public void setLeftAxis ( final Integer leftAxis ) {
         this.leftAxis = leftAxis;
     }
 
@@ -731,7 +744,7 @@ public class OfficeVisitForm implements Serializable {
      *
      * @return the right axis measurement
      */
-    public Double getRightAxis () {
+    public Integer getRightAxis () {
         return rightAxis;
     }
 
@@ -741,8 +754,27 @@ public class OfficeVisitForm implements Serializable {
      * @param rightAxis
      *            the rightAxis to set
      */
-    public void setRightAxis ( final Double rightAxis ) {
+    public void setRightAxis ( final Integer rightAxis ) {
         this.rightAxis = rightAxis;
+    }
+
+    /**
+     * Gets the surgery type.
+     *
+     * @return the surgeryType
+     */
+    public String getSurgeryType () {
+        return surgeryType;
+    }
+
+    /**
+     * Sets the surgery type.
+     *
+     * @param surgeryType
+     *            the surgeryType to set
+     */
+    public void setSurgeryType ( String surgeryType ) {
+        this.surgeryType = surgeryType;
     }
 
 }

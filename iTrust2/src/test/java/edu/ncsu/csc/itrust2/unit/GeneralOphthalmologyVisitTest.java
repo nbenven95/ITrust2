@@ -54,8 +54,8 @@ public class GeneralOphthalmologyVisitTest {
 
         bem.setHcp( User.getByName( "ophhcp" ) );
         bem.setPatient( User.getByName( "AliceThirteen" ) );
-        bem.setLeftAxis( 90.5 );
-        bem.setRightAxis( 89.5 );
+        bem.setLeftAxis( 90 );
+        bem.setRightAxis( 89 );
         bem.setLeftCylinder( -0.5 );
         bem.setRightCylinder( 0.5 );
         bem.setLeftSphere( -5.0 );

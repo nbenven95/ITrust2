@@ -33,6 +33,7 @@
       class="edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup" />
     <mapping
       class="edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit" />
+      <mapping class="edu.ncsu.csc.itrust2.models.persistent.OphthalmologySurgery"/>
 		<mapping
 			class="edu.ncsu.csc.itrust2.models.persistent.Hospital" />
 		<mapping
