@@ -206,7 +206,12 @@
 
             $http.get("/iTrust2/api/v1/appointmenttype")
               .then(function (response) {
-                $scope.appointmentTypes = response.data;
+            	/* TODO: This is is just to mock the different types of appointments until
+            	   they get implemented on the backend. Uncomment the line directly
+            	   below this one and comment the line two down when backend
+            	   is implemented. */
+                // $scope.appointmentTypes = response.data;
+            	$scope.appointmentTypes = ["GENERAL_CHECKUP", "OPHTHALMOLOGY_VISIT", "OPHTHALMOLOGY_SURGERY"];
                 $scope.appointmentType = $scope.appointmentTypes[0];
               });
             $http.get("/iTrust2/api/v1/housesmoking")
@@ -238,10 +243,10 @@
    			  });*/
             
             $scope.icdcodes_oph = [
-            	{"id":100,"code":"O10","description":"cataracts"},
-            	{"id":100,"code":"O11","description":"age-related macular degeneration"},
-            	{"id":100,"code":"O12","description":"amblyopia"},
-            	{"id":100,"code":"O13","description":"glaucoma"}
+            	{"id":100,"code":"O10","description":"Cataracts"},
+            	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
+            	{"id":100,"code":"O12","description":"Amblyopia"},
+            	{"id":100,"code":"O13","description":"Glaucoma"}
            	];
 
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
@@ -368,7 +373,7 @@
              	delete $scope.visit.cylinderOS;
              	delete $scope.visit.axisOD;
              	delete $scope.visit.axisOS;
-          		delete $scope.visit.surguryType;
+          		delete $scope.visit.surgeryType;
               } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_VISIT") {
             	// visit.<eye metrics> is set by form
             	
@@ -378,10 +383,13 @@
            		delete $scope.visit.labProcedures;
            		delete $scope.visit.prescriptions;
            		
+           		// Not sure if this is needed yet
+           		delete $scope.visit.surgeryType;
+           		
               } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_SURGERY") {
               	// visit.basicEyeMetrics is set by form
             	$scope.errorMsg += checkValidBasicEyeMetrics();
-             	$scope.visit.surguryType = $scope.surguryType;
+             	$scope.visit.surgeryType = $scope.surgeryType;
              	
            		delete $scope.visit.labProcedures;
            		delete $scope.visit.prescriptions;
@@ -470,6 +478,10 @@
             $scope.procedure = {};
             $scope.procedures = [];
             $scope.appointmentType = "GENERAL_CHECKUP";
+            
+            /* TODO: Should probably replace this with an API call to get all
+               surgery types. */
+            $scope.surgeryTypes = ["CATARACT", "LASER", "REFRACTIVE"];
 
 
             //clears local variables for diagnosis form
@@ -1021,6 +1033,38 @@
 										</div>
 									</div>
 									
+									<!--  Ophthalmology surgery types panel -->
+									<div ng-show="visit.appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+										<div class="panel panel-info">
+											<div class="panel-heading">
+												<h4>Surgery Type</h4>
+											</div>
+											
+											<div class="panel-body">
+												<div class="form-group row">
+													<div class="col-xs-4">
+															<label>Surgery Type:</label>
+												    </div>
+													<div class="col-xs-8 radio-box">
+														<div class="form-check">
+															<ul style="list-style: none;">
+																<!-- TODO: not sure if name and id are needed for this field -->
+																<li ng-repeat="t in surgeryTypes"><label> <input
+																		type="radio"
+																		name="surgerytype"
+																		ng-model="$parent.visit.surgeryType"
+																		ng-value="t"
+																		required="true" /> {{t}}
+																</label></li>
+															</ul>
+														</div>
+													</div>
+												</div>	
+											</div>
+											
+										</div>
+									</div>
+									
 									<!-- Ophthalmology Diagnosis Panel  -->
 									<div ng-show="visit.appointmentType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
 										<div class="panel panel-info">
@@ -1032,7 +1076,7 @@
 													<div class="col-xs-4">
 														<label>Diagnosis:</label>
 													</div>
-													<div class="col-xs-8 radio-box">
+													<div class="col-xs-6 radio-box">
 														<div class="form-check">
 															<ul style="list-style: none;">
 																<li ng-repeat="i in icdcodes_oph"><label> <input
@@ -1093,7 +1137,7 @@
 									</div>
 									
 								</div>
-
+								
 								<!-- Lab Procedures Panel -->
 								<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="row">
 									<div class="col-md-4">
