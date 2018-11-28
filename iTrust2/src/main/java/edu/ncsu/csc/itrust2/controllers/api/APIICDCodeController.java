@@ -43,6 +43,17 @@ public class APIICDCodeController extends APIController {
     }
 
     /**
+     * Returns a list of codes related to ophthalmology.
+     * 
+     * @return The ophthalmology codes in the system.
+     */
+    @GetMapping ( BASE_PATH + "/ophicdcodes" )
+    public List<ICDCode> getOphthalmologyCodes () {
+        LoggerUtil.log( TransactionType.ICD_VIEW, LoggerUtil.currentUser(), "Fetched ophthalmology icd codes." );
+        return ICDCode.getOphthalmologyCodes();
+    }
+
+    /**
      * Returns the code with the given ID
      *
      * @param id
