@@ -83,6 +83,7 @@ public class AppointmentRequestStepDefs extends CucumberTest {
 
         final Select type = new Select( driver.findElement( By.name( "type" ) ) );
         type.selectByVisibleText( "GENERAL_CHECKUP" );
+        waitForAngular();
         final Select hcp = new Select( driver.findElement( By.id( "hcp" ) ) );
         hcp.selectByVisibleText( "hcp" );
 

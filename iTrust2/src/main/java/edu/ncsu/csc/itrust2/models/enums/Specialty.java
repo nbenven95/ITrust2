@@ -12,39 +12,15 @@ public enum Specialty {
     /**
      * HCP with no specialty.
      */
-    SPECIALTY_NONE ( 0 ),
+    SPECIALTY_NONE,
     /**
      * HCP that specializes in optometry.
      */
-    SPECIALTY_OPTOMETRY ( 1 ),
+    SPECIALTY_OPTOMETRY,
     /**
      * HCP that specializes in ophthalmology.
      */
-    SPECIALTY_OPHTHALMOLOGY ( 2 );
-
-    /**
-     * Numeric code of the specialty.
-     */
-    private int code;
-
-    /**
-     * Create a Specialty from a code.
-     *
-     * @param code
-     *            Code of the Specialty.
-     */
-    private Specialty ( final int code ) {
-        this.code = code;
-    }
-
-    /**
-     * Gets the numeric code of the Specialty
-     *
-     * @return Code of the specialty
-     */
-    public int getCode () {
-        return this.code;
-    }
+    SPECIALTY_OPHTHALMOLOGY;
 
     /**
      * Parse a string into its equivalent specialty enumeration.
