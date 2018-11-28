@@ -23,6 +23,7 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.persistent.BasicHealthMetrics;
 import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
 import edu.ncsu.csc.itrust2.models.persistent.Drug;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
 import edu.ncsu.csc.itrust2.models.persistent.ICDCode;
 import edu.ncsu.csc.itrust2.models.persistent.LOINC;
@@ -110,7 +111,7 @@ public class LabProcedureTest {
         final Hospital hosp = new Hospital( "Dr. Jenkins' Insane Asylum", "123 Main St", "12345", "NC" );
         hosp.save();
 
-        final OfficeVisit visit = new OfficeVisit();
+        final GeneralCheckup visit = new GeneralCheckup();
 
         final BasicHealthMetrics bhm = new BasicHealthMetrics();
 
@@ -155,10 +156,7 @@ public class LabProcedureTest {
         drug.setDescription( "Lithium Compounds" );
         drug.setName( "Li2O8" );
         drug.save();
-        
- 
-        
-        
+
         final Prescription pres = new Prescription();
         pres.setDosage( 3 );
         pres.setDrug( drug );

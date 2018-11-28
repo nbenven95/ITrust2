@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
+import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
+import edu.ncsu.csc.itrust2.models.persistent.OphthalmologySurgery;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
@@ -104,13 +108,28 @@ public class APIOfficeVisitController extends APIController {
     @PostMapping ( BASE_PATH + "/officevisits" )
     public ResponseEntity createOfficeVisit ( @RequestBody final OfficeVisitForm visitF ) {
         try {
-            final OfficeVisit visit = new OfficeVisit( visitF );
-            
+            OfficeVisit visit;
+
+            switch ( AppointmentType.valueOf( visitF.getType() ) ) {
+                case GENERAL_CHECKUP:
+                    visit = new GeneralCheckup( visitF );
+                    break;
+                case OPHTHALMOLOGY_VISIT:
+                    visit = new GeneralOphthalmologyVisit( visitF );
+                    break;
+                case OPHTHALMOLOGY_SURGERY:
+                    visit = new OphthalmologySurgery( visitF );
+                    break;
+                default:
+                    return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );
+            }
+
             if ( null != OfficeVisit.getById( visit.getId() ) ) {
                 return new ResponseEntity(
                         errorResponse( "Office visit with the id " + visit.getId() + " already exists" ),
                         HttpStatus.CONFLICT );
             }
+
             visit.save();
             LoggerUtil.log( TransactionType.OFFICE_VISIT_CREATE, LoggerUtil.currentUser(),
                     visit.getPatient().getUsername() );
@@ -166,7 +185,22 @@ public class APIOfficeVisitController extends APIController {
     @PutMapping ( BASE_PATH + "/officevisits/{id}" )
     public ResponseEntity updateOfficeVisit ( @PathVariable final Long id, @RequestBody final OfficeVisitForm form ) {
         try {
-            final OfficeVisit visit = new OfficeVisit( form );
+            OfficeVisit visit;
+
+            switch ( AppointmentType.valueOf( form.getType() ) ) {
+                case GENERAL_CHECKUP:
+                    visit = new GeneralCheckup( form );
+                    break;
+                case OPHTHALMOLOGY_VISIT:
+                    visit = new GeneralOphthalmologyVisit( form );
+                    break;
+                case OPHTHALMOLOGY_SURGERY:
+                    visit = new OphthalmologySurgery( form );
+                    break;
+                default:
+                    return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );
+            }
+
             if ( null != visit.getId() && !id.equals( visit.getId() ) ) {
                 return new ResponseEntity(
                         errorResponse( "The ID provided does not match the ID of the OfficeVisit provided" ),
