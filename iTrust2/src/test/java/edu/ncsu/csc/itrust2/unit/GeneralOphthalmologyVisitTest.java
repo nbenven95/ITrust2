@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
@@ -60,6 +61,23 @@ public class GeneralOphthalmologyVisitTest {
         bem.setRightCylinder( 0.5 );
         bem.setLeftSphere( -5.0 );
         bem.setRightSphere( -4.0 );
+
+        try {
+            bem.setLeftVisualAcuity( "2/" );
+            Assert.fail();
+        }
+        catch ( final IllegalArgumentException e ) {
+            // Empty
+        }
+        bem.setLeftVisualAcuity( "20/20" );
+        try {
+            bem.setRightVisualAcuity( "20/200" );
+            Assert.fail();
+        }
+        catch ( final IllegalArgumentException e ) {
+            // Empty
+        }
+        bem.setRightVisualAcuity( "9/9" );
 
         bem.save();
 
