@@ -119,6 +119,9 @@ public class APIPersonnelTest {
 
         mvc.perform( delete( "/api/v1/personnel" ) );
 
+        mvc.perform( get( "/api/v1/personnel/getQualifiedAppointmentTypes" ) ).andExpect( status().isOk() )
+                .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
+
     }
 
     /**
