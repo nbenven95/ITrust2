@@ -443,6 +443,8 @@
             	// visit.<eye metrics> is set by form
             	
             	$scope.errorMsg += checkValidBasicEyeMetrics();
+            	// TODO: Determine whether this should be deleted or 
+            	// replaced by another implementation.
            		$scope.selectedVisit.diagnoses = $scope.diagnoses_oph;
            		
            		delete $scope.selectedVisit.labProcedures;
