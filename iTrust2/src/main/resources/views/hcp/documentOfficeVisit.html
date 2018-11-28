@@ -23,11 +23,11 @@
           .controller(
           'documentOfficeVisitCtrl',
           function ($scope, $http) {
-        	  
+
         	  var isDate = function(input) {
               	if (!input) {
               		return false;
-              	}			
+              	}
               	var match = /^(\d?\d)\/(\d?\d)\/(\d{4})$/.exec(input);
               	if (!match) {
               		return false;
@@ -40,7 +40,7 @@
               	var date = new Date(parsedDate.year, parsedDate.month, parsedDate.day);
               	return date.getFullYear() === parsedDate.year && date.getMonth() === parsedDate.month && date.getDate() === parsedDate.day;
               };
-              
+
               var checkValidPrescription = function(p) {
               	var err = [];
               	if (!p.drug) {
@@ -63,10 +63,10 @@
               	if (!/^\+?\d+$/.test(p.renewals)) {
               		err.push("Renewals must be an integer zero or more");
               	}
-              	
+
               	return err.join(". ");
               }
-              
+
               var checkValidDiagnosis = function(d) {
                 	var err = [];
                 	if (!d.code) {
@@ -74,7 +74,7 @@
                 	}
                 	return err.join(". ");
                 }
-              
+
               var checkValidProcedure = function(p) {
           	  	var err = [];
           	  	if(!p.loinc) {
@@ -236,7 +236,7 @@
               function (response) {
                 $scope.icdcodes = response.data;
               });
-           
+
             /* TODO uncomment and delete manually entered diagnonses below 
               $http.get("/iTrust2/api/v1/icdcodes_oph").then(
               function (response) {
@@ -249,7 +249,7 @@
             	{"id":100,"code":"O12","description":"Amblyopia"},
             	{"id":100,"code":"O13","description":"Glaucoma"}
            	];
-            
+
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
                     function (response) {
                       $scope.tech = response.data;
@@ -266,7 +266,7 @@
                       	})(i);
             			  }
                     });
-            
+
             $http.get("/iTrust2/api/v1/loinccodes").then(
                     function (response) {
                       $scope.loinccodes = response.data;
@@ -398,6 +398,54 @@
               }
               
 			/* TODO uncomment when OfficeVisit has been implemented backend
+              if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
+                $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+              }
+              if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
+                $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+              }
+              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
+                $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
+              }
+              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
+                $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
+              }
+              //handle invalid and outside of range
+              if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
+                $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+              } else if ($scope.twelveAndUp) {
+                var hdlInt = parseInt($scope.visit.hdl);
+                if (hdlInt > 90) {
+                  $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+                }
+              }
+              //handle invalid and outside of range
+              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
+                $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+              } else if ($scope.twelveAndUp) {
+                var ldlInt = parseInt($scope.visit.ldl);
+                if (ldlInt > 600) {
+                  $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+                }
+              }
+              //handle invalid and outside of range
+              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
+                $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+              } else if ($scope.twelveAndUp) {
+                var triInt = parseInt($scope.visit.tri);
+                if (triInt > 600 || triInt < 100) {
+                  $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+                }
+              }
+
+              $scope.visit.diagnoses = $scope.diagnoses;
+              $scope.visit.prescriptions = $scope.prescriptions;
+              $scope.visit.prescriptions.forEach(function (p) {
+                p.patient = $scope.visit.patient;
+              });
+
+              $scope.visit.labProcedures = $scope.procedures;
+
               $http({
                 method: 'POST',
                 url: '/iTrust2/api/v1/officevisits',
@@ -405,6 +453,7 @@
               }).then(function (response) {
                 $scope.message = "Office visit created successfully";
               }, function (rejection) {
+								console.error(rejection);
                 $scope.message = "Error occurred creating office visit";
               })
               */
@@ -422,11 +471,11 @@
             $scope.startEntry = "";
             $scope.endEntry = "";
             $scope.renewalEntry = "";
-            
+
             $scope.loincEntry = "";
             $scope.priorityEntry = "";
             $scope.techEntry = "";
-            
+
             $scope.procedure = {};
             $scope.procedures = [];
             $scope.appointmentType = "GENERAL_CHECKUP";
@@ -489,7 +538,7 @@
   	              resetPrescriptionForm();
                 }
             }
-            
+
             $scope.addProcedure = function() {
             	var procCopy = {};
             	$scope.errorMsg = "";
@@ -516,7 +565,7 @@
             $scope.removePrescription = function ($index) {
               $scope.prescriptions.splice($index, 1);
             }
-            
+
             //remove local procedure from list
             $scope.removeProcedure = function ($index) {
               $scope.procedures.splice($index, 1);

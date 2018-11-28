@@ -84,27 +84,28 @@
               return twoDigit(month) + "/" + twoDigit(date.dayOfMonth) + "/" + date.year;
             }
             
-            /* Temporary ariable used to test that the correct forms display for each visit type.
-               TODO: update this to set the variable by selecting selectedVisit.appointmentType so we don't
-               have to update any of the html since all of the ng-show statements check this variable */
-            $scope.visitType = "GENERAL_CHECKUP";
             
-            /* TODO: Should probably replace this with an API call to get all
-               surgery types. */
-         	$scope.surgeryTypes = ["CATARACT", "LASER", "REFRACTIVE"];
+//        	$scope.surgeryTypes = ["CATARACT", "LASER", "REFRACTIVE"];
+            $http.get("/iTrust2/api/v1/surgeryTypes")
+           .then(function (response) {
+          	/* TODO: This is is just to mock the different types of appointments until
+          	   they get implemented on the backend. Uncomment the line directly
+          	   below this one and comment the line two down when backend
+          	   is implemented. */
+              $scope.selectedVisit.surgeryTypes= response.data;
+              //$scope.selectedVisit.surgeryType = $scope.surgeryTypes[0];
+            });
             
-         	/* TODO uncomment and delete manually entered diagnonses below 
-            $http.get("/iTrust2/api/v1/icdcodes_oph").then(
+            $http.get("/iTrust2/api/v1/ophicdcodes").then(
             function (response) {
               $scope.icdcodes_oph = response.data;
- 			  });*/
+ 			  });
           
-          $scope.icdcodes_oph = [
-          	{"id":100,"code":"O10","description":"Cataracts"},
-          	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
-          	{"id":100,"code":"O12","description":"Amblyopia"},
-          	{"id":100,"code":"O13","description":"Glaucoma"}
-         	];
+//          	{"id":100,"code":"O10","description":"Cataracts"},
+//         	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
+//          	{"id":100,"code":"O12","description":"Amblyopia"},
+//          	{"id":100,"code":"O13","description":"Glaucoma"}
+//         	];
 
             $scope.noVisitSelected = true;
             $scope.loadingVisits = true;
@@ -126,11 +127,6 @@
                       });
                   })(i);
                 }
-              });
-
-            $http.get("/iTrust2/api/v1/appointmenttype")
-              .then(function (response) {
-                $scope.types = response.data;
               });
 
             $http.get("/iTrust2/api/v1/housesmoking")
@@ -348,11 +344,54 @@
                   $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
                 }
               }
+
               $scope.selectedVisit.diagnoses = $scope.diagnoses;
               $scope.selectedVisit.prescriptions = $scope.prescriptions;
               $scope.selectedVisit.prescriptions.forEach(function (p) {
                   p.patient = $scope.selectedVisit.patient;
                 });
+              
+              /* Handle appointment type unique fields */
+              $scope.selectedVisit.type = $scope.selectedVisit.appointmentType; /* remove if the backend varname gets changed */
+              if ($scope.selectedVisit.appointmentType === "GENERAL_CHECKUP") {
+                $scope.selectedVisit.labProcedures = $scope.procedures;
+                $scope.selectedVisit.diagnoses = $scope.diagnoses;
+                $scope.selectedVisit.prescriptions = $scope.prescriptions;
+                $scope.selectedVisit.prescriptions.forEach(function (p) {
+                  p.patient = $scope.selectedVisit.patient;
+                });
+             	
+             	delete $scope.selectedVisit.visualAcuityOD;
+             	delete $scope.selectedVisit.visualAcuityOS;
+             	delete $scope.selectedVisit.sphereOD;
+             	delete $scope.selectedVisit.sphereOS;
+             	delete $scope.selectedVisit.cylinderOD;
+             	delete $scope.selectedVisit.cylinderOS;
+             	delete $scope.selectedVisit.axisOD;
+             	delete $scope.selectedVisit.axisOS;
+          		delete $scope.selectedVisit.surgeryType;
+              } else if ($scope.selectedVisit.appointmentType === "OPHTHALMOLOGY_VISIT") {
+            	// visit.<eye metrics> is set by form
+            	
+            	$scope.errorMsg += checkValidBasicEyeMetrics();
+           		$scope.selectedVisit.diagnoses = $scope.diagnoses_oph;
+           		
+           		delete $scope.selectedVisit.labProcedures;
+           		delete $scope.selectedVisit.prescriptions;
+           		
+           		// Not sure if this is needed yet
+           		delete $scope.selectedVisit.surgeryType;
+           		
+              } else if ($scope.selectedVisit.appointmentType === "OPHTHALMOLOGY_SURGERY") {
+              	// visit.basicEyeMetrics is set by form
+            	$scope.errorMsg += checkValidBasicEyeMetrics();
+             	$scope.selectedVisit.surgeryType = $scope.surgeryType;
+             	
+           		delete $scope.selectedVisit.labProcedures;
+           		delete $scope.selectedVisit.prescriptions;
+           		delete $scope.selectedVisit.diagnoses;
+              }
+              
 
               $http({
                 method: 'PUT',
@@ -519,6 +558,7 @@
 											<div class="form-group col-md-4">
 												<label>Type of Visit:</label>
 
+
 												<div class="panel panel-default">
 													<div class="panel-body">
 														<div class="form-check">{{selectedVisit.type}}</div>
@@ -673,7 +713,7 @@
 											</div>
 
 											<!-- Diagnosis Panel  -->
-											<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
+											<div ng-show="selectedVisit.type === 'GENERAL_CHECKUP'" class="col-md-4">
 												<div class="panel panel-info">
 													<div class="panel-heading">
 														<h4>Diagnosis</h4>
@@ -745,7 +785,7 @@
 											</div>
 
 											<!-- Prescription Panel -->
-											<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
+											<div ng-show="selectedVisit.type === 'GENERAL_CHECKUP'" class="col-md-4">
 												<div class="panel panel-info">
 													<div class="panel-heading">
 														<h4>Prescription</h4>
@@ -842,7 +882,7 @@
 										</div>
 										
 										<!-- Basic Eye Metrics Panel -->
-										<div ng-show="visitType === 'OPHTHALMOLOGY_VISIT' || visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+										<div ng-show="selectedVisit.type === 'OPHTHALMOLOGY_VISIT' || visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 											<div class="panel panel-info">
 												<div class="panel-heading">
 													<h4>Basic Eye Metrics</h4>

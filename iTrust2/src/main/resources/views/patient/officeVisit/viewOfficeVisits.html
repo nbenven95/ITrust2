@@ -117,6 +117,10 @@
 
 
             $scope.populateVisit = function () {
+            	
+              /* TODO: Get visit type */
+              $scope.visitType = "GENERAL_CHECKUP"	
+            
               $scope.prescriptions = [];
               $scope.diagnoses = [];
               $scope.procedures = [];
@@ -145,7 +149,15 @@
                   $scope.selectedVisit.houseSmokingStatus = $scope.visits[i].basicHealthMetrics.houseSmokingStatus;
                   $scope.selectedVisit.patientSmokingStatus = $scope.visits[i].basicHealthMetrics.patientSmokingStatus;
 
+                  /* TODO: Get eye health metrics here, should be same as regular health metrics */
+                  
+                  /* TODO: Get surgery type here */
+                  
                   //diagnoses
+                  //This will get both regular diagnoses and ophthalmology diagnoses. With the checks
+                  //that are in place on document and edit office visit pages, it is impossible to
+                  //have an office visit with both types of diagnoses.
+                  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope
                   $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
                     function (response) {
                       $scope.diagnosesResponse = response.data;
@@ -410,9 +422,76 @@
 													</div>
 												</div>
 
+                                                 <!-- TODO: Add Eye Health Metrics panel -->
+						                        <div ng-show="visitType === 'OPHTHALMOLOGY_VISIT' || visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+													<div class="panel panel-info">
+														<div class="panel-heading">
+															<h4>Eye Health Metrics</h4>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4"></div>
+																<div class="col-xs-4">OD</div>
+																<div class="col-xs-4">OS</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Visual Acuity:</label>
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Sphere:</label>
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Cylinder:</label>
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Axis:</label>
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+																<div class="col-xs-4">
+																	<!-- TODO: Add metric -->
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
 
 												<!-- Diagnosis Panel  -->
-												<div class="col-md-4">
+												<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Diagnoses</h4>
@@ -433,9 +512,49 @@
 														</div>
 													</div>
 												</div>
+												
+												<!-- Ophthalmology Diagnosis Panel  -->
+						                        <div ng-show="visitType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
+						                          <div class="panel panel-info">
+						                            <div class="panel-heading">
+						                              <h4>Ophthalmology Diagnoses</h4>
+						                            </div>
+						                            <div class="panel-body" ng-show="showDiagnosis">
+						                              <div class="row">
+						                                <div class="col-md-6">
+						                                  <b>Description</b>
+						                                </div>
+						                                <div class="col-md-6">
+						                                  <b>Note</b>
+						                                </div>
+						                              </div>
+						                              <div class="row" ng-repeat="d in diagnoses">
+						                                <div class="col-md-6">
+						                                  {{d.code.description}}
+						                                </div>
+						                                <div class="col-md-6">
+						                                  {{d.note}}
+						                                </div>
+						                              </div>
+						                            </div>
+						                          </div>
+						                        </div>
+						                        
+						                        <!-- TODO: Add Ophthalmology Surgery Type panel -->
+						                        <div ng-show="visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+						                        	<div class="panel panel-info">
+						                        		<div class="pane-heading">
+						                        			<label>Ophthalmology Surgery Type:</label>
+						                        		</div>
+							                        	
+														<div class="panel-body">
+															<div class="form-check"><!-- {{selectedVisit.surgeryType}} --></div>
+														</div>
+													</div>
+						                        </div>
 
 												<!-- Prescription Panel -->
-												<div class="col-md-4">
+												<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Prescriptions</h4>
@@ -464,7 +583,7 @@
 											<!-- Start a new row of panels -->
 											<div class="row">
 												<!-- Lab Procedures Panel  -->
-												<div class="col-md-4">
+												<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Lab Procedures</h4>
