@@ -49,8 +49,8 @@ Examples:
 Scenario Outline: OPHHCP updates an existing Ophthalmology Surgery Appointment
 Given There is an HCP <name> with <specialty> in the database
 And The required facilities exist
-And An office visit with <name> on <date> at <time> exists for <patientName> in the database with empty notes
 When I log in to iTrust2 as <name>
+And I document an ophthalmology surgery with values: <patientName> <date> <time> <visAcuityODOS> <sphereODOS> <cylinderODOS> <axisODOS> <surgeryType>
 And I navigate to the Edit Office Visit page and select the appointment for <patientName> on <date> at <time>
 # Just hardcode in notes less than 500 characters. Gherkin 
 # doesn't work well for parameterized sentences.
@@ -58,4 +58,4 @@ And I add notes for the office visit and submit the update form
 Then A message confirms the surgery visit was updated
 Examples:
 | name       | specialty               | patientName |    date    |   time  | visAcuityODOS | sphereODOS | cylinderODOS | axisODOS | surgeryType |
-| SeanMurphy | SPECIALTY_OPHTHALMOLOGY | TomRiddle   | 10/31/2018 | 1:00 PM |   15/20       |   -2.00    |     3.00     |   1.00   | CATARACT    |
+| SeanMurphy | SPECIALTY_OPHTHALMOLOGY | TomRiddle   | 10/29/2018 | 1:00 PM |   15/20       |   -2.00    |     3.00     |   1.00   | CATARACT    |
