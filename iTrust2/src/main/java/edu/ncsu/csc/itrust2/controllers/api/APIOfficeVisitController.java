@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
 import edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.OphthalmologySurgery;
+import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
@@ -47,6 +49,21 @@ public class APIOfficeVisitController extends APIController {
     @GetMapping ( BASE_PATH + "/officevisits" )
     public List<OfficeVisit> getOfficeVisits () {
         return OfficeVisit.getOfficeVisits();
+    }
+
+    /**
+     * Retrieves a list of all OfficeVisits in the database that the logged in
+     * HCP is qualified to document
+     * 
+     * @return The list of office visits
+     */
+    @PreAuthorize ( "hasrole('ROLE_HCP')" )
+    @GetMapping ( BASE_PATH + "/hcpofficevisits" )
+    public List<OfficeVisit> getQualifiedOfficeVisits () {
+        final Personnel currentHCP = Personnel.getByName( LoggerUtil.currentUser() );
+        return OfficeVisit.getOfficeVisits().stream().filter( ov -> AppointmentType
+                .getAssociatedAppointmentTypes( currentHCP.getSpecialty() ).contains( ov.getAppointment().getType() ) )
+                .collect( Collectors.toList() );
     }
 
     /**
