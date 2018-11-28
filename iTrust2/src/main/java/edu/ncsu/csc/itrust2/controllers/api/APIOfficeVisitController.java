@@ -20,6 +20,7 @@ import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
 import edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
+import edu.ncsu.csc.itrust2.models.persistent.OphthalmologySurgery;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
 
@@ -116,6 +117,9 @@ public class APIOfficeVisitController extends APIController {
                 case OPHTHALMOLOGY_VISIT:
                     visit = new GeneralOphthalmologyVisit( visitF );
                     break;
+                case OPHTHALMOLOGY_SURGERY:
+                    visit = new OphthalmologySurgery( visitF );
+                    break;
                 default:
                     return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );
             }
@@ -189,6 +193,9 @@ public class APIOfficeVisitController extends APIController {
                     break;
                 case OPHTHALMOLOGY_VISIT:
                     visit = new GeneralOphthalmologyVisit( form );
+                    break;
+                case OPHTHALMOLOGY_SURGERY:
+                    visit = new OphthalmologySurgery( form );
                     break;
                 default:
                     return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );
