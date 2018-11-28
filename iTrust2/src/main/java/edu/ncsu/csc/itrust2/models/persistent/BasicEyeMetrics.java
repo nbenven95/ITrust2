@@ -208,6 +208,8 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
         setRightCylinder( ovf.getRightCylinder() );
         setLeftAxis( ovf.getLeftAxis() );
         setRightAxis( ovf.getRightAxis() );
+        setLeftVisualAcuity( ovf.getLeftVisualAcuity() );
+        setRightVisualAcuity( ovf.getRightVisualAcuity() );
 
     }
 
