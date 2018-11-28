@@ -82,6 +82,7 @@ public class HibernateDataGenerator {
 
         generateUsers();
         generateTestFaculties();
+        generateTestICD();
     }
 
     /**
@@ -309,30 +310,47 @@ public class HibernateDataGenerator {
      * Generated ICDCodes for Ophthalmology Diagnosis
      */
     public static void generateTestICD () {
+
+        // Ophthalmology-related diagnoses should have O as the first
+        // letter of their ICD-10 code.
+
         // Cataracts
         final ICDCodeForm codeForm = new ICDCodeForm();
-        codeForm.setCode( "O010" );
+        codeForm.setCode( "O01.0000" );
         codeForm.setDescription( "Cataracts." );
         final ICDCode cataracts = new ICDCode( codeForm );
         cataracts.save();
 
         // Age-related macular degeneration
-        codeForm.setCode( "O011" );
+        codeForm.setCode( "O01.0001" );
         codeForm.setDescription( "Age-related macular degeneration." );
         final ICDCode macDegen = new ICDCode( codeForm );
         macDegen.save();
 
         // Amblyopia
-        codeForm.setCode( "O012" );
+        codeForm.setCode( "O01.0002" );
         codeForm.setDescription( "Amblyopia" );
         final ICDCode amblyopia = new ICDCode( codeForm );
         amblyopia.save();
 
         // Glaucoma
-        codeForm.setCode( "O013" );
+        codeForm.setCode( "O01.0003" );
         codeForm.setDescription( "Glaucoma" );
         final ICDCode glaucoma = new ICDCode( codeForm );
         glaucoma.save();
+
+        // Pneumonia
+        codeForm.setCode( "A01.0001" );
+        codeForm.setDescription( "Pneumonia" );
+        final ICDCode pneumonia = new ICDCode( codeForm );
+        pneumonia.save();
+
+        // Lung cancer
+        codeForm.setCode( "C01.0001" );
+        codeForm.setDescription( "Lung Cancer" );
+        final ICDCode lungcancer = new ICDCode( codeForm );
+        lungcancer.save();
+
     }
 
     /**
