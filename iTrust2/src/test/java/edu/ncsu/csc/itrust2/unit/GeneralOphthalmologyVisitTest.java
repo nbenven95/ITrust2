@@ -55,10 +55,27 @@ public class GeneralOphthalmologyVisitTest {
 
         bem.setHcp( User.getByName( "ophhcp" ) );
         bem.setPatient( User.getByName( "AliceThirteen" ) );
-        bem.setLeftAxis( 90 );
-        bem.setRightAxis( 89 );
         bem.setLeftCylinder( -0.5 );
         bem.setRightCylinder( 0.5 );
+        try {
+            bem.save();
+            Assert.fail();
+        }
+        catch ( final IllegalArgumentException e ) {
+            assertEquals( e.getMessage(), "Axis is required when cylinder is provided." );
+        }
+        bem.setLeftAxis( 90 );
+        bem.setRightAxis( 89 );
+
+        try {
+            bem.setLeftCylinder( null );
+            bem.save();
+        }
+        catch ( final IllegalArgumentException e ) {
+            assertEquals( e.getMessage(), "One cylinder value is not present." );
+            bem.setLeftCylinder( -0.5 );
+        }
+
         bem.setLeftSphere( -5.0 );
         bem.setRightSphere( -4.0 );
 

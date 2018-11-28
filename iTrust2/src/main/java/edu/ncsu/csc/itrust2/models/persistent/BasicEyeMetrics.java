@@ -38,11 +38,13 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     /**
      * The left eye's sphere measurement
      */
+    @NotNull
     private Double  leftSphere;
 
     /**
      * The right eye's sphere measurement
      */
+    @NotNull
     private Double  rightSphere;
 
     /**
@@ -68,11 +70,13 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     /**
      * The left eye's visual acuity
      */
+    @NotNull
     private String  leftVisualAcuity;
 
     /**
      * The right eye's visual acuity
      */
+    @NotNull
     private String  rightVisualAcuity;
 
     /**
@@ -552,4 +556,17 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
         return true;
     }
 
+    @Override
+    public void save () {
+        if ( ( leftAxis == null || rightAxis == null ) && ( leftCylinder != null || rightCylinder != null ) ) {
+            throw new IllegalArgumentException( "Axis is required when cylinder is provided." );
+        }
+        if ( leftAxis == null ^ rightAxis == null ) {
+            throw new IllegalArgumentException( "One axis value is not present." );
+        }
+        if ( leftCylinder == null ^ rightCylinder == null ) {
+            throw new IllegalArgumentException( "One cylinder value is not present." );
+        }
+        super.save();
+    }
 }
