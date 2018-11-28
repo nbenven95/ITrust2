@@ -29,6 +29,11 @@
 		<mapping class="edu.ncsu.csc.itrust2.models.persistent.User" />
 		<mapping
 			class="edu.ncsu.csc.itrust2.models.persistent.OfficeVisit" />
+    <mapping
+      class="edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup" />
+    <mapping
+      class="edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit" />
+      <mapping class="edu.ncsu.csc.itrust2.models.persistent.OphthalmologySurgery"/>
 		<mapping
 			class="edu.ncsu.csc.itrust2.models.persistent.Hospital" />
 		<mapping
@@ -37,6 +42,8 @@
 			class="edu.ncsu.csc.itrust2.models.persistent.Personnel" />
 		<mapping
 			class="edu.ncsu.csc.itrust2.models.persistent.BasicHealthMetrics" />
+		<mapping
+			class="edu.ncsu.csc.itrust2.models.persistent.BasicEyeMetrics" />
 		<mapping
 			class="edu.ncsu.csc.itrust2.models.persistent.Diagnosis" />
 		<mapping

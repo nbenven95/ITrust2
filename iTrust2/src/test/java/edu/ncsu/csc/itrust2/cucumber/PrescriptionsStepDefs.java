@@ -99,7 +99,7 @@ public class PrescriptionsStepDefs extends CucumberTest {
         enterValue( "date", date );
         enterValue( "time", "10:10 AM" );
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementsByName('hospital')[0].click();" );
-
+        driver.findElement( By.cssSelector( "input[value='GENERAL_CHECKUP']" ) ).click();
         waitForAngular();
         enterValue( "notes", notes );
         enterValue( "weight", weight );
