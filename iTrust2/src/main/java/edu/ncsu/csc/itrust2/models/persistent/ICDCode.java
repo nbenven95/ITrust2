@@ -1,5 +1,6 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -189,6 +190,24 @@ public class ICDCode extends DomainObject<Diagnosis> {
     @SuppressWarnings ( "unchecked" )
     public static List<ICDCode> getAll () {
         return (List<ICDCode>) DomainObject.getAll( ICDCode.class );
+    }
+
+    /**
+     * Returns a list of all ICDCodes related to ophthalmology. These are
+     * prefixed with O.
+     * 
+     * @return The list of opthalmology codes.
+     */
+    public static List<ICDCode> getOphthalmologyCodes () {
+        final List<ICDCode> all = ICDCode.getAll();
+        final List<ICDCode> oph = new ArrayList<ICDCode>();
+
+        for ( final ICDCode code : all ) {
+            if ( code.getCode().charAt( 0 ) == 'O' ) {
+                oph.add( code );
+            }
+        }
+        return oph;
     }
 
 }

@@ -288,6 +288,36 @@ public class HibernateDataGenerator {
     }
 
     /**
+     * Generated ICDCodes for Ophthalmology Diagnosis
+     */
+    public static void generateTestICD () {
+        // Cataracts
+        final ICDCodeForm codeForm = new ICDCodeForm();
+        codeForm.setCode( "O010" );
+        codeForm.setDescription( "Cataracts." );
+        final ICDCode cataracts = new ICDCode( codeForm );
+        cataracts.save();
+
+        // Age-related macular degeneration
+        codeForm.setCode( "O011" );
+        codeForm.setDescription( "Age-related macular degeneration." );
+        final ICDCode macDegen = new ICDCode( codeForm );
+        macDegen.save();
+
+        // Amblyopia
+        codeForm.setCode( "O012" );
+        codeForm.setDescription( "Amblyopia" );
+        final ICDCode amblyopia = new ICDCode( codeForm );
+        amblyopia.save();
+
+        // Glaucoma
+        codeForm.setCode( "O013" );
+        codeForm.setDescription( "Glaucoma" );
+        final ICDCode glaucoma = new ICDCode( codeForm );
+        glaucoma.save();
+    }
+
+    /**
      * Generates the patients, hospitals, drugs, etc. needed for testing EHR.
      *
      * @throws ParseException
