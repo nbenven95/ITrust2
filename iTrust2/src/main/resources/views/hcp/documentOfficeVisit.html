@@ -102,38 +102,38 @@
             	var visit = $scope.visit;
             	
             	// check visual acuity to be integers
-            	var visualAcuityOS = Number(visit.visualAcuityOS);
-            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
+            	var visualAcuityOS = Number(visit.leftVisualAcuity);
+            	if (!sphCylMatcher.test(String(visit.leftSphere))) {
                 	err.push("Visual Acuity OS must be an integer");
             	}
-            	var visualAcuityOD = Number(visit.visualAcuityOD);
-            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
+            	var visualAcuityOD = Number(visit.rightVisualAcuity);
+            	if (!sphCylMatcher.test(String(visit.rightSphere))) {
                 	err.push("Visual Acuity OD must be an integer");
             	}
             	
             	// also enforce sphere matchers
-            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
+            	if (!sphCylMatcher.test(String(visit.leftSphere))) {
             		err.push("Sphere OS must be a decimal number with an optional sign");
             	}
-            	if (!sphCylMatcher.test(String(visit.sphereOD))) {
+            	if (!sphCylMatcher.test(String(visit.rightSphere))) {
             		err.push("Sphere OD must be a decimal number with an optional sign");
             	}
             	
             	// only enforce these matchers if the user decided to enter cylinder
-            	if (!nullOrEmpty(visit.cylinderOD) && !sphCylMatcher.test(String(visit.cylinderOS))) {
+            	if (!nullOrEmpty(visit.rightCylinder) && !sphCylMatcher.test(String(visit.leftCylinder))) {
             		err.push("Cylinder OS must be a decimal number with an optional sign");
             	}
-            	if (!nullOrEmpty(visit.cylinderOS) && !sphCylMatcher.test(String(visit.cylinderOD))) {
+            	if (!nullOrEmpty(visit.leftCylinder) && !sphCylMatcher.test(String(visit.rightCylinder))) {
             		err.push("Cylinder OD must be a decimal number with an optional sign");
             	}
 
             	// only enforce the matchers for axis if the user decided to enter cylinder
-            	if (!nullOrEmpty(visit.cylinderOD)) {
-            		var axisOS = Number(visit.axisOS);
+            	if (!nullOrEmpty(visit.rightCylinder)) {
+            		var axisOS = Number(visit.leftAxis);
                 	if (typeof axisOS !== "number" || axisOS % 1 !== 0 || axisOS < 1 || axisOS > 180) {
                     	err.push("Axis OS must be an integer between 1 and 180");
                 	}
-               		var axisOD = Number(visit.axisOD);
+               		var axisOD = Number(visit.rightAxis);
                    	if (typeof axisOD !== "number" || axisOD % 1 !== 0 || axisOD < 1 || axisOD > 180) {
                        	err.push("Axis OD must be an integer between 1 and 180");
                    	}
@@ -204,15 +204,15 @@
                 $scope.patients = response.data;
               });
 
-            $http.get("/iTrust2/api/v1/appointmenttype")
+            $http.get("/iTrust2/api/v1//personnel/getQualifiedAppointmentTypes")
               .then(function (response) {
             	/* TODO: This is is just to mock the different types of appointments until
             	   they get implemented on the backend. Uncomment the line directly
             	   below this one and comment the line two down when backend
             	   is implemented. */
-                // $scope.appointmentTypes = response.data;
-            	$scope.appointmentTypes = ["GENERAL_CHECKUP", "OPHTHALMOLOGY_VISIT", "OPHTHALMOLOGY_SURGERY"];
-                $scope.appointmentType = $scope.appointmentTypes[0];
+                $scope.appointmentTypes = response.data;
+            	//$scope.appointmentTypes = ["GENERAL_CHECKUP", "OPHTHALMOLOGY_VISIT", "OPHTHALMOLOGY_SURGERY"];
+                //$scope.appointmentType = $scope.appointmentTypes[0];
               });
             $http.get("/iTrust2/api/v1/housesmoking")
               .then(function (response) {
@@ -236,19 +236,30 @@
                 $scope.icdcodes = response.data;
               });
 
-            /* TODO uncomment and delete manually entered diagnonses below 
-              $http.get("/iTrust2/api/v1/icdcodes_oph").then(
+            $http.get("/iTrust2/api/v1/ophicdcodes").then(
               function (response) {
                 $scope.icdcodes_oph = response.data;
-   			  });*/
+   			  });
             
+   			/*
             $scope.icdcodes_oph = [
             	{"id":100,"code":"O10","description":"Cataracts"},
             	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
             	{"id":100,"code":"O12","description":"Amblyopia"},
             	{"id":100,"code":"O13","description":"Glaucoma"}
            	];
-
+			*/
+			
+			 $http.get("/iTrust2/api/v1/surgeryTypes")
+	           .then(function (response) {
+	          	/* TODO: This is is just to mock the different types of appointments until
+	          	   they get implemented on the backend. Uncomment the line directly
+	          	   below this one and comment the line two down when backend
+	          	   is implemented. */
+	              $scope.surgeryTypes= response.data;
+	              //$scope.selectedVisit.surgeryType = $scope.surgeryTypes[0];
+	            });
+			
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
                     function (response) {
                       $scope.tech = response.data;
@@ -365,14 +376,14 @@
                   p.patient = $scope.visit.patient;
                 });
              	
-             	delete $scope.visit.visualAcuityOD;
-             	delete $scope.visit.visualAcuityOS;
-             	delete $scope.visit.sphereOD;
-             	delete $scope.visit.sphereOS;
-             	delete $scope.visit.cylinderOD;
-             	delete $scope.visit.cylinderOS;
-             	delete $scope.visit.axisOD;
-             	delete $scope.visit.axisOS;
+             	delete $scope.visit.rightVisualAcuity;
+             	delete $scope.visit.leftVisualAcuity;
+             	delete $scope.visit.rightSphere;
+             	delete $scope.visit.leftSphere;
+             	delete $scope.visit.rightCylinder;
+             	delete $scope.visit.leftCylinder;
+             	delete $scope.visit.rightAxis;
+             	delete $scope.visit.leftAxis;
           		delete $scope.visit.surgeryType;
               } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_VISIT") {
             	// visit.<eye metrics> is set by form
@@ -397,7 +408,7 @@
               }
               
 
-              if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
+              /* if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
                 $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
               }
               if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
@@ -436,7 +447,7 @@
                   $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
                 }
               }
-
+ */
               $scope.visit.diagnoses = $scope.diagnoses;
               $scope.visit.prescriptions = $scope.prescriptions;
               $scope.visit.prescriptions.forEach(function (p) {
@@ -478,10 +489,6 @@
             $scope.procedure = {};
             $scope.procedures = [];
             $scope.appointmentType = "GENERAL_CHECKUP";
-            
-            /* TODO: Should probably replace this with an API call to get all
-               surgery types. */
-            $scope.surgeryTypes = ["CATARACT", "LASER", "REFRACTIVE"];
 
 
             //clears local variables for diagnosis form
@@ -977,11 +984,11 @@
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="visualAcuityOD"
-															ng-model="visit.visualAcuityOD" required="true" type="text">
+															ng-model="visit.rightVisualAcuity" required="true" type="text">
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="visualAcuityOS"
-															ng-model="visit.visualAcuityOS" required="true" type="text">
+															ng-model="visit.leftVisualAcuity" required="true" type="text">
 													</div>
 												</div>
 											</div>
@@ -992,11 +999,11 @@
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="sphereOD"
-															ng-model="visit.sphereOD" required="false" type="text">
+															ng-model="visit.rightSphere" required="false" type="text">
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="sphereOS"
-															ng-model="visit.sphereOS" required="false" type="text">
+															ng-model="visit.leftSphere" required="false" type="text">
 													</div>
 												</div>
 											</div>
@@ -1007,11 +1014,11 @@
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="cylinderOD"
-															ng-model="visit.cylinderOD" required="false" type="text">
+															ng-model="visit.rightCylinder" required="false" type="text">
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="cylinderOS"
-															ng-model="visit.cylinderOS" required="false" type="text">
+															ng-model="visit.leftCylinder" required="false" type="text">
 													</div>
 												</div>
 											</div>
@@ -1022,11 +1029,11 @@
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="axisOD"
-															ng-model="visit.axisOD" required="false" type="text">
+															ng-model="visit.rightAxis" required="false" type="text">
 													</div>
 													<div class="col-xs-4">
 														<input class="form-control" name="axisOS"
-															ng-model="visit.axisOS" required="false" type="text">
+															ng-model="visit.leftAxis" required="false" type="text">
 													</div>
 												</div>
 											</div>
