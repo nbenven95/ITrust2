@@ -238,7 +238,7 @@
               function (response) {
                 $scope.drugs = response.data;
               });
-            $http.get("/iTrust2/api/v1/icdcodes").then(
+            $http.get("/iTrust2/api/v1/generalicdcodes").then(
               function (response) {
             	  response.data.forEach(function(i, idx, obj) {
             		  if (i.startsWith('O')) {
