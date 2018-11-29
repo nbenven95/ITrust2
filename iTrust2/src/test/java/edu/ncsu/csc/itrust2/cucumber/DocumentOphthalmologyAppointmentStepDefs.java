@@ -34,23 +34,6 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
     private final String       hospitalName = "Office Visit Hospital" + ( new Random() ).nextInt();
     private BasicHealthMetrics expectedBhm;
 
-    // @Given ( "There is an HCP user with (.+) and (.+) in the database" )
-    // public void hcpExists ( String hcpUsername, String hcpSpecialty ) {
-    // attemptLogout();
-    //
-    // final User hcp = new User( hcpUsername,
-    // "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-    // Role.ROLE_HCP, 1 );
-    // hcp.save();
-    //
-    // final PersonnelForm form = new PersonnelForm();
-    // form.setSelf( hcp.getUsername() );
-    // form.setSpecialty( hcpSpecialty );
-    //
-    // final Personnel hcpPersonnel = new Personnel( form );
-    // hcpPersonnel.save();
-    // }
-
     @And ( "The required Ophthalmology facilities exist" )
     public void facilitiesExist () throws Exception {
 
@@ -59,20 +42,6 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
         hospital.save();
 
     }
-
-    // @And ( "I am logged in to iTrust2 as (.+)" )
-    // public void loggedInAs ( String usernameString ) {
-    // driver.get( baseUrl );
-    // final WebElement username = driver.findElement( By.name( "username" ) );
-    // username.clear();
-    // username.sendKeys( usernameString );
-    // final WebElement password = driver.findElement( By.name( "password" ) );
-    // password.clear();
-    // password.sendKeys( "123456" );
-    // final WebElement submit = driver.findElement( By.className( "btn" ) );
-    // submit.click();
-    // waitForAngular();
-    // }
 
     @When ( "A patient with (.+) exists with no documented office visits" )
     public void addPatient ( String patientName ) throws Exception {
