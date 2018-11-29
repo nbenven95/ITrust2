@@ -38,11 +38,13 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     /**
      * The left eye's sphere measurement
      */
+    @NotNull
     private Double  leftSphere;
 
     /**
      * The right eye's sphere measurement
      */
+    @NotNull
     private Double  rightSphere;
 
     /**
@@ -64,6 +66,18 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      * The right eye's axis measurement
      */
     private Integer rightAxis;
+
+    /**
+     * The left eye's visual acuity
+     */
+    @NotNull
+    private String  leftVisualAcuity;
+
+    /**
+     * The right eye's visual acuity
+     */
+    @NotNull
+    private String  rightVisualAcuity;
 
     /**
      * The Patient who is associated with this AppointmentRequest
@@ -194,6 +208,9 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
         setRightCylinder( ovf.getRightCylinder() );
         setLeftAxis( ovf.getLeftAxis() );
         setRightAxis( ovf.getRightAxis() );
+        setLeftVisualAcuity( ovf.getLeftVisualAcuity() );
+        setRightVisualAcuity( ovf.getRightVisualAcuity() );
+
     }
 
     /**
@@ -331,6 +348,50 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     }
 
     /**
+     * Gets the left visual acuity
+     *
+     * @return the left visual acuity
+     */
+    public String getLeftVisualAcuity () {
+        return leftVisualAcuity;
+    }
+
+    /**
+     * Sets the left visual acuity
+     *
+     * @param leftVisualAcuity
+     *            the leftVisualAcuity to set
+     */
+    public void setLeftVisualAcuity ( final String leftVisualAcuity ) {
+        if ( !leftVisualAcuity.matches( "\\d\\d?/\\d\\d?" ) ) {
+            throw new IllegalArgumentException( "Does not match proper visual acuity format" );
+        }
+        this.leftVisualAcuity = leftVisualAcuity;
+    }
+
+    /**
+     * Gets the right visual acuity
+     *
+     * @return the right visual acuity
+     */
+    public String getRightVisualAcuity () {
+        return rightVisualAcuity;
+    }
+
+    /**
+     * Sets the right visual acuity
+     *
+     * @param rightVisualAcuity
+     *            the right visual acuity to set
+     */
+    public void setRightVisualAcuity ( final String rightVisualAcuity ) {
+        if ( !rightVisualAcuity.matches( "\\d\\d?/\\d\\d?" ) ) {
+            throw new IllegalArgumentException( "Does not match proper visual acuity format" );
+        }
+        this.rightVisualAcuity = rightVisualAcuity;
+    }
+
+    /**
      * Gets the patient associated with the appointment
      *
      * @return the patient associated with the appointment
@@ -381,10 +442,12 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
         result = prime * result + ( ( leftAxis == null ) ? 0 : leftAxis.hashCode() );
         result = prime * result + ( ( leftCylinder == null ) ? 0 : leftCylinder.hashCode() );
         result = prime * result + ( ( leftSphere == null ) ? 0 : leftSphere.hashCode() );
+        result = prime * result + ( ( leftVisualAcuity == null ) ? 0 : leftVisualAcuity.hashCode() );
         result = prime * result + ( ( patient == null ) ? 0 : patient.hashCode() );
         result = prime * result + ( ( rightAxis == null ) ? 0 : rightAxis.hashCode() );
         result = prime * result + ( ( rightCylinder == null ) ? 0 : rightCylinder.hashCode() );
         result = prime * result + ( ( rightSphere == null ) ? 0 : rightSphere.hashCode() );
+        result = prime * result + ( ( rightVisualAcuity == null ) ? 0 : rightVisualAcuity.hashCode() );
         return result;
     }
 
@@ -444,6 +507,14 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
         else if ( !leftSphere.equals( other.leftSphere ) ) {
             return false;
         }
+        if ( leftVisualAcuity == null ) {
+            if ( other.leftVisualAcuity != null ) {
+                return false;
+            }
+        }
+        else if ( !leftVisualAcuity.equals( other.leftVisualAcuity ) ) {
+            return false;
+        }
         if ( patient == null ) {
             if ( other.patient != null ) {
                 return false;
@@ -476,6 +547,28 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
         else if ( !rightSphere.equals( other.rightSphere ) ) {
             return false;
         }
+        if ( rightVisualAcuity == null ) {
+            if ( other.rightVisualAcuity != null ) {
+                return false;
+            }
+        }
+        else if ( !rightVisualAcuity.equals( other.rightVisualAcuity ) ) {
+            return false;
+        }
         return true;
+    }
+
+    @Override
+    public void save () {
+        if ( ( leftAxis == null || rightAxis == null ) && ( leftCylinder != null || rightCylinder != null ) ) {
+            throw new IllegalArgumentException( "Axis is required when cylinder is provided." );
+        }
+        if ( leftAxis == null ^ rightAxis == null ) {
+            throw new IllegalArgumentException( "One axis value is not present." );
+        }
+        if ( leftCylinder == null ^ rightCylinder == null ) {
+            throw new IllegalArgumentException( "One cylinder value is not present." );
+        }
+        super.save();
     }
 }

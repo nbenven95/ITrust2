@@ -267,14 +267,20 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
                 age -= 1;
             }
         }
-        if ( age < 3 ) {
-            validateUnder3();
-        }
-        else if ( age < 12 ) {
-            validateUnder12();
-        }
-        else {
-            validate12AndOver();
+
+        final BasicHealthMetrics empty = new BasicHealthMetrics();
+        empty.setHcp( this.hcp );
+        empty.setPatient( this.patient );
+        if ( this instanceof GeneralCheckup || !this.basicHealthMetrics.equals( empty ) ) {
+            if ( age < 3 ) {
+                validateUnder3();
+            }
+            else if ( age < 12 ) {
+                validateUnder12();
+            }
+            else {
+                validate12AndOver();
+            }
         }
     }
 

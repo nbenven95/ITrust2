@@ -21,11 +21,11 @@
           .controller(
           'editOfficeVisitCtrl',
           function ($scope, $http) {
-        	  
+
         	  var isDate = function(input) {
               	if (!input) {
               		return false;
-              	}			
+              	}
               	var match = /^(\d?\d)\/(\d?\d)\/(\d{4})$/.exec(input);
               	if (!match) {
               		return false;
@@ -38,7 +38,11 @@
               	var date = new Date(parsedDate.year, parsedDate.month, parsedDate.day);
               	return date.getFullYear() === parsedDate.year && date.getMonth() === parsedDate.month && date.getDate() === parsedDate.day;
               };
-              
+
+							var isNullOrEmpty = function(input) {
+								return input == null || input === "";
+							};
+
               var checkValidPrescription = function(p) {
               	var err = [];
               	if (!p.drug) {
@@ -61,7 +65,7 @@
               	if (!/^\+?\d+$/.test(p.renewals)) {
               		err.push("Renewals must be an integer zero or more");
               	}
-              	
+
               	return err.join(". ");
               }
 
@@ -83,8 +87,8 @@
               month = date.month + 1;
               return twoDigit(month) + "/" + twoDigit(date.dayOfMonth) + "/" + date.year;
             }
-            
-            
+
+
 //        	$scope.surgeryTypes = ["CATARACT", "LASER", "REFRACTIVE"];
             $http.get("/iTrust2/api/v1/surgeryTypes")
            .then(function (response) {
@@ -92,15 +96,15 @@
           	   they get implemented on the backend. Uncomment the line directly
           	   below this one and comment the line two down when backend
           	   is implemented. */
-              $scope.selectedVisit.surgeryTypes= response.data;
+              $scope.surgeryTypes = response.data;
               //$scope.selectedVisit.surgeryType = $scope.surgeryTypes[0];
             });
-            
+
             $http.get("/iTrust2/api/v1/ophicdcodes").then(
             function (response) {
               $scope.icdcodes_oph = response.data;
  			  });
-          
+
 //          	{"id":100,"code":"O10","description":"Cataracts"},
 //         	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
 //          	{"id":100,"code":"O12","description":"Amblyopia"},
@@ -109,11 +113,12 @@
 
             $scope.noVisitSelected = true;
             $scope.loadingVisits = true;
-            $http.get("/iTrust2/api/v1/officevisits").then(
+            $http.get("/iTrust2/api/v1/hcpofficevisits").then(
               function (response) {
                 $scope.noVisitSelected = true;
                 $scope.loadingVisits = false;
                 $scope.visits = response.data;
+
                 var visitsLength = $scope.visits.length;
                 //The problem is that the visit does not contain an actual reference to the patient as a patient, only as a user
                 //to get around this, we will use the patients api which can get us this mapping, and we will have angular help
@@ -193,51 +198,76 @@
                   $scope.selectedVisit.tri = $scope.visits[i].basicHealthMetrics.tri;
                   $scope.selectedVisit.houseSmokingStatus = $scope.visits[i].basicHealthMetrics.houseSmokingStatus;
                   $scope.selectedVisit.patientSmokingStatus = $scope.visits[i].basicHealthMetrics.patientSmokingStatus;
-                  
-                  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
-                  	function (response) {
-                    	$scope.diagnosesResponse = response.data;
-                        var dLength = $scope.diagnosesResponse.length;
-	                   	for( var i = 0; i < dLength; i++){
-	                        $scope.diagnoses.push({
-	                          note: $scope.diagnosesResponse[i].note,
-	                          code: $scope.diagnosesResponse[i].code
-	                        });
-	                      }
-                   });
-                  
-                  // prescriptions
-                  var pLength = $scope.visits[i].prescriptions.length;
-                  for( var j = 0; j < pLength; j++){
-                	var myStart = $scope.getDate($scope.visits[i].prescriptions[j].startDate);
-                  	var myEnd = $scope.getDate($scope.visits[i].prescriptions[j].endDate);
-                    $scope.prescriptions.push({
-                      drug: $scope.visits[i].prescriptions[j].drug.code,
-                      dosage: $scope.visits[i].prescriptions[j].dosage,
-                      startDate: myStart,
-                      endDate: myEnd,
-                      renewals: $scope.visits[i].prescriptions[j].renewals
-                    });
+
+				  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
+						  function (response) {
+							$scope.diagnosesResponse = response.data;
+							var dLength = $scope.diagnosesResponse.length;
+							   for( var i = 0; i < dLength; i++){
+								$scope.diagnoses.push({
+								  note: $scope.diagnosesResponse[i].note,
+								  code: $scope.diagnosesResponse[i].code
+								});
+							  }
+					   });
+
+                  if ($scope.selectedVisit.type == 'GENERAL_CHECKUP' ) {
+
+					  // prescriptions
+					  var pLength = $scope.visits[i].prescriptions.length;
+					  for( var j = 0; j < pLength; j++){
+						var myStart = $scope.getDate($scope.visits[i].prescriptions[j].startDate);
+						  var myEnd = $scope.getDate($scope.visits[i].prescriptions[j].endDate);
+						$scope.prescriptions.push({
+						  drug: $scope.visits[i].prescriptions[j].drug.code,
+						  dosage: $scope.visits[i].prescriptions[j].dosage,
+						  startDate: myStart,
+						  endDate: myEnd,
+						  renewals: $scope.visits[i].prescriptions[j].renewals
+						});
+					  }
+
+					  $http.get("/iTrust2/api/v1//labprocedures/byVisit/" + $scope.selectedVisitID).then(
+							  function (response) {
+								$scope.proceduresResponse = response.data;
+								var pLength = $scope.proceduresResponse.length;
+								if(pLength > 0){
+								  $scope.showLabProcedures = true;
+								}
+								for (var i = 0; i < pLength; i++) {
+								  $scope.procedures.push({
+									code: $scope.proceduresResponse[i].loinc.code,
+									commonName: $scope.proceduresResponse[i].loinc.commonName,
+									priority: $scope.proceduresResponse[i].priority,
+									comments: $scope.proceduresResponse[i].comments,
+									status: $scope.proceduresResponse[i].status,
+									id: $scope.proceduresResponse[i].id
+								  });
+								}
+							  });
+                  } else if ($scope.selectedVisit.type == 'OPHTHALMOLOGY_VISIT') {
+	                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
+	                  $scope.selectedVisit.rightVisualAcuity = $scope.visits[i].basicEyeMetrics.rightVisualAcuity;
+	                  $scope.selectedVisit.leftSphere = $scope.visits[i].basicEyeMetrics.leftSphere;
+	                  $scope.selectedVisit.rightSphere = $scope.visits[i].basicEyeMetrics.rightSphere;
+	                  $scope.selectedVisit.rightAxis = $scope.visits[i].basicEyeMetrics.rightAxis;
+	                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
+	                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
+	                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
+	                  $scope.selectedVisit.diagnosis
+
+                  } else if ($scope.selectedVisit.type == 'OPHTHALMOLOGY_SURGERY') {
+	                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
+	                  $scope.selectedVisit.rightVisualAcuity = $scope.visits[i].basicEyeMetrics.rightVisualAcuity;
+	                  $scope.selectedVisit.leftSphere = $scope.visits[i].basicEyeMetrics.leftSphere;
+	                  $scope.selectedVisit.rightSphere = $scope.visits[i].basicEyeMetrics.rightSphere;
+	                  $scope.selectedVisit.rightAxis = $scope.visits[i].basicEyeMetrics.rightAxis;
+	                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
+	                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
+	                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
+	                  $scope.selectedVisit.surgeryType = $scope.visits[i].surgeryType;
+
                   }
-                  
-                  $http.get("/iTrust2/api/v1//labprocedures/byVisit/" + $scope.selectedVisitID).then(
-                          function (response) {
-                            $scope.proceduresResponse = response.data;
-                            var pLength = $scope.proceduresResponse.length;
-                            if(pLength > 0){
-                              $scope.showLabProcedures = true;  
-                            }
-                            for (var i = 0; i < pLength; i++) {
-                              $scope.procedures.push({
-                                code: $scope.proceduresResponse[i].loinc.code,
-                                commonName: $scope.proceduresResponse[i].loinc.commonName,
-                                priority: $scope.proceduresResponse[i].priority,
-                                comments: $scope.proceduresResponse[i].comments,
-                                status: $scope.proceduresResponse[i].status,
-                                id: $scope.proceduresResponse[i].id
-                              });
-                            }
-                          });
 
                   $scope.three = false;
                   $scope.threeAndUp = false;
@@ -271,16 +301,12 @@
               }
             }
 
-            $scope.submit = function () {     
+            $scope.submit = function () {
               $scope.selectedVisit.hcp = /*[[${#httpServletRequest.remoteUser}]]*/null; /* Ugly hack; use this to retrieve the name of the HCP who is currently logged in.  This grabs it from Thymeleaf */
               $scope.errorMsg = "";
               $scope.selectedVisit.status = "PENDING";
 
-              if ($scope.selectedVisit.type == null) {
-                $scope.errorMsg += "Please select a visit type\n";
-              }
-
-              if ($scope.selectedVisit.type == null) {
+              if ($scope.selectedVisit.hospital == null) {
                 $scope.errorMsg += "Please select a hospital\n";
               }
 
@@ -302,47 +328,112 @@
                 $scope.errorMsg += "Please input a valid date and time\n";
               }
 
-              if (/^[0-9]{1,3}(\.[1-9]?)?$/.test(String($scope.selectedVisit.height).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Height/length can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-              }
-              if (/^[0-9]{1,3}(\.[1-9]?)?$/.test(String($scope.selectedVisit.weight).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-              }
-              if ($scope.three && /^[0-9]{1,3}(\.[1-9]?)?$/.test(String($scope.selectedVisit.headCircumference).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-              }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.systolic).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
-              }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.diastolic).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.selectedVisit.hdl).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-              } else if ($scope.twelveAndUp) {
-                var hdlInt = parseInt($scope.selectedVisit.hdl);
-                if (hdlInt > 90) {
-                  $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-                }
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.ldl).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-              } else if ($scope.twelveAndUp) {
-                var ldlInt = parseInt($scope.selectedVisit.ldl);
-                if (ldlInt > 600) {
-                  $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-                }
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.tri).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-              } else if ($scope.twelveAndUp) {
-                var triInt = parseInt($scope.selectedVisit.tri);
-                if (triInt > 600 || triInt < 100) {
-                  $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-                }
+              // List of health metrics. Check this to see if any have been filled out. If the visit is
+              // OPHTHALMOLOGY_VISIT or OPHTHALMOLOGY_SURGERY and none of these fields have been filled
+              // out, don't need to validate basic health metrics since they should be optional for
+              // oph type appointments.
+              $scope.basicHealthMetricsList =  [ $scope.selectedVisit.height,
+            	  								 $scope.selectedVisit.weight,
+            	  								 $scope.selectedVisit.headCircumference,
+            	  								 $scope.selectedVisit.systolic,
+            	  								 $scope.selectedVisit.diastolic,
+            	  								 $scope.selectedVisit.hdl,
+            	  								 $scope.selectedVisit.ldl,
+            	  								 $scope.selectedVisit.tri,
+            	  								 $scope.selectedVisit.houseSmokingStatus,
+            	  								 $scope.selectedVisit.patientSmokingStatus ];
+
+              // Check if the appointment type is either general checkup or any of the fields have been filled out
+              if ( $scope.selectedVisit.appointmentType === "GENERAL_CHECKUP" || $scope.basicHealthMetricsList.some( field => field )) {
+	              if (/^[0-9]{1,3}(\.[1-9]?)?$/.test(String($scope.selectedVisit.height).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "Height/length can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+	              }
+	              if (/^[0-9]{1,3}(\.[1-9]?)?$/.test(String($scope.selectedVisit.weight).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+	              }
+	              if ($scope.three && /^[0-9]{1,3}(\.[1-9]?)?$/.test(String($scope.selectedVisit.headCircumference).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
+	              }
+	              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.systolic).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
+	              }
+	              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.diastolic).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
+	              }
+	              //handle invalid and outside of range
+	              if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.selectedVisit.hdl).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+	              } else if ($scope.twelveAndUp) {
+	                var hdlInt = parseInt($scope.selectedVisit.hdl);
+	                if (hdlInt > 90) {
+	                  $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
+	                }
+	              }
+	              //handle invalid and outside of range
+	              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.ldl).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+	              } else if ($scope.twelveAndUp) {
+	                var ldlInt = parseInt($scope.selectedVisit.ldl);
+	                if (ldlInt > 600) {
+	                  $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
+	                }
+	              }
+	              //handle invalid and outside of range
+	              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.selectedVisit.tri).replace(/^0+/, '')) == false) {
+	                $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+	              } else if ($scope.twelveAndUp) {
+	                var triInt = parseInt($scope.selectedVisit.tri);
+	                if (triInt > 600 || triInt < 100) {
+	                  $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
+	                }
+	              }
+               }
+
+
+              var checkValidBasicEyeMetrics = function () {
+              	var err = [];
+              	var visualAcuityMatcher = /^\d{1,2}\/\d{2,3}$/;
+              	var sphCylMatcher = /^[-|+]?\d{1,2}\.?\d{0,2}$/;
+              	var selectedVisit = $scope.selectedVisit;
+
+
+              	// Check that visual acuity is in proper format.
+              	if (!visualAcuityMatcher.test(String(selectedVisit.leftVisualAcuity))) {
+                  	err.push("Visual Acuity OS must be in format [0-9]{1,2}/[0-9]{2,3}");
+              	}
+
+              	if (!visualAcuityMatcher.test(String(selectedVisit.rightVisualAcuity))) {
+                  	err.push("Visual Acuity OD must be in format [0-9]{1,2}/[0-9]{2,3}");
+              	}
+
+              	// also enforce sphere matchers
+              	if (!sphCylMatcher.test(String(selectedVisit.leftSphere))) {
+              		err.push("Sphere OS must be a decimal number with an optional sign");
+              	}
+              	if (!sphCylMatcher.test(String(selectedVisit.rightSphere))) {
+              		err.push("Sphere OD must be a decimal number with an optional sign");
+              	}
+
+              	// only enforce these matchers if the user decided to enter cylinder
+              	if (!isNullOrEmpty(selectedVisit.rightCylinder) && !sphCylMatcher.test(String(selectedVisit.leftCylinder))) {
+              		err.push("Cylinder OS must be a decimal number with an optional sign");
+              	}
+              	if (!isNullOrEmpty(selectedVisit.leftCylinder) && !sphCylMatcher.test(String(selectedVisit.rightCylinder))) {
+              		err.push("Cylinder OD must be a decimal number with an optional sign");
+              	}
+
+              	// only enforce the matchers for axis if the user decided to enter cylinder
+              	if (!isNullOrEmpty(selectedVisit.rightCylinder)) {
+              		var axisOS = Number(selectedVisit.leftAxis);
+                  	if (typeof axisOS !== "number" || axisOS % 1 !== 0 || axisOS < 1 || axisOS > 180) {
+                      	err.push("Axis OS must be an integer between 1 and 180");
+                  	}
+                 		var axisOD = Number(selectedVisit.rightAxis);
+                     	if (typeof axisOD !== "number" || axisOD % 1 !== 0 || axisOD < 1 || axisOD > 180) {
+                         	err.push("Axis OD must be an integer between 1 and 180");
+                     	}
+              	}
+              	return err.join(". ");
               }
 
               $scope.selectedVisit.diagnoses = $scope.diagnoses;
@@ -350,9 +441,9 @@
               $scope.selectedVisit.prescriptions.forEach(function (p) {
                   p.patient = $scope.selectedVisit.patient;
                 });
-              
+
               /* Handle appointment type unique fields */
-              $scope.selectedVisit.type = $scope.selectedVisit.appointmentType; /* remove if the backend varname gets changed */
+              $scope.selectedVisit.appointmentType = $scope.selectedVisit.type; /* remove if the backend varname gets changed */
               if ($scope.selectedVisit.appointmentType === "GENERAL_CHECKUP") {
                 $scope.selectedVisit.labProcedures = $scope.procedures;
                 $scope.selectedVisit.diagnoses = $scope.diagnoses;
@@ -360,39 +451,40 @@
                 $scope.selectedVisit.prescriptions.forEach(function (p) {
                   p.patient = $scope.selectedVisit.patient;
                 });
-             	
-             	delete $scope.selectedVisit.visualAcuityOD;
-             	delete $scope.selectedVisit.visualAcuityOS;
-             	delete $scope.selectedVisit.sphereOD;
-             	delete $scope.selectedVisit.sphereOS;
-             	delete $scope.selectedVisit.cylinderOD;
-             	delete $scope.selectedVisit.cylinderOS;
-             	delete $scope.selectedVisit.axisOD;
-             	delete $scope.selectedVisit.axisOS;
+
+             	delete $scope.selectedVisit.rightVisualAcuity;
+             	delete $scope.selectedVisit.leftVisualAcuity;
+             	delete $scope.selectedVisit.rightSphere;
+             	delete $scope.selectedVisit.leftSphere;
+             	delete $scope.selectedVisit.rightCylinder;
+             	delete $scope.selectedVisit.leftCylinder;
+             	delete $scope.selectedVisit.rightAxis;
+             	delete $scope.selectedVisit.leftAxis;
           		delete $scope.selectedVisit.surgeryType;
               } else if ($scope.selectedVisit.appointmentType === "OPHTHALMOLOGY_VISIT") {
             	// visit.<eye metrics> is set by form
-            	
+
             	$scope.errorMsg += checkValidBasicEyeMetrics();
+            	// TODO: Determine whether this should be deleted or
+            	// replaced by another implementation.
            		$scope.selectedVisit.diagnoses = $scope.diagnoses_oph;
-           		
+
            		delete $scope.selectedVisit.labProcedures;
            		delete $scope.selectedVisit.prescriptions;
-           		
+
            		// Not sure if this is needed yet
            		delete $scope.selectedVisit.surgeryType;
-           		
+
               } else if ($scope.selectedVisit.appointmentType === "OPHTHALMOLOGY_SURGERY") {
               	// visit.basicEyeMetrics is set by form
             	$scope.errorMsg += checkValidBasicEyeMetrics();
-             	$scope.selectedVisit.surgeryType = $scope.surgeryType;
-             	
+
            		delete $scope.selectedVisit.labProcedures;
            		delete $scope.selectedVisit.prescriptions;
            		delete $scope.selectedVisit.diagnoses;
               }
-              
 
+							console.log($scope.selectedVisit);
               $http({
                 method: 'PUT',
                 url: '/iTrust2/api/v1/officevisits/' + $scope.selectedVisitID,
@@ -400,12 +492,13 @@
               }).then(function (response) {
                 $scope.message = "Office visit edited successfully";
               }, function (rejection) {
+								console.error(rejection);
                 $scope.message = "Error occurred editing office visit";
               })
             }
 
             /** diagnoses **/
-            
+
             $scope.noteEntry = "";
             $scope.codeEntry = "";
 
@@ -414,7 +507,7 @@
               noteEntry = "";
               codeEntry = "";
             }
-          
+
             $scope.fillDiagnosis = function () {
                 $scope.diagnoses.push({
                   note: $scope.noteEntry,
@@ -422,9 +515,9 @@
                 });
                 resetDiagnosisForm();
               }
-            
+
             /** prescriptions **/
-            
+
             $scope.drugEntry = "";
             $scope.dosageEntry = "";
             $scope.startEntry = "";
@@ -456,7 +549,7 @@
 	              resetPrescriptionForm();
               }
             }
-            
+
             //remove local diagnosis from list
             $scope.removeDiagnosis = function ($index) {
               $scope.diagnoses.splice($index, 1);
@@ -466,7 +559,7 @@
             $scope.removePrescription = function ($index) {
               $scope.prescriptions.splice($index, 1);
             }
-            
+
             $scope.removeProcedure = function($index) {
             	$http.delete('/iTrust2/api/v1/labprocedures/' + $scope.procedures[$index].id).then(function(response) {
             		$scope.message = "Lab procedure successfully deleted";
@@ -474,7 +567,7 @@
             	$scope.procedures.splice($index, 1);
             }
 
-            //call initally 
+            //call initally
             resetPrescriptionForm();
             resetDiagnosisForm();
 
@@ -673,7 +766,7 @@
 																	type="text">
 															</div>
 														</div>
-														<div class="form-group row" ng-show="twelveAndUp">
+														<div class="form-group row" >
 															<div class="col-xs-6">
 																<label>Household Smoking Status:</label>
 															</div>
@@ -880,9 +973,9 @@
 												</div>
 											</div>
 										</div>
-										
+
 										<!-- Basic Eye Metrics Panel -->
-										<div ng-show="selectedVisit.type === 'OPHTHALMOLOGY_VISIT' || visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+										<div ng-show="selectedVisit.type === 'OPHTHALMOLOGY_VISIT' || selectedVisit.type === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 											<div class="panel panel-info">
 												<div class="panel-heading">
 													<h4>Basic Eye Metrics</h4>
@@ -901,11 +994,11 @@
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="visualAcuityOD"
-																ng-model="selectedVisit.visualAcuityOD" required="true" type="text">
+																ng-model="selectedVisit.rightVisualAcuity" required="true" type="text">
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="visualAcuityOS"
-																ng-model="selectedVisit.visualAcuityOS" required="true" type="text">
+																ng-model="selectedVisit.leftVisualAcuity" required="true" type="text">
 														</div>
 													</div>
 												</div>
@@ -916,11 +1009,11 @@
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="sphereOD"
-																ng-model="selectedVisit.sphereOD" required="false" type="text">
+																ng-model="selectedVisit.rightSphere" required="false" type="text">
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="sphereOS"
-																ng-model="selectedVisit.sphereOS" required="false" type="text">
+																ng-model="selectedVisit.leftSphere" required="false" type="text">
 														</div>
 													</div>
 												</div>
@@ -931,11 +1024,11 @@
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="cylinderOD"
-																ng-model="selectedVisit.cylinderOD" required="false" type="text">
+																ng-model="selectedVisit.rightCylinder" required="false" type="text">
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="cylinderOS"
-																ng-model="selectedVisit.cylinderOS" required="false" type="text">
+																ng-model="selectedVisit.leftCylinder" required="false" type="text">
 														</div>
 													</div>
 												</div>
@@ -946,11 +1039,11 @@
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="axisOD"
-																ng-model="selectedVisit.axisOD" required="false" type="text">
+																ng-model="selectedVisit.rightAxis" required="false" type="text">
 														</div>
 														<div class="col-xs-4">
 															<input class="form-control" name="axisOS"
-																ng-model="selectedVisit.axisOS" required="false" type="text">
+																ng-model="selectedVisit.leftAxis" required="false" type="text">
 														</div>
 													</div>
 												</div>
@@ -958,12 +1051,12 @@
 										</div>
 
 										<!--  Ophthalmology surgery types panel -->
-										<div ng-show="visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+										<div ng-show="selectedVisit.type === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 											<div class="panel panel-info">
 												<div class="panel-heading">
 													<h4>Surgery Type</h4>
 												</div>
-												
+
 												<div class="panel-body">
 													<div class="form-group row">
 														<div class="col-xs-4">
@@ -983,14 +1076,14 @@
 																</ul>
 															</div>
 														</div>
-													</div>	
+													</div>
 												</div>
-												
+
 											</div>
 										</div>
-										
+
 										<!-- Ophthalmology Diagnosis Panel  -->
-										<div ng-show="visitType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
+										<div ng-show="selectedVisit.type === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
 											<div class="panel panel-info">
 												<div class="panel-heading">
 													<h4>Ophthalmology Diagnoses</h4>
@@ -1027,14 +1120,14 @@
 																ng-model="noteEntry" required="true" type="text">
 														</div>
 													</div>
-	
+
 													<div class="form-group row text-center">
 														<div class="col-md-12">
 															<button class="btn btn-success" ng-click="fillDiagnosis()"
 																name="fillDiagnosis">Add Diagnosis</button>
 														</div>
 													</div>
-	
+
 													<div class="form-group row">
 														<div class="col-md-12">
 															<div class="panel panel-default">
@@ -1055,15 +1148,15 @@
 															</div>
 														</div>
 													</div>
-	
+
 												</div>
 											</div>
 										</div>
-										
+
 									</div>
 
 										<!-- Procedures panel -->
-										<div ng-show="visitType === 'GENERAL_CHECKUP'" class="row">
+										<div ng-show="selectedVisit.type === 'GENERAL_CHECKUP'" class="row">
 											<div class="col-md-8">
 												<div class="panel panel-info">
 													<div class="panel-heading">
@@ -1108,7 +1201,7 @@
 										<div class="row">
 											<div class="form-group col-md-6">
 												<label>Notes:</label>
-												<textarea name="time" ng-model="visit.notes"
+												<textarea name="time" ng-model="selectedVisit.notes"
 													class="form-control" rows="3"></textarea>
 											</div>
 											<div class="col-md-12 text-right">

@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Vector;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
@@ -54,12 +55,46 @@ public class GeneralOphthalmologyVisitTest {
 
         bem.setHcp( User.getByName( "ophhcp" ) );
         bem.setPatient( User.getByName( "AliceThirteen" ) );
-        bem.setLeftAxis( 90 );
-        bem.setRightAxis( 89 );
         bem.setLeftCylinder( -0.5 );
         bem.setRightCylinder( 0.5 );
+        try {
+            bem.save();
+            Assert.fail();
+        }
+        catch ( final IllegalArgumentException e ) {
+            assertEquals( e.getMessage(), "Axis is required when cylinder is provided." );
+        }
+        bem.setLeftAxis( 90 );
+        bem.setRightAxis( 89 );
+
+        try {
+            bem.setLeftCylinder( null );
+            bem.save();
+        }
+        catch ( final IllegalArgumentException e ) {
+            assertEquals( e.getMessage(), "One cylinder value is not present." );
+            bem.setLeftCylinder( -0.5 );
+        }
+
         bem.setLeftSphere( -5.0 );
         bem.setRightSphere( -4.0 );
+
+        try {
+            bem.setLeftVisualAcuity( "2/" );
+            Assert.fail();
+        }
+        catch ( final IllegalArgumentException e ) {
+            // Empty
+        }
+        bem.setLeftVisualAcuity( "20/20" );
+        try {
+            bem.setRightVisualAcuity( "20/200" );
+            Assert.fail();
+        }
+        catch ( final IllegalArgumentException e ) {
+            // Empty
+        }
+        bem.setRightVisualAcuity( "9/9" );
 
         bem.save();
 
