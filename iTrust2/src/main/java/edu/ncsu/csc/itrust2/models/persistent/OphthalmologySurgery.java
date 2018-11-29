@@ -85,7 +85,7 @@ public class OphthalmologySurgery extends OfficeVisit {
     }
 
     /**
-     *
+     * Saves the Ophthalmology Surgery.
      */
     @Override
     public void save () {

@@ -317,13 +317,13 @@ public class HibernateDataGenerator {
         // Cataracts
         final ICDCodeForm codeForm = new ICDCodeForm();
         codeForm.setCode( "O01.0000" );
-        codeForm.setDescription( "Cataracts." );
+        codeForm.setDescription( "Cataracts" );
         final ICDCode cataracts = new ICDCode( codeForm );
         cataracts.save();
 
         // Age-related macular degeneration
         codeForm.setCode( "O01.0001" );
-        codeForm.setDescription( "Age-related macular degeneration." );
+        codeForm.setDescription( "Age-related macular degeneration" );
         final ICDCode macDegen = new ICDCode( codeForm );
         macDegen.save();
 
