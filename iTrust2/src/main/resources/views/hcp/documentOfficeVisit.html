@@ -241,7 +241,7 @@
             $http.get("/iTrust2/api/v1/generalicdcodes").then(
               function (response) {
             	  response.data.forEach(function(i, idx, obj) {
-            		  if (i.startsWith('O')) {
+            		  if (i.toString().indexOf('O') === 1) {
             		    obj.splice(idx, 1);
             		  }
             		});
