@@ -23,6 +23,7 @@
           function ($scope, $http) {
         	  
         	$scope.Selected = false;
+        	$scope.visits = [];
 
             var isDate = function (input) {
               if (!input) {
@@ -149,15 +150,23 @@
                   $scope.selectedVisit.houseSmokingStatus = $scope.visits[i].basicHealthMetrics.houseSmokingStatus;
                   $scope.selectedVisit.patientSmokingStatus = $scope.visits[i].basicHealthMetrics.patientSmokingStatus;
 
-                  /* TODO: Get eye health metrics here, should be same as regular health metrics */
+                  /* Get eye health metrics here, should be same as regular health metrics */
+                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
+                  $scope.selectedVisit.rightVisualAcuity = $scope.visits[i].basicEyeMetrics.rightVisualAcuity;
+                  $scope.selectedVisit.leftSphere = $scope.visits[i].basicEyeMetrics.leftSphere;
+                  $scope.selectedVisit.rightSphere = $scope.visits[i].basicEyeMetrics.rightSphere;
+                  $scope.selectedVisit.rightAxis = $scope.visits[i].basicEyeMetrics.rightAxis;
+                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
+                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
+                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
                   
-                  /* TODO: Get surgery type here */
+                  /* Get surgery type here */
+                  $scope.selectedVisit.surgeryType = $scope.visits[i].surgeryType;
                   
                   //diagnoses
                   //This will get both regular diagnoses and ophthalmology diagnoses. With the checks
                   //that are in place on document and edit office visit pages, it is impossible to
                   //have an office visit with both types of diagnoses.
-                  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope
                   $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
                     function (response) {
                       $scope.diagnosesResponse = response.data;
@@ -431,8 +440,8 @@
 														<div class="panel-body">
 															<div class="form-group row">
 																<div class="col-xs-4"></div>
-																<div class="col-xs-4">OD</div>
 																<div class="col-xs-4">OS</div>
+																<div class="col-xs-4">OD</div>
 															</div>
 														</div>
 														<div class="panel-body">
@@ -441,10 +450,10 @@
 																	<label>Visual Acuity:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftVisualAcuity}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightVisualAcuity}}
 																</div>
 															</div>
 														</div>
@@ -454,10 +463,10 @@
 																	<label>Sphere:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftSphere}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightSphere}}
 																</div>
 															</div>
 														</div>
@@ -467,10 +476,10 @@
 																	<label>Cylinder:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftCylinder}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightCylinder}}
 																</div>
 															</div>
 														</div>
@@ -480,10 +489,10 @@
 																	<label>Axis:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftAxis}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightAxis}}
 																</div>
 															</div>
 														</div>
@@ -548,7 +557,7 @@
 						                        		</div>
 							                        	
 														<div class="panel-body">
-															<div class="form-check"><!-- {{selectedVisit.surgeryType}} --></div>
+															<div class="form-check">{{selectedVisit.surgeryType}}</div>
 														</div>
 													</div>
 						                        </div>
