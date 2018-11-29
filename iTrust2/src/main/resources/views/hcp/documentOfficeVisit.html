@@ -102,14 +102,6 @@
             	var sphCylMatcher = /^[-|+]?\d{1,2}\.?\d{0,2}$/;
             	var visit = $scope.visit;
 
-            	// check visual acuity to be integers
-            	if (!visualAcuityMatcher.test(visit.visualAcuityOS)) {
-                	err.push("Visual Acuity OS must be an \"#/#\"");
-            	}
-            	if (!visualAcuityMatcher.test(visit.visualAcuityOD)) {
-                	err.push("Visual Acuity OD must be an \"#/#\"");
-            	}
-
             	// also enforce sphere matchers
             	if (!sphCylMatcher.test(String(visit.leftSphere))) {
             		err.push("Sphere OS must be a decimal number with an optional sign");
@@ -118,13 +110,13 @@
             		err.push("Sphere OD must be a decimal number with an optional sign");
             	}
 
-							if(!visualAcuityMatcher.test(String(visit.leftVisualAcuity))) {
-								err.push("Visual Acuity OS must be of the proper form #/#");
-							}
+				if(!visualAcuityMatcher.test(String(visit.leftVisualAcuity))) {
+					err.push("Visual Acuity OS must be of the proper form #/#");
+				}
 
-							if(!visualAcuityMatcher.test(String(visit.rightVisualAcuity))) {
-								err.push("Visual Acuity OD must be of the proper form #/#");
-							}
+				if(!visualAcuityMatcher.test(String(visit.rightVisualAcuity))) {
+					err.push("Visual Acuity OD must be of the proper form #/#");
+				}
 
             	// only enforce these matchers if the user decided to enter cylinder
             	if (!nullOrEmpty(visit.rightCylinder) && !sphCylMatcher.test(String(visit.leftCylinder))) {
@@ -342,23 +334,23 @@
 
               // Check if the appointment type is either general checkup or any of the fields have been filled out
               if ( $scope.visit.appointmentType === "GENERAL_CHECKUP" || $scope.basicHealthMetricsList.some( field => field )) {
-	            if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.height).replace(/^0+/, '')) == false) {
+	            if ((/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.height).replace(/^0+/, '')) == false ) && $scope.visit.height ) {
 	              $scope.errorMsg += "Height/length can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
 	            }
-	            if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
+	            if ((/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false ) && $scope.visit.weight ) {
 	              $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
 	            }
-	            if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
+	            if (($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) && $scope.visit.headCircumference) {
 	              $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
 	            }
-	            if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
+	            if (($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false ) && $scope.visit.systolic) {
 	              $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
 	            }
-	            if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
+	            if (($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) && $scope.visit.diastolic) {
 	              $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
 	            }
 	            //handle invalid and outside of range
-	            if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
+	            if (($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false ) && $scope.visit.hdl) {
 	              $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
 	            } else if ($scope.twelveAndUp) {
 	              var hdlInt = parseInt($scope.visit.hdl);
@@ -367,7 +359,7 @@
 	              }
 	            }
 	            //handle invalid and outside of range
-	            if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
+	            if (($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false ) && $scope.visit.ldl) {
 	              $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
 	            } else if ($scope.twelveAndUp) {
 	              var ldlInt = parseInt($scope.visit.ldl);
@@ -376,7 +368,7 @@
 	              }
 	            }
 	            //handle invalid and outside of range
-	            if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
+	            if (($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false ) && $scope.visit.tri ) {
 	              $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
 	            } else if ($scope.twelveAndUp) {
 	              var triInt = parseInt($scope.visit.tri);
@@ -428,20 +420,20 @@
               }
 
 
-              if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
+              if ((/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false ) && $scope.visit.weight ) {
                 $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
               }
-              if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
+              if (($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false ) && $scope.visit.headCircumference ) {
                 $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
               }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
+              if (($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false ) && $scope.visit.systolic ) {
                 $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
               }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
+              if (($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false ) && $scope.visit.diastolic ) {
                 $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
               }
               //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
+              if (($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false ) && $scope.visit.hdl ) {
                 $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
               } else if ($scope.twelveAndUp) {
                 var hdlInt = parseInt($scope.visit.hdl);
@@ -450,7 +442,7 @@
                 }
               }
               //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
+              if (($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false ) && $scope.visit.ldl ) {
                 $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
               } else if ($scope.twelveAndUp) {
                 var ldlInt = parseInt($scope.visit.ldl);
@@ -459,7 +451,7 @@
                 }
               }
               //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
+              if (($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false ) && $scope.visit.tri ) {
                 $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
               } else if ($scope.twelveAndUp) {
                 var triInt = parseInt($scope.visit.tri);
