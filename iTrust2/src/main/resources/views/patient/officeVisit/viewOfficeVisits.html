@@ -21,7 +21,7 @@
           .controller(
           'viewOfficeVisitCtrl',
           function ($scope, $http) {
-        	  
+
         	$scope.Selected = false;
 
             var isDate = function (input) {
@@ -88,6 +88,7 @@
                 $scope.noVisitSelected = true;
                 $scope.loadingVisits = false;
                 $scope.visits = response.data;
+								console.log($scope.visits);
                 var visitsLength = $scope.visits.length;
                 //The problem is that the visit does not contain an actual reference to the patient as a patient, only as a user
                 //to get around this, we will use the patients api which can get us this mapping, and we will have angular help
@@ -116,19 +117,14 @@
 
 
 
-            $scope.populateVisit = function () {
-            	
-              /* TODO: Get visit type */
-              $scope.visitType = "GENERAL_CHECKUP"	
-            
+						$scope.populateVisit = function () {
               $scope.prescriptions = [];
-              $scope.diagnoses = [];
               $scope.procedures = [];
-              $scope.showBHM = true;
+              $scope.diagnoses = [];
               var visitsLength = $scope.visits.length;
-              $scope.noVisitSelected = false;
+              $scope.Selected = true;
+							console.log($scope)
               for (var i = 0; i < visitsLength; i++) {
-            	  	//gets general info and basic health metrics
                 if ($scope.visits[i].id == $scope.selectedVisitID) {
                   $scope.selectedVisit.patient = $scope.visits[i].patient.username;
                   $scope.selectedVisit.hcp = $scope.visits[i].hcp.username;
@@ -149,66 +145,75 @@
                   $scope.selectedVisit.houseSmokingStatus = $scope.visits[i].basicHealthMetrics.houseSmokingStatus;
                   $scope.selectedVisit.patientSmokingStatus = $scope.visits[i].basicHealthMetrics.patientSmokingStatus;
 
-                  /* TODO: Get eye health metrics here, should be same as regular health metrics */
-                  
-                  /* TODO: Get surgery type here */
-                  
-                  //diagnoses
-                  //This will get both regular diagnoses and ophthalmology diagnoses. With the checks
-                  //that are in place on document and edit office visit pages, it is impossible to
-                  //have an office visit with both types of diagnoses.
-                  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope
-                  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
-                    function (response) {
-                      $scope.diagnosesResponse = response.data;
-                      var dLength = $scope.diagnosesResponse.length;
-                      if(dLength > 0){
-                        $scope.showDiagnosis = true;  
-                      }
-                      for (var i = 0; i < dLength; i++) {
-                        $scope.diagnoses.push({
-                          note: $scope.diagnosesResponse[i].note,
-                          code: $scope.diagnosesResponse[i].code
-                        });
-                      }
-                    });
+				  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
+						  function (response) {
+							$scope.diagnosesResponse = response.data;
+							var dLength = $scope.diagnosesResponse.length;
+							   for( var i = 0; i < dLength; i++){
+								$scope.diagnoses.push({
+								  note: $scope.diagnosesResponse[i].note,
+								  code: $scope.diagnosesResponse[i].code
+								});
+							  }
+					   });
 
-                  // prescriptions
-                  var pLength = $scope.visits[i].prescriptions.length;
-                  if(pLength > 0){
-                      $scope.showPrescription = true;  
-                    }
-                  for (var j = 0; j < pLength; j++) {
-                		var myStart = $scope.getDate($scope.visits[i].prescriptions[j].startDate);
-                		var myEnd = $scope.getDate($scope.visits[i].prescriptions[j].endDate);
-                	
-                    $scope.prescriptions.push({
-                      drug: $scope.visits[i].prescriptions[j].drug.code,
-                      dosage: $scope.visits[i].prescriptions[j].dosage,
-                      startDate: myStart,
-                      endDate: myEnd,
-                      renewals: $scope.visits[i].prescriptions[j].renewals
-                    });
+                  if ($scope.selectedVisit.type == 'GENERAL_CHECKUP' ) {
+
+					  // prescriptions
+					  var pLength = $scope.visits[i].prescriptions.length;
+					  for( var j = 0; j < pLength; j++){
+						var myStart = $scope.getDate($scope.visits[i].prescriptions[j].startDate);
+						  var myEnd = $scope.getDate($scope.visits[i].prescriptions[j].endDate);
+						$scope.prescriptions.push({
+						  drug: $scope.visits[i].prescriptions[j].drug.code,
+						  dosage: $scope.visits[i].prescriptions[j].dosage,
+						  startDate: myStart,
+						  endDate: myEnd,
+						  renewals: $scope.visits[i].prescriptions[j].renewals
+						});
+					  }
+
+					  $http.get("/iTrust2/api/v1/labprocedures/byVisit/" + $scope.selectedVisitID).then(
+							  function (response) {
+								$scope.proceduresResponse = response.data;
+								var pLength = $scope.proceduresResponse.length;
+								if(pLength > 0){
+								  $scope.showLabProcedures = true;
+								}
+								for (var i = 0; i < pLength; i++) {
+								  $scope.procedures.push({
+									code: $scope.proceduresResponse[i].loinc.code,
+									commonName: $scope.proceduresResponse[i].loinc.commonName,
+									priority: $scope.proceduresResponse[i].priority,
+									comments: $scope.proceduresResponse[i].comments,
+									status: $scope.proceduresResponse[i].status,
+									id: $scope.proceduresResponse[i].id
+								  });
+								}
+							  });
+                  } else if ($scope.selectedVisit.type == 'OPHTHALMOLOGY_VISIT') {
+	                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
+	                  $scope.selectedVisit.rightVisualAcuity = $scope.visits[i].basicEyeMetrics.rightVisualAcuity;
+	                  $scope.selectedVisit.leftSphere = $scope.visits[i].basicEyeMetrics.leftSphere;
+	                  $scope.selectedVisit.rightSphere = $scope.visits[i].basicEyeMetrics.rightSphere;
+	                  $scope.selectedVisit.rightAxis = $scope.visits[i].basicEyeMetrics.rightAxis;
+	                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
+	                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
+	                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
+	                  $scope.selectedVisit.diagnosis
+
+                  } else if ($scope.selectedVisit.type == 'OPHTHALMOLOGY_SURGERY') {
+	                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
+	                  $scope.selectedVisit.rightVisualAcuity = $scope.visits[i].basicEyeMetrics.rightVisualAcuity;
+	                  $scope.selectedVisit.leftSphere = $scope.visits[i].basicEyeMetrics.leftSphere;
+	                  $scope.selectedVisit.rightSphere = $scope.visits[i].basicEyeMetrics.rightSphere;
+	                  $scope.selectedVisit.rightAxis = $scope.visits[i].basicEyeMetrics.rightAxis;
+	                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
+	                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
+	                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
+	                  $scope.selectedVisit.surgeryType = $scope.visits[i].surgeryType;
+
                   }
-                  
-                  //lab procedures
-                  $http.get("/iTrust2/api/v1//labprocedures/byVisit/" + $scope.selectedVisitID).then(
-                    function (response) {
-                      $scope.proceduresResponse = response.data;
-                      var pLength = $scope.proceduresResponse.length;
-                      if(pLength > 0){
-                        $scope.showLabProcedures = true;  
-                      }
-                      for (var i = 0; i < pLength; i++) {
-                        $scope.procedures.push({
-                          code: $scope.proceduresResponse[i].loinc.code,
-                          commonName: $scope.proceduresResponse[i].loinc.commonName,
-                          priority: $scope.proceduresResponse[i].priority,
-                          comments: $scope.proceduresResponse[i].comments,
-                          status: $scope.proceduresResponse[i].status
-                        });
-                      }
-                    });
 
                   $scope.three = false;
                   $scope.threeAndUp = false;
@@ -240,7 +245,6 @@
                   break;
                 }
               }
-              $scope.Selected = true;
             }
 
 
@@ -512,7 +516,7 @@
 														</div>
 													</div>
 												</div>
-												
+
 												<!-- Ophthalmology Diagnosis Panel  -->
 						                        <div ng-show="visitType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
 						                          <div class="panel panel-info">
@@ -539,14 +543,14 @@
 						                            </div>
 						                          </div>
 						                        </div>
-						                        
+
 						                        <!-- TODO: Add Ophthalmology Surgery Type panel -->
 						                        <div ng-show="visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 						                        	<div class="panel panel-info">
 						                        		<div class="pane-heading">
 						                        			<label>Ophthalmology Surgery Type:</label>
 						                        		</div>
-							                        	
+
 														<div class="panel-body">
 															<div class="form-check"><!-- {{selectedVisit.surgeryType}} --></div>
 														</div>
