@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.text.ParseException;
 import java.util.Calendar;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import edu.ncsu.csc.itrust2.forms.hcp.OfficeVisitForm;
@@ -57,8 +58,21 @@ public class OphthalmologySurgeryTest {
         bem.setRightCylinder( 0.5 );
         bem.setLeftSphere( -5.0 );
         bem.setRightSphere( -4.0 );
-
+        bem.setLeftVisualAcuity( "20/20" );
+        bem.setRightVisualAcuity( "20/20" );
         bem.save();
+
+        try {
+            bem.setLeftAxis( null );
+            bem.save();
+            Assert.fail();
+        }
+        catch ( final IllegalArgumentException e ) {
+            bem.setLeftAxis( 90 );
+            bem.setLeftCylinder( null );
+            bem.setRightCylinder( null );
+            // Empty
+        }
 
         visit.setBasicHealthMetrics( bhm );
         visit.setBasicEyeMetrics( bem );

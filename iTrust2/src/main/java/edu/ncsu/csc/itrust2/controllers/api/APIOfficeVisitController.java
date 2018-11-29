@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.controllers.api;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,20 @@ public class APIOfficeVisitController extends APIController {
     @GetMapping ( BASE_PATH + "/officevisits" )
     public List<OfficeVisit> getOfficeVisits () {
         return OfficeVisit.getOfficeVisits();
+    }
+
+    /**
+     * Retrieves a list of all OfficeVisits in the database that the logged in
+     * HCP is associated with.
+     *
+     * @return The list of office visits
+     */
+    @PreAuthorize ( "hasRole('ROLE_HCP')" )
+    @GetMapping ( BASE_PATH + "/hcpofficevisits" )
+    public List<OfficeVisit> getHCPsOfficeVisits () {
+        final User currentHCP = User.getByName( LoggerUtil.currentUser() );
+        return OfficeVisit.getOfficeVisits().stream().filter( ov -> ov.getHcp().equals( currentHCP ) )
+                .collect( Collectors.toList() );
     }
 
     /**
@@ -222,6 +237,7 @@ public class APIOfficeVisitController extends APIController {
             return new ResponseEntity( visit, HttpStatus.OK );
         }
         catch ( final Exception e ) {
+            e.printStackTrace();
             return new ResponseEntity(
                     errorResponse( "Could not update " + form.toString() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );

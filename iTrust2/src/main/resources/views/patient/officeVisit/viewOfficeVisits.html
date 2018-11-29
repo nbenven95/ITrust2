@@ -21,8 +21,9 @@
           .controller(
           'viewOfficeVisitCtrl',
           function ($scope, $http) {
-        	  
+
         	$scope.Selected = false;
+        	$scope.visits = [];
 
             var isDate = function (input) {
               if (!input) {
@@ -88,6 +89,7 @@
                 $scope.noVisitSelected = true;
                 $scope.loadingVisits = false;
                 $scope.visits = response.data;
+								console.log($scope.visits);
                 var visitsLength = $scope.visits.length;
                 //The problem is that the visit does not contain an actual reference to the patient as a patient, only as a user
                 //to get around this, we will use the patients api which can get us this mapping, and we will have angular help
@@ -116,15 +118,14 @@
 
 
 
-            $scope.populateVisit = function () {
+						$scope.populateVisit = function () {
               $scope.prescriptions = [];
-              $scope.diagnoses = [];
               $scope.procedures = [];
-              $scope.showBHM = true;
+              $scope.diagnoses = [];
               var visitsLength = $scope.visits.length;
-              $scope.noVisitSelected = false;
+              $scope.Selected = true;
+							console.log($scope)
               for (var i = 0; i < visitsLength; i++) {
-            	  	//gets general info and basic health metrics
                 if ($scope.visits[i].id == $scope.selectedVisitID) {
                   $scope.selectedVisit.patient = $scope.visits[i].patient.username;
                   $scope.selectedVisit.hcp = $scope.visits[i].hcp.username;
@@ -145,58 +146,75 @@
                   $scope.selectedVisit.houseSmokingStatus = $scope.visits[i].basicHealthMetrics.houseSmokingStatus;
                   $scope.selectedVisit.patientSmokingStatus = $scope.visits[i].basicHealthMetrics.patientSmokingStatus;
 
-                  //diagnoses
-                  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
-                    function (response) {
-                      $scope.diagnosesResponse = response.data;
-                      var dLength = $scope.diagnosesResponse.length;
-                      if(dLength > 0){
-                        $scope.showDiagnosis = true;  
-                      }
-                      for (var i = 0; i < dLength; i++) {
-                        $scope.diagnoses.push({
-                          note: $scope.diagnosesResponse[i].note,
-                          code: $scope.diagnosesResponse[i].code
-                        });
-                      }
-                    });
+				  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisit.id).then(
+						  function (response) {
+							$scope.diagnosesResponse = response.data;
+							var dLength = $scope.diagnosesResponse.length;
+							   for( var i = 0; i < dLength; i++){
+								$scope.diagnoses.push({
+								  note: $scope.diagnosesResponse[i].note,
+								  code: $scope.diagnosesResponse[i].code
+								});
+							  }
+					   });
 
-                  // prescriptions
-                  var pLength = $scope.visits[i].prescriptions.length;
-                  if(pLength > 0){
-                      $scope.showPrescription = true;  
-                    }
-                  for (var j = 0; j < pLength; j++) {
-                		var myStart = $scope.getDate($scope.visits[i].prescriptions[j].startDate);
-                		var myEnd = $scope.getDate($scope.visits[i].prescriptions[j].endDate);
-                	
-                    $scope.prescriptions.push({
-                      drug: $scope.visits[i].prescriptions[j].drug.code,
-                      dosage: $scope.visits[i].prescriptions[j].dosage,
-                      startDate: myStart,
-                      endDate: myEnd,
-                      renewals: $scope.visits[i].prescriptions[j].renewals
-                    });
+                  if ($scope.selectedVisit.type == 'GENERAL_CHECKUP' ) {
+
+					  // prescriptions
+					  var pLength = $scope.visits[i].prescriptions.length;
+					  for( var j = 0; j < pLength; j++){
+						var myStart = $scope.getDate($scope.visits[i].prescriptions[j].startDate);
+						  var myEnd = $scope.getDate($scope.visits[i].prescriptions[j].endDate);
+						$scope.prescriptions.push({
+						  drug: $scope.visits[i].prescriptions[j].drug.code,
+						  dosage: $scope.visits[i].prescriptions[j].dosage,
+						  startDate: myStart,
+						  endDate: myEnd,
+						  renewals: $scope.visits[i].prescriptions[j].renewals
+						});
+					  }
+
+					  $http.get("/iTrust2/api/v1/labprocedures/byVisit/" + $scope.selectedVisitID).then(
+							  function (response) {
+								$scope.proceduresResponse = response.data;
+								var pLength = $scope.proceduresResponse.length;
+								if(pLength > 0){
+								  $scope.showLabProcedures = true;
+								}
+								for (var i = 0; i < pLength; i++) {
+								  $scope.procedures.push({
+									code: $scope.proceduresResponse[i].loinc.code,
+									commonName: $scope.proceduresResponse[i].loinc.commonName,
+									priority: $scope.proceduresResponse[i].priority,
+									comments: $scope.proceduresResponse[i].comments,
+									status: $scope.proceduresResponse[i].status,
+									id: $scope.proceduresResponse[i].id
+								  });
+								}
+							  });
+                  } else if ($scope.selectedVisit.type == 'OPHTHALMOLOGY_VISIT') {
+	                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
+	                  $scope.selectedVisit.rightVisualAcuity = $scope.visits[i].basicEyeMetrics.rightVisualAcuity;
+	                  $scope.selectedVisit.leftSphere = $scope.visits[i].basicEyeMetrics.leftSphere;
+	                  $scope.selectedVisit.rightSphere = $scope.visits[i].basicEyeMetrics.rightSphere;
+	                  $scope.selectedVisit.rightAxis = $scope.visits[i].basicEyeMetrics.rightAxis;
+	                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
+	                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
+	                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
+	                  $scope.selectedVisit.diagnoses = $scope.visits[i].diagnoses;
+
+                  } else if ($scope.selectedVisit.type == 'OPHTHALMOLOGY_SURGERY') {
+	                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
+	                  $scope.selectedVisit.rightVisualAcuity = $scope.visits[i].basicEyeMetrics.rightVisualAcuity;
+	                  $scope.selectedVisit.leftSphere = $scope.visits[i].basicEyeMetrics.leftSphere;
+	                  $scope.selectedVisit.rightSphere = $scope.visits[i].basicEyeMetrics.rightSphere;
+	                  $scope.selectedVisit.rightAxis = $scope.visits[i].basicEyeMetrics.rightAxis;
+	                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
+	                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
+	                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
+	                  $scope.selectedVisit.surgeryType = $scope.visits[i].surgeryType;
+
                   }
-                  
-                  //lab procedures
-                  $http.get("/iTrust2/api/v1//labprocedures/byVisit/" + $scope.selectedVisitID).then(
-                    function (response) {
-                      $scope.proceduresResponse = response.data;
-                      var pLength = $scope.proceduresResponse.length;
-                      if(pLength > 0){
-                        $scope.showLabProcedures = true;  
-                      }
-                      for (var i = 0; i < pLength; i++) {
-                        $scope.procedures.push({
-                          code: $scope.proceduresResponse[i].loinc.code,
-                          commonName: $scope.proceduresResponse[i].loinc.commonName,
-                          priority: $scope.proceduresResponse[i].priority,
-                          comments: $scope.proceduresResponse[i].comments,
-                          status: $scope.proceduresResponse[i].status
-                        });
-                      }
-                    });
 
                   $scope.three = false;
                   $scope.threeAndUp = false;
@@ -228,7 +246,6 @@
                   break;
                 }
               }
-              $scope.Selected = true;
             }
 
 
@@ -337,7 +354,7 @@
 														<div class="panel-heading">
 															<h4>Basic Health Metrics</h4>
 														</div>
-														<div class="panel-body" ng-show="showBHM">
+														<div class="panel-body">
 															<div class="form-group row">
 																<div class="col-xs-6">
 																	<label>Height/Length:</label>
@@ -410,14 +427,81 @@
 													</div>
 												</div>
 
+                                                 <!-- TODO: Add Eye Health Metrics panel -->
+						                        <div ng-show="selectedVisit.type ===  'OPHTHALMOLOGY_VISIT' || selectedVisit.type ===  'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+													<div class="panel panel-info">
+														<div class="panel-heading">
+															<h4>Eye Health Metrics</h4>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4"></div>
+																<div class="col-xs-4">OS</div>
+																<div class="col-xs-4">OD</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Visual Acuity:</label>
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.leftVisualAcuity}}
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.rightVisualAcuity}}
+																</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Sphere:</label>
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.leftSphere}}
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.rightSphere}}
+																</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Cylinder:</label>
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.leftCylinder}}
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.rightCylinder}}
+																</div>
+															</div>
+														</div>
+														<div class="panel-body">
+															<div class="form-group row">
+																<div class="col-xs-4">
+																	<label>Axis:</label>
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.leftAxis}}
+																</div>
+																<div class="col-xs-4">
+																	{{selectedVisit.rightAxis}}
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
 
 												<!-- Diagnosis Panel  -->
-												<div class="col-md-4">
+												<div ng-show="selectedVisit.type ===  'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Diagnoses</h4>
 														</div>
-														<div class="panel-body" ng-show="showDiagnosis">
+														<div class="panel-body">
 															<div class="row">
 																<div class="col-md-6">
 																	<b>Description</b>
@@ -434,13 +518,53 @@
 													</div>
 												</div>
 
+												<!-- Ophthalmology Diagnosis Panel  -->
+						                        <div ng-show="selectedVisit.type ===  'OPHTHALMOLOGY_VISIT'" class="col-md-4">
+						                          <div class="panel panel-info">
+						                            <div class="panel-heading">
+						                              <h4>Ophthalmology Diagnoses</h4>
+						                            </div>
+						                            <div class="panel-body">
+						                              <div class="row">
+						                                <div class="col-md-6">
+						                                  <b>Description</b>
+						                                </div>
+						                                <div class="col-md-6">
+						                                  <b>Note</b>
+						                                </div>
+						                              </div>
+						                              <div class="row" ng-repeat="d in diagnoses">
+						                                <div class="col-md-6">
+						                                  {{d.code.description}}
+						                                </div>
+						                                <div class="col-md-6">
+						                                  {{d.note}}
+						                                </div>
+						                              </div>
+						                            </div>
+						                          </div>
+						                        </div>
+
+						                        <!-- TODO: Add Ophthalmology Surgery Type panel -->
+						                        <div ng-show="selectedVisit.type ===  'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+						                        	<div class="panel panel-info">
+						                        		<div class="panel-heading">
+						                        			<label>Ophthalmology Surgery Type:</label>
+						                        		</div>
+
+														<div class="panel-body">
+															<div class="form-check">{{selectedVisit.surgeryType}}</div>
+														</div>
+													</div>
+						                        </div>
+
 												<!-- Prescription Panel -->
-												<div class="col-md-4">
+												<div ng-show="selectedVisit.type ===  'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Prescriptions</h4>
 														</div>
-														<div class="panel-body" ng-show="showPrescription">
+														<div class="panel-body">
 															<div class="row" ng-repeat="p in prescriptions">
 																<div class="col-md-6">
 																	<b>Drug:</b> {{p.drug}}
@@ -464,12 +588,12 @@
 											<!-- Start a new row of panels -->
 											<div class="row">
 												<!-- Lab Procedures Panel  -->
-												<div class="col-md-4">
+												<div ng-show="selectedVisit.type ===  'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Lab Procedures</h4>
 														</div>
-														<div class="panel-body" ng-show="showLabProcedures">
+														<div class="panel-body">
 															<div class="row" ng-repeat="p in procedures">
 																<div class="col-md-6">
 																	<b>Code:</b> {{p.code}}

@@ -99,7 +99,7 @@ public class LabProcedureStepDefs extends CucumberTest {
 
         driver.findElement( By.id( "patient" ) ).click();
         waitForAngular();
-        driver.findElement( By.name( "type" ) ).click();
+        driver.findElement( By.cssSelector( "input[type=radio][value=GENERAL_CHECKUP]" ) ).click();
         waitForAngular();
         driver.findElement( By.name( "hospital" ) ).click();
         waitForAngular();

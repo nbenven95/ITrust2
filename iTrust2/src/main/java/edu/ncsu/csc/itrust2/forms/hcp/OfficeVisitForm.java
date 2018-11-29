@@ -168,6 +168,10 @@ public class OfficeVisitForm implements Serializable {
 
     private Integer                rightAxis;
 
+    private String                 leftVisualAcuity;
+
+    private String                 rightVisualAcuity;
+
     private String                 surgeryType;
 
     /**
@@ -187,6 +191,7 @@ public class OfficeVisitForm implements Serializable {
         setNotes( ov.getNotes() );
         setId( ov.getId().toString() );
         setPreScheduled( ( (Boolean) ( ov.getAppointment() != null ) ).toString() );
+        setType( ov.getType().toString() );
         if ( ov instanceof GeneralCheckup ) {
             final GeneralCheckup gc = (GeneralCheckup) ov;
             setDiagnoses( gc.getDiagnoses() );
@@ -203,6 +208,8 @@ public class OfficeVisitForm implements Serializable {
             setRightCylinder( gov.getBasicEyeMetrics().getRightCylinder() );
             setLeftAxis( gov.getBasicEyeMetrics().getLeftAxis() );
             setRightAxis( gov.getBasicEyeMetrics().getRightAxis() );
+            setLeftVisualAcuity( gov.getBasicEyeMetrics().getLeftVisualAcuity() );
+            setRightVisualAcuity( gov.getBasicEyeMetrics().getRightVisualAcuity() );
         }
         else if ( ov instanceof OphthalmologySurgery ) {
             final OphthalmologySurgery surg = (OphthalmologySurgery) ov;
@@ -213,6 +220,8 @@ public class OfficeVisitForm implements Serializable {
             setLeftAxis( surg.getBasicEyeMetrics().getLeftAxis() );
             setRightAxis( surg.getBasicEyeMetrics().getRightAxis() );
             setSurgeryType( surg.getSurgeryType().toString() );
+            setLeftVisualAcuity( surg.getBasicEyeMetrics().getLeftVisualAcuity() );
+            setRightVisualAcuity( surg.getBasicEyeMetrics().getRightVisualAcuity() );
         }
         setDiastolic( ov.getBasicHealthMetrics().getDiastolic() );
         setHdl( ov.getBasicHealthMetrics().getHdl() );
@@ -759,6 +768,44 @@ public class OfficeVisitForm implements Serializable {
     }
 
     /**
+     * Gets the left eye's visual acuity
+     *
+     * @return the left eye's visual acuity
+     */
+    public String getLeftVisualAcuity () {
+        return leftVisualAcuity;
+    }
+
+    /**
+     * Sets the left eye's visual acuity
+     *
+     * @param leftVisualAcuity
+     *            the left eye's visual acuity to set
+     */
+    public void setLeftVisualAcuity ( final String leftVisualAcuity ) {
+        this.leftVisualAcuity = leftVisualAcuity;
+    }
+
+    /**
+     * Gets the right eye's visual acuity
+     *
+     * @return the right eye's visual acuity
+     */
+    public String getRightVisualAcuity () {
+        return rightVisualAcuity;
+    }
+
+    /**
+     * Sets the right eye's visual acuity
+     *
+     * @param rightVisualAcuity
+     *            the right eye's visual acuity to set
+     */
+    public void setRightVisualAcuity ( final String rightVisualAcuity ) {
+        this.rightVisualAcuity = rightVisualAcuity;
+    }
+
+    /**
      * Gets the surgery type.
      *
      * @return the surgeryType
@@ -773,7 +820,7 @@ public class OfficeVisitForm implements Serializable {
      * @param surgeryType
      *            the surgeryType to set
      */
-    public void setSurgeryType ( String surgeryType ) {
+    public void setSurgeryType ( final String surgeryType ) {
         this.surgeryType = surgeryType;
     }
 
