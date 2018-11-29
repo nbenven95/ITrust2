@@ -33,51 +33,56 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      */
     @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long    id;
+    private Long          id;
 
     /**
      * The left eye's sphere measurement
      */
     @NotNull
-    private Double  leftSphere;
+    private Double        leftSphere;
 
     /**
      * The right eye's sphere measurement
      */
     @NotNull
-    private Double  rightSphere;
+    private Double        rightSphere;
 
     /**
      * The left eye's cylinder measurement
      */
-    private Double  leftCylinder;
+    private Double        leftCylinder;
 
     /**
      * The right eye's cylinder measurement
      */
-    private Double  rightCylinder;
+    private Double        rightCylinder;
 
     /**
      * The left eye's axis measurement
      */
-    private Integer leftAxis;
+    private Integer       leftAxis;
 
     /**
      * The right eye's axis measurement
      */
-    private Integer rightAxis;
+    private Integer       rightAxis;
 
     /**
      * The left eye's visual acuity
      */
     @NotNull
-    private String  leftVisualAcuity;
+    private String        leftVisualAcuity;
 
     /**
      * The right eye's visual acuity
      */
     @NotNull
-    private String  rightVisualAcuity;
+    private String        rightVisualAcuity;
+
+    /**
+     * A regex that tests the validity of a visual acuity.
+     */
+    private static String visualAcuityRegex = "\\d{1,2}/\\d{1,3}";
 
     /**
      * The Patient who is associated with this AppointmentRequest
@@ -85,7 +90,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "patient_id", columnDefinition = "varchar(100)" )
-    private User    patient;
+    private User          patient;
 
     /**
      * The HCP who is associated with this AppointmentRequest
@@ -93,7 +98,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     @NotNull
     @ManyToOne
     @JoinColumn ( name = "hcp_id", columnDefinition = "varchar(100)" )
-    private User    hcp;
+    private User          hcp;
 
     /**
      * Retrieve an BasicHealthMetrics by its numerical ID.
@@ -363,7 +368,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      *            the leftVisualAcuity to set
      */
     public void setLeftVisualAcuity ( final String leftVisualAcuity ) {
-        if ( !leftVisualAcuity.matches( "\\d\\d?/\\d\\d?" ) ) {
+        if ( !leftVisualAcuity.matches( visualAcuityRegex ) ) {
             throw new IllegalArgumentException( "Does not match proper visual acuity format" );
         }
         this.leftVisualAcuity = leftVisualAcuity;
@@ -385,7 +390,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      *            the right visual acuity to set
      */
     public void setRightVisualAcuity ( final String rightVisualAcuity ) {
-        if ( !rightVisualAcuity.matches( "\\d\\d?/\\d\\d?" ) ) {
+        if ( !rightVisualAcuity.matches( visualAcuityRegex ) ) {
             throw new IllegalArgumentException( "Does not match proper visual acuity format" );
         }
         this.rightVisualAcuity = rightVisualAcuity;
