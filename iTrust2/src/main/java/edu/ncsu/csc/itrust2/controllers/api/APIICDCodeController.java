@@ -43,8 +43,19 @@ public class APIICDCodeController extends APIController {
     }
 
     /**
+     * Returns a list of codes related to general checkups.
+     *
+     * @return The general checkup codes in the system.
+     */
+    @GetMapping ( BASE_PATH + "/generalicdcodes" )
+    public List<ICDCode> getGeneralCheckupCodes () {
+        LoggerUtil.log( TransactionType.ICD_VIEW, LoggerUtil.currentUser(), "Fetched ophthalmology icd codes." );
+        return ICDCode.getGeneralCheckupCodes();
+    }
+
+    /**
      * Returns a list of codes related to ophthalmology.
-     * 
+     *
      * @return The ophthalmology codes in the system.
      */
     @GetMapping ( BASE_PATH + "/ophicdcodes" )
