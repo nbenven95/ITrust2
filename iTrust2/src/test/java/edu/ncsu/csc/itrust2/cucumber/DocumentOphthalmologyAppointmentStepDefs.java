@@ -44,7 +44,7 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
     }
 
     @When ( "A patient with (.+) exists with no documented office visits" )
-    public void addPatient ( String patientName ) throws Exception {
+    public void addPatient ( final String patientName ) throws Exception {
         final User pt = new User( patientName, "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
         pt.save();
@@ -69,8 +69,8 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
     }
 
     @When ( "^I document an ophthalmology appointment with values: (.+) (.+) (.+) (.+) (.+) (.+) (.+) (.+)$" )
-    public void documentOV ( String patientName, String date, String time, String visualAcuity, String sphere,
-            String cylinder, String axis, String diagnosis ) {
+    public void documentOV ( final String patientName, final String date, final String time, final String visualAcuity,
+            final String sphere, final String cylinder, final String axis, final String diagnosis ) {
 
         waitForAngular();
         final WebElement hospital = driver.findElement( By.name( "hospital" ) );
@@ -147,8 +147,9 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
      * @throws InterruptedException
      */
     @And ( "(.+) can view the appointment on (.+) at (.+) with values: (.+) (.+) (.+) (.+) (.+)" )
-    public void correctPatientView ( String patientName, String date, String time, String visualAcuity, String sphere,
-            String cylinder, String axis, String diagnosis ) throws InterruptedException {
+    public void correctPatientView ( final String patientName, final String date, final String time,
+            final String visualAcuity, final String sphere, final String cylinder, final String axis,
+            final String diagnosis ) throws InterruptedException {
         waitForAngular();
         attemptLogout();
         driver.get( baseUrl );
@@ -167,6 +168,28 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
         // assertTrue( driver.getPageSource().contains() );
 
         assertEquals( "", "" );
+    }
+
+    /**
+     * Logs in a user
+     *
+     * @throws InterruptedException
+     */
+    @And ( "I am logged in to iTrust2 as (.+)" )
+    public void logIn ( final String username ) throws InterruptedException {
+        waitForAngular();
+        attemptLogout();
+        driver.get( baseUrl );
+        waitForAngular();
+        final WebElement usernameEle = driver.findElement( By.name( "username" ) );
+        usernameEle.clear();
+        usernameEle.sendKeys( username );
+        final WebElement passwordEle = driver.findElement( By.name( "password" ) );
+        passwordEle.clear();
+        passwordEle.sendKeys( "123456" );
+        final WebElement submitEle = driver.findElement( By.className( "btn" ) );
+        submitEle.click();
+        waitForAngular();
     }
 
     @Then ( "The ophthalmology visit is not documented" )
