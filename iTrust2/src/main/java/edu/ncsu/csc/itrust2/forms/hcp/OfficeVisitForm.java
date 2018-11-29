@@ -12,8 +12,11 @@ import org.hibernate.validator.constraints.NotEmpty;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralOphthalmologyVisit;
 import edu.ncsu.csc.itrust2.models.persistent.LabProcedure;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
+import edu.ncsu.csc.itrust2.models.persistent.OphthalmologySurgery;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 
 /**
@@ -153,6 +156,24 @@ public class OfficeVisitForm implements Serializable {
 
     private List<PrescriptionForm> prescriptions;
 
+    private Double                 leftSphere;
+
+    private Double                 rightSphere;
+
+    private Double                 leftCylinder;
+
+    private Double                 rightCylinder;
+
+    private Integer                leftAxis;
+
+    private Integer                rightAxis;
+
+    private String                 leftVisualAcuity;
+
+    private String                 rightVisualAcuity;
+
+    private String                 surgeryType;
+
     /**
      * Creates an OfficeVisitForm from the OfficeVisit provided
      *
@@ -170,10 +191,38 @@ public class OfficeVisitForm implements Serializable {
         setNotes( ov.getNotes() );
         setId( ov.getId().toString() );
         setPreScheduled( ( (Boolean) ( ov.getAppointment() != null ) ).toString() );
-        setDiagnoses( ov.getDiagnoses() );
-        setLabProcedures( ov.getLabProcedures() );
-        setPrescriptions( ov.getPrescriptions().stream().map( ( final Prescription p ) -> new PrescriptionForm( p ) )
-                .collect( Collectors.toList() ) );
+        setType( ov.getType().toString() );
+        if ( ov instanceof GeneralCheckup ) {
+            final GeneralCheckup gc = (GeneralCheckup) ov;
+            setDiagnoses( gc.getDiagnoses() );
+            setLabProcedures( gc.getLabProcedures() );
+            setPrescriptions( gc.getPrescriptions().stream()
+                    .map( ( final Prescription p ) -> new PrescriptionForm( p ) ).collect( Collectors.toList() ) );
+        }
+        else if ( ov instanceof GeneralOphthalmologyVisit ) {
+            final GeneralOphthalmologyVisit gov = (GeneralOphthalmologyVisit) ov;
+            setDiagnoses( gov.getDiagnoses() );
+            setLeftSphere( gov.getBasicEyeMetrics().getLeftSphere() );
+            setRightSphere( gov.getBasicEyeMetrics().getRightSphere() );
+            setLeftCylinder( gov.getBasicEyeMetrics().getLeftCylinder() );
+            setRightCylinder( gov.getBasicEyeMetrics().getRightCylinder() );
+            setLeftAxis( gov.getBasicEyeMetrics().getLeftAxis() );
+            setRightAxis( gov.getBasicEyeMetrics().getRightAxis() );
+            setLeftVisualAcuity( gov.getBasicEyeMetrics().getLeftVisualAcuity() );
+            setRightVisualAcuity( gov.getBasicEyeMetrics().getRightVisualAcuity() );
+        }
+        else if ( ov instanceof OphthalmologySurgery ) {
+            final OphthalmologySurgery surg = (OphthalmologySurgery) ov;
+            setLeftSphere( surg.getBasicEyeMetrics().getLeftSphere() );
+            setRightSphere( surg.getBasicEyeMetrics().getRightSphere() );
+            setLeftCylinder( surg.getBasicEyeMetrics().getLeftCylinder() );
+            setRightCylinder( surg.getBasicEyeMetrics().getRightCylinder() );
+            setLeftAxis( surg.getBasicEyeMetrics().getLeftAxis() );
+            setRightAxis( surg.getBasicEyeMetrics().getRightAxis() );
+            setSurgeryType( surg.getSurgeryType().toString() );
+            setLeftVisualAcuity( surg.getBasicEyeMetrics().getLeftVisualAcuity() );
+            setRightVisualAcuity( surg.getBasicEyeMetrics().getRightVisualAcuity() );
+        }
         setDiastolic( ov.getBasicHealthMetrics().getDiastolic() );
         setHdl( ov.getBasicHealthMetrics().getHdl() );
         setLdl( ov.getBasicHealthMetrics().getLdl() );
@@ -603,4 +652,176 @@ public class OfficeVisitForm implements Serializable {
     public List<PrescriptionForm> getPrescriptions () {
         return prescriptions;
     }
+
+    /**
+     * Gets the left sphere measurement
+     *
+     * @return the left sphere measurement
+     */
+    public Double getLeftSphere () {
+        return leftSphere;
+    }
+
+    /**
+     * Sets the left sphere measurement
+     *
+     * @param leftSphere
+     *            the left sphere measurement to set
+     */
+    public void setLeftSphere ( final Double leftSphere ) {
+        this.leftSphere = leftSphere;
+    }
+
+    /**
+     * Sets the right sphere measurement
+     *
+     * @return the right sphere measurement
+     */
+    public Double getRightSphere () {
+        return rightSphere;
+    }
+
+    /**
+     * Sets the right sphere measurement
+     *
+     * @param rightSphere
+     *            the right sphere measurement to set
+     */
+    public void setRightSphere ( final Double rightSphere ) {
+        this.rightSphere = rightSphere;
+    }
+
+    /**
+     * Gets the left cylinder measurement
+     *
+     * @return the left cylinder measurement
+     */
+    public Double getLeftCylinder () {
+        return leftCylinder;
+    }
+
+    /**
+     * Sets the left cylinder measurement
+     *
+     * @param leftCylinder
+     *            the left cylinder measurement to set
+     */
+    public void setLeftCylinder ( final Double leftCylinder ) {
+        this.leftCylinder = leftCylinder;
+    }
+
+    /**
+     * Gets the right cylinder measurement
+     *
+     * @return the left cylinder measurement
+     */
+    public Double getRightCylinder () {
+        return rightCylinder;
+    }
+
+    /**
+     * Sets the right cylinder measurement
+     *
+     * @param rightCylinder
+     *            the right cylinder measurement to set
+     */
+    public void setRightCylinder ( final Double rightCylinder ) {
+        this.rightCylinder = rightCylinder;
+    }
+
+    /**
+     * Gets the left axis measurement
+     *
+     * @return the left axis measurement
+     */
+    public Integer getLeftAxis () {
+        return leftAxis;
+    }
+
+    /**
+     * Sets the left axis measurement
+     *
+     * @param leftAxis
+     *            the left axis measurement to set
+     */
+    public void setLeftAxis ( final Integer leftAxis ) {
+        this.leftAxis = leftAxis;
+    }
+
+    /**
+     * Get the right axis measurement
+     *
+     * @return the right axis measurement
+     */
+    public Integer getRightAxis () {
+        return rightAxis;
+    }
+
+    /**
+     * Sets the right axis measurement
+     *
+     * @param rightAxis
+     *            the rightAxis to set
+     */
+    public void setRightAxis ( final Integer rightAxis ) {
+        this.rightAxis = rightAxis;
+    }
+
+    /**
+     * Gets the left eye's visual acuity
+     *
+     * @return the left eye's visual acuity
+     */
+    public String getLeftVisualAcuity () {
+        return leftVisualAcuity;
+    }
+
+    /**
+     * Sets the left eye's visual acuity
+     *
+     * @param leftVisualAcuity
+     *            the left eye's visual acuity to set
+     */
+    public void setLeftVisualAcuity ( final String leftVisualAcuity ) {
+        this.leftVisualAcuity = leftVisualAcuity;
+    }
+
+    /**
+     * Gets the right eye's visual acuity
+     *
+     * @return the right eye's visual acuity
+     */
+    public String getRightVisualAcuity () {
+        return rightVisualAcuity;
+    }
+
+    /**
+     * Sets the right eye's visual acuity
+     *
+     * @param rightVisualAcuity
+     *            the right eye's visual acuity to set
+     */
+    public void setRightVisualAcuity ( final String rightVisualAcuity ) {
+        this.rightVisualAcuity = rightVisualAcuity;
+    }
+
+    /**
+     * Gets the surgery type.
+     *
+     * @return the surgeryType
+     */
+    public String getSurgeryType () {
+        return surgeryType;
+    }
+
+    /**
+     * Sets the surgery type.
+     *
+     * @param surgeryType
+     *            the surgeryType to set
+     */
+    public void setSurgeryType ( final String surgeryType ) {
+        this.surgeryType = surgeryType;
+    }
+
 }

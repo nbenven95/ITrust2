@@ -21,6 +21,7 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.persistent.BasicHealthMetrics;
 import edu.ncsu.csc.itrust2.models.persistent.Diagnosis;
 import edu.ncsu.csc.itrust2.models.persistent.Drug;
+import edu.ncsu.csc.itrust2.models.persistent.GeneralCheckup;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
 import edu.ncsu.csc.itrust2.models.persistent.ICDCode;
 import edu.ncsu.csc.itrust2.models.persistent.LOINC;
@@ -29,7 +30,7 @@ import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Prescription;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 
-public class OfficeVisitTest {
+public class GeneralCheckupTest {
 
     @Test
     public void testOfficeVisit () throws NumberFormatException, ParseException {
@@ -39,7 +40,7 @@ public class OfficeVisitTest {
         final Hospital hosp = new Hospital( "Dr. Jenkins' Insane Asylum", "123 Main St", "12345", "NC" );
         hosp.save();
 
-        final OfficeVisit visit = new OfficeVisit();
+        final GeneralCheckup visit = new GeneralCheckup();
 
         final BasicHealthMetrics bhm = new BasicHealthMetrics();
 

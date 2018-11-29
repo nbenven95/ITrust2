@@ -64,6 +64,9 @@ public class APIEnumTest {
 
         mvc.perform( get( "/api/v1/state" ) ).andExpect( status().isOk() )
                 .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
+
+        mvc.perform( get( "/api/v1/surgeryTypes" ) ).andExpect( status().isOk() )
+                .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
     }
 
 }

@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.cucumber;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -85,7 +86,6 @@ public class RequestAppointmentWithSpecialistStepDefs extends CucumberTest {
         // Create the personnel object associated with the above User object
         // with the specified specialty
         final Personnel specialHCPPersonnel = new Personnel();
-        specialHCPPersonnel.setSelf( specialHCPUser );
         specialHCPPersonnel.setFirstName( "First" );
         specialHCPPersonnel.setLastName( "Last" );
         specialHCPPersonnel.setEmail( "someEmail@gmail.com" );
@@ -95,9 +95,10 @@ public class RequestAppointmentWithSpecialistStepDefs extends CucumberTest {
         specialHCPPersonnel.setZip( "12345" );
         specialHCPPersonnel.setPhone( "111-222-3333" );
         specialHCPPersonnel.setSpecialty( Specialty.parse( specialty ) );
+        specialHCPPersonnel.setSelf( specialHCPUser );
         specialHCPPersonnel.save();
 
-        // Can safely assume that the specialized HCP is now in the DB
+        assertNotNull( Personnel.getByName( specialHCPUser ) );
     }
 
     /**

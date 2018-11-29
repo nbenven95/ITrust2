@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import edu.ncsu.csc.itrust2.forms.personnel.PersonnelForm;
 import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.Role;
+import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
@@ -209,6 +210,22 @@ public class APIPersonnelController extends APIController {
         catch ( final IllegalArgumentException e ) {
             return new ResponseEntity( errorResponse( "Invalid specialty" ), HttpStatus.BAD_REQUEST );
         }
+    }
+
+    /**
+     * Returns the appointment types that the currently logged in personnel can
+     * access
+     *
+     * @return The appointment types that the currently logged in personnel can
+     *         access
+     */
+    @PreAuthorize ( "hasRole('ROLE_HCP')" )
+    @GetMapping ( BASE_PATH + "/personnel/getQualifiedAppointmentTypes" )
+    public List<AppointmentType> getQualifiedAppointmentTypes () {
+        final String currentUser = LoggerUtil.currentUser();
+        final Specialty userSpecialty = Personnel.getByName( currentUser ).getSpecialty();
+
+        return AppointmentType.getAssociatedAppointmentTypes( userSpecialty );
     }
 
 }

@@ -94,6 +94,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
 
     @When ( "I navigate to the Document Office Visit page" )
     public void navigateDocumentOV () {
+        waitForAngular();
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('documentOfficeVisit').click();" );
         waitForAngular();
     }
@@ -108,7 +109,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
 
         final WebElement patient = driver.findElement( By.name( "name" ) );
         patient.click();
-        final WebElement type = driver.findElement( By.name( "type" ) );
+        final WebElement type = driver.findElement( By.cssSelector( "input[type=radio][value=GENERAL_CHECKUP]" ) );
         type.click();
 
         final WebElement hospital = driver.findElement( By.name( "hospital" ) );
@@ -183,7 +184,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
 
         final WebElement patient = driver.findElement( By.name( "name" ) );
         patient.click();
-        final WebElement type = driver.findElement( By.name( "type" ) );
+        final WebElement type = driver.findElement( By.cssSelector( "input[type=radio][value=GENERAL_CHECKUP]" ) );
         type.click();
 
         final WebElement hospital = driver.findElement( By.name( "hospital" ) );
@@ -422,7 +423,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
         patient.click();
 
         waitForAngular();
-        final WebElement type = driver.findElement( By.name( "type" ) );
+        final WebElement type = driver.findElement( By.cssSelector( "input[type=radio][value=GENERAL_CHECKUP]" ) );
         type.click();
 
         waitForAngular();
@@ -532,7 +533,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
         patient.click();
 
         waitForAngular();
-        final WebElement type = driver.findElement( By.name( "type" ) );
+        final WebElement type = driver.findElement( By.cssSelector( "input[type=radio][value=GENERAL_CHECKUP]" ) );
         type.click();
 
         waitForAngular();
@@ -664,7 +665,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
         patient.click();
 
         waitForAngular();
-        final WebElement type = driver.findElement( By.name( "type" ) );
+        final WebElement type = driver.findElement( By.cssSelector( "input[type=radio][value=GENERAL_CHECKUP]" ) );
         type.click();
 
         waitForAngular();

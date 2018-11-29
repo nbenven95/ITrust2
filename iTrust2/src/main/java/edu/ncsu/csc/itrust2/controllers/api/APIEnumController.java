@@ -18,6 +18,7 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.Status;
+import edu.ncsu.csc.itrust2.models.enums.SurgeryType;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
@@ -125,6 +126,16 @@ public class APIEnumController extends APIController {
     @GetMapping ( BASE_PATH + "/specialty" )
     public List<Specialty> getSpecialties () {
         return Arrays.asList( Specialty.values() );
+    }
+
+    /**
+     * Get surgery types
+     *
+     * @return surgery types
+     */
+    @GetMapping ( BASE_PATH + "/surgeryTypes" )
+    public List<SurgeryType> getSurgeryTypes () {
+        return Arrays.asList( SurgeryType.values() );
     }
 
     /**
