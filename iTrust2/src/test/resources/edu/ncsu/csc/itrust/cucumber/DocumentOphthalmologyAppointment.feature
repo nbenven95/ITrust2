@@ -16,7 +16,7 @@ Feature: Document Ophthalmology Appointment Office Visit
 
 # This scenario covers behavior described in UC22 acceptance scenarios 1, 2, and 3.
 Scenario Outline: OPTHCP or OPHHCP documents an Ophthalmology Appointment - Valid Input
-Given There is an HCP user with <username> and <specialty> in the database
+Given There is an HCP <username> with <specialty> in the database
 And The required Ophthalmology facilities exist
 And A patient with <patientName> exists with no documented office visits
 And I am logged in to iTrust2 as <username>
