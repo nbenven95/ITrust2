@@ -14,7 +14,6 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import edu.ncsu.csc.itrust2.models.enums.Role;
@@ -34,23 +33,6 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
 
     private final String       hospitalName = "Office Visit Hospital" + ( new Random() ).nextInt();
     private BasicHealthMetrics expectedBhm;
-
-    @Given ( "I am logged in to iTrust2 as (.+)" )
-    public void loggedInAsUsername ( String usernameString ) {
-        attemptLogout();
-
-        driver.get( baseUrl );
-        final WebElement username = driver.findElement( By.name( "username" ) );
-        username.clear();
-        username.sendKeys( usernameString );
-        final WebElement password = driver.findElement( By.name( "password" ) );
-        password.clear();
-        password.sendKeys( "123456" );
-        final WebElement submit = driver.findElement( By.className( "btn" ) );
-        submit.click();
-
-        waitForAngular();
-    }
 
     @And ( "The required Ophthalmology facilities exist" )
     public void facilitiesExist () throws Exception {
