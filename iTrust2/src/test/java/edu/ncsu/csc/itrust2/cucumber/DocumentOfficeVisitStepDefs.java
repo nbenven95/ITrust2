@@ -94,6 +94,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
 
     @When ( "I navigate to the Document Office Visit page" )
     public void navigateDocumentOV () {
+        waitForAngular();
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('documentOfficeVisit').click();" );
         waitForAngular();
     }
