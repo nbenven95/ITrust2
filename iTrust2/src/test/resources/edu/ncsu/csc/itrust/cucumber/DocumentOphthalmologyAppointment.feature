@@ -9,7 +9,7 @@
 # and DocumentOfficeVisitStepDefs.java. These will enable scenarios to reuse
 # step definitions with arbitrary values defined in an "Examples" block.
 
-Feature: Document Ophthalmology Appointment Office Visit
+Feature: Document Ophthalmology Appointment
 	As an OPTHCP or OPHHCP user in iTrust2
 	I want to document an Ophthalmology Appointment office visit
 	So that a record exists of a Patient visiting the doctor
