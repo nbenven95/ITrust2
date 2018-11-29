@@ -237,6 +237,7 @@ public class APIOfficeVisitController extends APIController {
             return new ResponseEntity( visit, HttpStatus.OK );
         }
         catch ( final Exception e ) {
+            e.printStackTrace();
             return new ResponseEntity(
                     errorResponse( "Could not update " + form.toString() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );

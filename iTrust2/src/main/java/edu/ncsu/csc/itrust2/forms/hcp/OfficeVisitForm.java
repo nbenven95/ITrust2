@@ -191,6 +191,7 @@ public class OfficeVisitForm implements Serializable {
         setNotes( ov.getNotes() );
         setId( ov.getId().toString() );
         setPreScheduled( ( (Boolean) ( ov.getAppointment() != null ) ).toString() );
+        setType( ov.getType().toString() );
         if ( ov instanceof GeneralCheckup ) {
             final GeneralCheckup gc = (GeneralCheckup) ov;
             setDiagnoses( gc.getDiagnoses() );
