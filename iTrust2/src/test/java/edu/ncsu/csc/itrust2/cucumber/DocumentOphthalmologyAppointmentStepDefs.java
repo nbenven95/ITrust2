@@ -12,17 +12,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
 import cucumber.api.java.en.And;
-import cucumber.api.java.en.Given;
 import cucumber.api.java.en.When;
 import edu.ncsu.csc.itrust2.models.enums.Role;
-import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.BasicHealthMetrics;
-import edu.ncsu.csc.itrust2.models.persistent.DomainObject;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
-import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
-import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 
 public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
@@ -36,37 +31,13 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
     private final String       hospitalName = "Office Visit Hospital" + ( new Random() ).nextInt();
     private BasicHealthMetrics expectedBhm;
 
-    @Given ( "There is an HCP user with (.+) and (.+) in the database" )
-    public void personnelExists ( String name, String specialty ) throws Exception {
-        attemptLogout();
+    @And ( "The required Ophthalmology facilities exist" )
+    public void facilitiesExist () throws Exception {
 
-        OfficeVisit.deleteAll();
-        DomainObject.deleteAll( BasicHealthMetrics.class );
-
-        // All tests can safely assume the existence of the 'hcp', 'admin', and
-        // 'patient' users
-
-        /* Make sure we create a Hospital and Patient record */
+        /* Make sure we create a Hospital record */
         final Hospital hospital = new Hospital( hospitalName, "Bialystok", "10101", State.NJ.toString() );
         hospital.save();
 
-        // Create an opthalmology HCP
-        final User ophhcp = new User( name, "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_HCP, 1 );
-        ophhcp.save();
-
-        final Personnel ophp = new Personnel();
-        ophp.setSelf( ophhcp );
-        ophp.setFirstName( "P" );
-        ophp.setLastName( "Sherman" );
-        ophp.setEmail( "csc326.201.1@gmail.com" );
-        ophp.setAddress1( "42 Wallaby Way" );
-        ophp.setCity( "Sydney" );
-        ophp.setState( State.NC );
-        ophp.setZip( "12345" );
-        ophp.setPhone( "111-222-3333" );
-        ophp.setSpecialty( Specialty.parse( specialty ) );
-        ophp.save();
     }
 
     @When ( "A patient with (.+) exists with no documented office visits" )
@@ -94,7 +65,7 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
         patient.save();
     }
 
-    @When ( "^I document an ophthalmology appointment with values: (.+) (.+) (.+) (.+) (.+) (.+) (.+)$" )
+    @When ( "^I document an ophthalmology appointment with values: (.+) (.+) (.+) (.+) (.+) (.+) (.+) (.+)$" )
     public void documentOV ( String patientName, String date, String time, String visualAcuity, String sphere,
             String cylinder, String axis, String diagnosis ) {
 
@@ -104,7 +75,11 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
 
         final WebElement dateEle = driver.findElement( By.name( "date" ) );
         dateEle.clear();
-        dateEle.sendKeys( "12/19/2027" );
+        dateEle.sendKeys( date );
+
+        final WebElement timeEle = driver.findElement( By.name( "time" ) );
+        timeEle.clear();
+        timeEle.sendKeys( time.replace( "_", " " ) );
 
         waitForAngular();
         final WebElement notes = driver.findElement( By.name( "notes" ) );
@@ -117,8 +92,7 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
         patientNameEle.click();
 
         waitForAngular();
-        final WebElement typeEle = driver
-                .findElement( By.cssSelector( "input[value=\"" + Specialty.SPECIALTY_OPTOMETRY.toString() + "\"]" ) );
+        final WebElement typeEle = driver.findElement( By.cssSelector( "input[value=\"OPHTHALMOLOGY_VISIT\"]" ) );
         typeEle.click();
 
         // Basic Eye Metrics
@@ -150,12 +124,11 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
 
         if ( !diagnosis.equals( "NULL" ) ) {
             waitForAngular();
-            final WebElement heightElement = driver.findElement( By.name( "height" ) );
-            heightElement.clear();
-            heightElement.sendKeys( "120" );
+            final WebElement diagnosisEle = driver.findElement( By.name( diagnosis ) );
+            diagnosisEle.click();
 
             waitForAngular();
-            final WebElement fillEle = driver.findElement( By.name( "fillDiagnosis" ) );
+            final WebElement fillEle = driver.findElement( By.name( "fillOphDiagnosis" ) );
             fillEle.click();
         }
 
@@ -173,7 +146,10 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
     @And ( "(.+) can view the appointment on (.+) at (.+) with values: (.+) (.+) (.+) (.+) (.+)" )
     public void correctPatientView ( String patientName, String date, String time, String visualAcuity, String sphere,
             String cylinder, String axis, String diagnosis ) throws InterruptedException {
+        waitForAngular();
+        attemptLogout();
         driver.get( baseUrl );
+        waitForAngular();
         final WebElement usernameEle = driver.findElement( By.name( "username" ) );
         usernameEle.clear();
         usernameEle.sendKeys( patientName );

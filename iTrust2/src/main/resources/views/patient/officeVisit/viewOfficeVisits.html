@@ -23,6 +23,7 @@
           function ($scope, $http) {
 
         	$scope.Selected = false;
+        	$scope.visits = [];
 
             var isDate = function (input) {
               if (!input) {
@@ -435,8 +436,8 @@
 														<div class="panel-body">
 															<div class="form-group row">
 																<div class="col-xs-4"></div>
-																<div class="col-xs-4">OD</div>
 																<div class="col-xs-4">OS</div>
+																<div class="col-xs-4">OD</div>
 															</div>
 														</div>
 														<div class="panel-body">
@@ -445,10 +446,10 @@
 																	<label>Visual Acuity:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftVisualAcuity}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightVisualAcuity}}
 																</div>
 															</div>
 														</div>
@@ -458,10 +459,10 @@
 																	<label>Sphere:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftSphere}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightSphere}}
 																</div>
 															</div>
 														</div>
@@ -471,10 +472,10 @@
 																	<label>Cylinder:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftCylinder}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightCylinder}}
 																</div>
 															</div>
 														</div>
@@ -484,10 +485,10 @@
 																	<label>Axis:</label>
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.leftAxis}}
 																</div>
 																<div class="col-xs-4">
-																	<!-- TODO: Add metric -->
+																	{{selectedVisit.rightAxis}}
 																</div>
 															</div>
 														</div>
@@ -552,7 +553,7 @@
 						                        		</div>
 
 														<div class="panel-body">
-															<div class="form-check"><!-- {{selectedVisit.surgeryType}} --></div>
+															<div class="form-check">{{selectedVisit.surgeryType}}</div>
 														</div>
 													</div>
 						                        </div>

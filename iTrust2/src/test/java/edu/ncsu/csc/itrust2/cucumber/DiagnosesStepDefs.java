@@ -120,7 +120,7 @@ public class DiagnosesStepDefs extends CucumberTest {
 
         setTextField( By.name( "notes" ), note );
         driver.findElement( By.cssSelector( "input[type=radio][value=patient]" ) ).click();
-        driver.findElement( By.name( "type" ) ).click();
+        driver.findElement( By.cssSelector( "input[type=radio][value=GENERAL_CHECKUP]" ) ).click();
         driver.findElement( By.name( "hospital" ) ).click();
         setTextField( By.name( "date" ), date );
         setTextField( By.name( "time" ), "9:30 AM" );

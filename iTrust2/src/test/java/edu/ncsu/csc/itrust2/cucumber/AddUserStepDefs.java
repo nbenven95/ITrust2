@@ -116,6 +116,7 @@ public class AddUserStepDefs extends CucumberTest {
     @When ( "I log in as admin" )
     public void loginAdmin () {
         driver.get( baseUrl );
+        waitForAngular();
         final WebElement username = driver.findElement( By.name( "username" ) );
         username.clear();
         username.sendKeys( "admin" );
