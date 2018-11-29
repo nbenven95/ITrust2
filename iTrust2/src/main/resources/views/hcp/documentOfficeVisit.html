@@ -98,10 +98,10 @@
 
             var checkValidBasicEyeMetrics = function () {
             	var err = [];
-            	var visualAcuityMatcher = /^\d{1,2}\/\d{2,3}$/;
+            	var visualAcuityMatcher = /^\d{1,2}\/\d{1,3}$/;
             	var sphCylMatcher = /^[-|+]?\d{1,2}\.?\d{0,2}$/;
             	var visit = $scope.visit;
-            	
+
             	// check visual acuity to be integers
 <<<<<<< HEAD
             	if (!visualAcuityMatcher.test(visit.visualAcuityOS)) {
@@ -119,7 +119,7 @@
                 	err.push("Visual Acuity OD must be an integer");
 >>>>>>> frontend-entry
             	}
-            	
+
             	// also enforce sphere matchers
             	if (!sphCylMatcher.test(String(visit.leftSphere))) {
             		err.push("Sphere OS must be a decimal number with an optional sign");
@@ -127,7 +127,15 @@
             	if (!sphCylMatcher.test(String(visit.rightSphere))) {
             		err.push("Sphere OD must be a decimal number with an optional sign");
             	}
-            	
+
+							if(!visualAcuityMatcher.test(String(visit.leftVisualAcuity))) {
+								err.push("Visual Acuity OS must be of the proper form #/#");
+							}
+
+							if(!visualAcuityMatcher.test(String(visit.rightVisualAcuity))) {
+								err.push("Visual Acuity OD must be of the proper form #/#");
+							}
+
             	// only enforce these matchers if the user decided to enter cylinder
             	if (!nullOrEmpty(visit.rightCylinder) && !sphCylMatcher.test(String(visit.leftCylinder))) {
             		err.push("Cylinder OS must be a decimal number with an optional sign");
@@ -149,7 +157,7 @@
             	}
             	return err.join(". ");
             }
-              
+
             $scope.three = false;
             $scope.threeAndUp = false;
             $scope.twelveAndUp = false;
@@ -264,7 +272,6 @@
 	              $scope.surgeryTypes= response.data;
 	              //$scope.selectedVisit.surgeryType = $scope.surgeryTypes[0];
 	            });
-			
 
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
                     function (response) {
@@ -287,7 +294,7 @@
                     function (response) {
                       $scope.loinccodes = response.data;
             });
-            
+
 			/**
 			 * Runs when the user clicks submit office visit.
 			 */
@@ -308,11 +315,11 @@
               if (/(\d{1,2})\/(\d{1,2})\/(\d{4})/.test($scope.visit.date) == false) {
                 $scope.errorMsg += "Please input a valid date as MM/dd/yyyy" // date is valid
               }
-              
+
               if (/(\d{1,2}):(\d{1,2}) (am|pm|AM|PM)/.test($scope.visit.time) == false) {
                 $scope.errorMsg += "Please input a valid time as hh:mm aa" // time is valid
               }
-              
+
               // info on date usage comes from here: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date
               var dateInput = /(\d{1,2})\/(\d{1,2})\/(\d{4})/.exec($scope.visit.date);
               dateInput[1] = (parseInt(dateInput[1]) - 1) + '';//months are 0 indexed
@@ -327,10 +334,10 @@
 
               /* Basic health metrics data validation */
               /* TODO handle basic health metrics for eye related visits */
-              
+
               // List of health metrics. Check this to see if any have been filled out. If the visit is
               // OPHTHALMOLOGY_VISIT or OPHTHALMOLOGY_SURGERY and none of these fields have been filled
-              // out, don't need to validate basic health metrics since they should be optional for 
+              // out, don't need to validate basic health metrics since they should be optional for
               // oph type appointments.
               $scope.basicHealthMetricsList =  [ $scope.visit.height,
             	  								 $scope.visit.weight,
@@ -342,7 +349,7 @@
             	  								 $scope.visit.tri,
             	  								 $scope.visit.houseSmokingStatus,
             	  								 $scope.visit.patientSmokingStatus ];
-              
+
               // Check if the appointment type is either general checkup or any of the fields have been filled out
               if ( $scope.visit.appointmentType === "GENERAL_CHECKUP" || $scope.basicHealthMetricsList.some( field => field )) {
 	            if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.height).replace(/^0+/, '')) == false) {
@@ -388,7 +395,7 @@
 	              }
 	            }
               }
-              
+
               /* Handle appointment type unique fields */
               $scope.visit.type = $scope.visit.appointmentType; /* remove if the backend varname gets changed */
               if ($scope.visit.appointmentType === "GENERAL_CHECKUP") {
@@ -398,7 +405,7 @@
                 $scope.visit.prescriptions.forEach(function (p) {
                   p.patient = $scope.visit.patient;
                 });
-             	
+
              	delete $scope.visit.rightVisualAcuity;
              	delete $scope.visit.leftVisualAcuity;
              	delete $scope.visit.rightSphere;
@@ -410,26 +417,26 @@
           		delete $scope.visit.surgeryType;
               } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_VISIT") {
             	// visit.<eye metrics> is set by form
-            	
+
             	$scope.errorMsg += checkValidBasicEyeMetrics();
            		$scope.visit.diagnoses = $scope.diagnoses_oph;
-           		
+
            		delete $scope.visit.labProcedures;
            		delete $scope.visit.prescriptions;
-           		
+
            		// Not sure if this is needed yet
            		delete $scope.visit.surgeryType;
-           		
+
               } else if ($scope.visit.appointmentType === "OPHTHALMOLOGY_SURGERY") {
               	// visit.basicEyeMetrics is set by form
             	$scope.errorMsg += checkValidBasicEyeMetrics();
              	//+$scope.visit.surgeryType = $scope.surgeryType;
-             	
+
            		delete $scope.visit.labProcedures;
            		delete $scope.visit.prescriptions;
            		delete $scope.visit.diagnoses;
               }
-              
+
 
               if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
                 $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
@@ -986,7 +993,7 @@
 											</div>
 										</div>
 									</div>
-									
+
 									<!-- Basic Eye Metrics Panel -->
 									<div ng-show="visit.appointmentType === 'OPHTHALMOLOGY_VISIT' || visit.appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 										<div class="panel panel-info">
@@ -1062,14 +1069,14 @@
 											</div>
 										</div>
 									</div>
-									
+
 									<!--  Ophthalmology surgery types panel -->
 									<div ng-show="visit.appointmentType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Surgery Type</h4>
 											</div>
-											
+
 											<div class="panel-body">
 												<div class="form-group row">
 													<div class="col-xs-4">
@@ -1089,12 +1096,12 @@
 															</ul>
 														</div>
 													</div>
-												</div>	
+												</div>
 											</div>
-											
+
 										</div>
 									</div>
-									
+
 									<!-- Ophthalmology Diagnosis Panel  -->
 									<div ng-show="visit.appointmentType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
 										<div class="panel panel-info">
@@ -1165,9 +1172,9 @@
 											</div>
 										</div>
 									</div>
-									
+
 								</div>
-								
+
 								<!-- Lab Procedures Panel -->
 								<div ng-show="visit.appointmentType == null || visit.appointmentType === 'GENERAL_CHECKUP'" class="row">
 									<div class="col-md-4">
