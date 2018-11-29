@@ -88,7 +88,7 @@ public class GeneralOphthalmologyVisitTest {
         }
         bem.setLeftVisualAcuity( "20/20" );
         try {
-            bem.setRightVisualAcuity( "20/200" );
+            bem.setRightVisualAcuity( "20/2000" );
             Assert.fail();
         }
         catch ( final IllegalArgumentException e ) {
