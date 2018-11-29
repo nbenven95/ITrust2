@@ -103,13 +103,11 @@
             	var visit = $scope.visit;
             	
             	// check visual acuity to be integers
-            	var visualAcuityOS = Number(visit.visualAcuityOS);
-            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
-                	err.push("Visual Acuity OS must be an integer");
+            	if (!visualAcuityMatcher.test(visit.visualAcuityOS)) {
+                	err.push("Visual Acuity OS must be an \"#/#\"");
             	}
-            	var visualAcuityOD = Number(visit.visualAcuityOD);
-            	if (!sphCylMatcher.test(String(visit.sphereOS))) {
-                	err.push("Visual Acuity OD must be an integer");
+            	if (!visualAcuityMatcher.test(visit.visualAcuityOD)) {
+                	err.push("Visual Acuity OD must be an \"#/#\"");
             	}
             	
             	// also enforce sphere matchers
@@ -234,21 +232,18 @@
               });
             $http.get("/iTrust2/api/v1/icdcodes").then(
               function (response) {
+            	  response.data.forEach(function(i, idx, obj) {
+            		  if (i.startsWith('O')) {
+            		    obj.splice(idx, 1);
+            		  }
+            		});
                 $scope.icdcodes = response.data;
               });
 
-            /* TODO uncomment and delete manually entered diagnonses below 
-              $http.get("/iTrust2/api/v1/icdcodes_oph").then(
+              $http.get("/iTrust2/api/v1/ophicdcodes").then(
               function (response) {
                 $scope.icdcodes_oph = response.data;
-   			  });*/
-            
-            $scope.icdcodes_oph = [
-            	{"id":100,"code":"O10","description":"Cataracts"},
-            	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
-            	{"id":100,"code":"O12","description":"Amblyopia"},
-            	{"id":100,"code":"O13","description":"Glaucoma"}
-           	];
+   			  });
 
             $http.get("/iTrust2/api/v1/personnel/getbyroles/ROLE_LABTECH").then(
                     function (response) {
@@ -397,7 +392,7 @@
            		delete $scope.visit.diagnoses;
               }
               
-			/* TODO uncomment when OfficeVisit has been implemented backend
+
               if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
                 $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
               }
@@ -456,7 +451,7 @@
 								console.error(rejection);
                 $scope.message = "Error occurred creating office visit";
               })
-              */
+
               console.log("OFFICE VISIT:");
               console.log($scope.visit);
               $scope.message = "Office visit created successfully";
@@ -1108,7 +1103,7 @@
 												<div class="form-group row text-center">
 													<div class="col-md-12">
 														<button class="btn btn-success" ng-click="fillDiagnosis()"
-															name="fillDiagnosis">Add Diagnosis</button>
+															name="fillOphDiagnosis">Add Diagnosis</button>
 													</div>
 												</div>
 

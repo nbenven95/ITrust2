@@ -14,7 +14,6 @@ import org.openqa.selenium.WebElement;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import edu.ncsu.csc.itrust2.models.enums.Role;
-import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.BasicHealthMetrics;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
@@ -66,7 +65,7 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
         patient.save();
     }
 
-    @When ( "^I document an ophthalmology appointment with values: (.+) (.+) (.+) (.+) (.+) (.+) (.+)$" )
+    @When ( "^I document an ophthalmology appointment with values: (.+) (.+) (.+) (.+) (.+) (.+) (.+) (.+)$" )
     public void documentOV ( String patientName, String date, String time, String visualAcuity, String sphere,
             String cylinder, String axis, String diagnosis ) {
 
@@ -76,7 +75,11 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
 
         final WebElement dateEle = driver.findElement( By.name( "date" ) );
         dateEle.clear();
-        dateEle.sendKeys( "12/19/2027" );
+        dateEle.sendKeys( date );
+
+        final WebElement timeEle = driver.findElement( By.name( "time" ) );
+        timeEle.clear();
+        timeEle.sendKeys( time.replace( "_", " " ) );
 
         waitForAngular();
         final WebElement notes = driver.findElement( By.name( "notes" ) );
@@ -89,8 +92,7 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
         patientNameEle.click();
 
         waitForAngular();
-        final WebElement typeEle = driver
-                .findElement( By.cssSelector( "input[value=\"" + Specialty.SPECIALTY_OPTOMETRY.toString() + "\"]" ) );
+        final WebElement typeEle = driver.findElement( By.cssSelector( "input[value=\"OPHTHALMOLOGY_VISIT\"]" ) );
         typeEle.click();
 
         // Basic Eye Metrics
@@ -122,12 +124,11 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
 
         if ( !diagnosis.equals( "NULL" ) ) {
             waitForAngular();
-            final WebElement heightElement = driver.findElement( By.name( "height" ) );
-            heightElement.clear();
-            heightElement.sendKeys( "120" );
+            final WebElement diagnosisEle = driver.findElement( By.name( diagnosis ) );
+            diagnosisEle.click();
 
             waitForAngular();
-            final WebElement fillEle = driver.findElement( By.name( "fillDiagnosis" ) );
+            final WebElement fillEle = driver.findElement( By.name( "fillOphDiagnosis" ) );
             fillEle.click();
         }
 
@@ -145,7 +146,10 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
     @And ( "(.+) can view the appointment on (.+) at (.+) with values: (.+) (.+) (.+) (.+) (.+)" )
     public void correctPatientView ( String patientName, String date, String time, String visualAcuity, String sphere,
             String cylinder, String axis, String diagnosis ) throws InterruptedException {
+        waitForAngular();
+        attemptLogout();
         driver.get( baseUrl );
+        waitForAngular();
         final WebElement usernameEle = driver.findElement( By.name( "username" ) );
         usernameEle.clear();
         usernameEle.sendKeys( patientName );

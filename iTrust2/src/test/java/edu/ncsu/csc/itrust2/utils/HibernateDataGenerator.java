@@ -82,6 +82,7 @@ public class HibernateDataGenerator {
 
         generateUsers();
         generateTestFaculties();
+        generateOphthalmologyDiagnoses();
     }
 
     /**
@@ -494,5 +495,31 @@ public class HibernateDataGenerator {
         p.setSpecialty( Specialty.SPECIALTY_NONE );
         p.setEnabled( u.getEnabled() == 1 );
         p.save();
+    }
+
+    /**
+     * Generate Ophthalmology ICD Codes
+     */
+    public static void generateOphthalmologyDiagnoses () {
+        final ICDCode cat = new ICDCode();
+        cat.setCode( "O101" );
+        cat.setDescription( "Cataracts" );
+        cat.save();
+
+        final ICDCode deg = new ICDCode();
+        deg.setCode( "O102" );
+        deg.setDescription( "Age-related macular degeneration" );
+        deg.save();
+
+        final ICDCode amb = new ICDCode();
+        amb.setCode( "O103" );
+        amb.setDescription( "Amblyopia" );
+        amb.save();
+
+        final ICDCode gla = new ICDCode();
+        gla.setCode( "O104" );
+        gla.setDescription( "Glaucoma" );
+        gla.save();
+
     }
 }
