@@ -146,7 +146,7 @@
                   $scope.selectedVisit.houseSmokingStatus = $scope.visits[i].basicHealthMetrics.houseSmokingStatus;
                   $scope.selectedVisit.patientSmokingStatus = $scope.visits[i].basicHealthMetrics.patientSmokingStatus;
 
-				  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisitID).then(
+				  $http.get("/iTrust2/api/v1/diagnosesforvisit/" + $scope.selectedVisit.id).then(
 						  function (response) {
 							$scope.diagnosesResponse = response.data;
 							var dLength = $scope.diagnosesResponse.length;
@@ -201,7 +201,7 @@
 	                  $scope.selectedVisit.leftAxis = $scope.visits[i].basicEyeMetrics.leftAxis;
 	                  $scope.selectedVisit.leftCylinder = $scope.visits[i].basicEyeMetrics.leftCylinder;
 	                  $scope.selectedVisit.rightCylinder = $scope.visits[i].basicEyeMetrics.rightCylinder;
-	                  $scope.selectedVisit.diagnosis
+	                  $scope.selectedVisit.diagnoses = $scope.visits[i].diagnoses;
 
                   } else if ($scope.selectedVisit.type == 'OPHTHALMOLOGY_SURGERY') {
 	                  $scope.selectedVisit.leftVisualAcuity = $scope.visits[i].basicEyeMetrics.leftVisualAcuity;
@@ -354,7 +354,7 @@
 														<div class="panel-heading">
 															<h4>Basic Health Metrics</h4>
 														</div>
-														<div class="panel-body" ng-show="showBHM">
+														<div class="panel-body">
 															<div class="form-group row">
 																<div class="col-xs-6">
 																	<label>Height/Length:</label>
@@ -428,7 +428,7 @@
 												</div>
 
                                                  <!-- TODO: Add Eye Health Metrics panel -->
-						                        <div ng-show="visitType === 'OPHTHALMOLOGY_VISIT' || visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+						                        <div ng-show="selectedVisit.type ===  'OPHTHALMOLOGY_VISIT' || selectedVisit.type ===  'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Eye Health Metrics</h4>
@@ -496,12 +496,12 @@
 												</div>
 
 												<!-- Diagnosis Panel  -->
-												<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
+												<div ng-show="selectedVisit.type ===  'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Diagnoses</h4>
 														</div>
-														<div class="panel-body" ng-show="showDiagnosis">
+														<div class="panel-body">
 															<div class="row">
 																<div class="col-md-6">
 																	<b>Description</b>
@@ -519,12 +519,12 @@
 												</div>
 
 												<!-- Ophthalmology Diagnosis Panel  -->
-						                        <div ng-show="visitType === 'OPHTHALMOLOGY_VISIT'" class="col-md-4">
+						                        <div ng-show="selectedVisit.type ===  'OPHTHALMOLOGY_VISIT'" class="col-md-4">
 						                          <div class="panel panel-info">
 						                            <div class="panel-heading">
 						                              <h4>Ophthalmology Diagnoses</h4>
 						                            </div>
-						                            <div class="panel-body" ng-show="showDiagnosis">
+						                            <div class="panel-body">
 						                              <div class="row">
 						                                <div class="col-md-6">
 						                                  <b>Description</b>
@@ -546,9 +546,9 @@
 						                        </div>
 
 						                        <!-- TODO: Add Ophthalmology Surgery Type panel -->
-						                        <div ng-show="visitType === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
+						                        <div ng-show="selectedVisit.type ===  'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
 						                        	<div class="panel panel-info">
-						                        		<div class="pane-heading">
+						                        		<div class="panel-heading">
 						                        			<label>Ophthalmology Surgery Type:</label>
 						                        		</div>
 
@@ -559,12 +559,12 @@
 						                        </div>
 
 												<!-- Prescription Panel -->
-												<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
+												<div ng-show="selectedVisit.type ===  'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Prescriptions</h4>
 														</div>
-														<div class="panel-body" ng-show="showPrescription">
+														<div class="panel-body">
 															<div class="row" ng-repeat="p in prescriptions">
 																<div class="col-md-6">
 																	<b>Drug:</b> {{p.drug}}
@@ -588,12 +588,12 @@
 											<!-- Start a new row of panels -->
 											<div class="row">
 												<!-- Lab Procedures Panel  -->
-												<div ng-show="visitType === 'GENERAL_CHECKUP'" class="col-md-4">
+												<div ng-show="selectedVisit.type ===  'GENERAL_CHECKUP'" class="col-md-4">
 													<div class="panel panel-info">
 														<div class="panel-heading">
 															<h4>Lab Procedures</h4>
 														</div>
-														<div class="panel-body" ng-show="showLabProcedures">
+														<div class="panel-body">
 															<div class="row" ng-repeat="p in procedures">
 																<div class="col-md-6">
 																	<b>Code:</b> {{p.code}}

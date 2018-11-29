@@ -18,7 +18,7 @@
         /*<![CDATA[*/
 
         var app = angular.module('myApp', []);
-        
+
         app
           .controller(
           'documentOfficeVisitCtrl',
@@ -103,21 +103,11 @@
             	var visit = $scope.visit;
 
             	// check visual acuity to be integers
-<<<<<<< HEAD
             	if (!visualAcuityMatcher.test(visit.visualAcuityOS)) {
                 	err.push("Visual Acuity OS must be an \"#/#\"");
             	}
             	if (!visualAcuityMatcher.test(visit.visualAcuityOD)) {
                 	err.push("Visual Acuity OD must be an \"#/#\"");
-=======
-            	var visualAcuityOS = Number(visit.leftVisualAcuity);
-            	if (!sphCylMatcher.test(String(visit.leftSphere))) {
-                	err.push("Visual Acuity OS must be an integer");
-            	}
-            	var visualAcuityOD = Number(visit.rightVisualAcuity);
-            	if (!sphCylMatcher.test(String(visit.rightSphere))) {
-                	err.push("Visual Acuity OD must be an integer");
->>>>>>> frontend-entry
             	}
 
             	// also enforce sphere matchers
