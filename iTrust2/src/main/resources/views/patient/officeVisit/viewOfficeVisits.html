@@ -130,6 +130,7 @@
                   $scope.selectedVisit.patient = $scope.visits[i].patient.username;
                   $scope.selectedVisit.hcp = $scope.visits[i].hcp.username;
                   $scope.selectedVisit.notes = $scope.visits[i].notes;
+									$scope.selectedVisit.preScheduled = $scope.visits[i].preScheduled;
                   $scope.selectedVisit.type = $scope.visits[i].type;
                   $scope.selectedVisit.hospital = $scope.visits[i].hospital.name;
                   $scope.selectedVisit.time = $scope.getTime($scope.visits[i].date);
@@ -307,7 +308,7 @@
 												<div class="form-group col-md-2 text-right">
 													<div class="checkbox">
 														<label> <input type="checkbox" name="preScheduled"
-															class="checkbox" ng-model="selectedVisit.prescheduled">Prescheduled?
+															class="checkbox" ng-model="selectedVisit.preScheduled">Prescheduled?
 														</label>
 													</div>
 												</div>
