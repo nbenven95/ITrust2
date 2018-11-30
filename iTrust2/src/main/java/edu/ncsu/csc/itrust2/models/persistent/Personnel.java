@@ -7,9 +7,6 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.criterion.Criterion;
@@ -97,19 +94,6 @@ public class Personnel extends User {
     }
 
     /**
-     * This stores a reference to the User object that this personnel is.
-     * Mandatory.
-     */
-    @JoinColumn ( name = "self_id", columnDefinition = "varchar(100)" )
-    @OneToOne
-    private User      self;
-
-    /**
-     * Whether or not the personnel is enabled
-     */
-    private boolean   enabled;
-
-    /**
      * The first name of the personnel
      */
     @Length ( max = 20 )
@@ -172,7 +156,6 @@ public class Personnel extends User {
     /**
      * The id of the personnel
      */
-    @Id
     @GeneratedValue ( strategy = GenerationType.AUTO )
     private Long      id;
 
@@ -183,9 +166,7 @@ public class Personnel extends User {
      *            the filled-in personnel form with personnel information
      */
     public Personnel ( final PersonnelForm form ) {
-        setSelf( User.getByName( form.getSelf() ) );
         setEnabled( form.getEnabled() );
-
         setFirstName( form.getFirstName() );
         setLastName( form.getLastName() );
         setAddress1( form.getAddress1() );
@@ -213,18 +194,21 @@ public class Personnel extends User {
      *            The userForm associated with the created user
      */
     public Personnel ( final User user, final UserForm userForm ) {
-        setSelf( user );
         if ( user.getRole().equals( Role.ROLE_HCP ) ) {
             setSpecialty( Specialty.valueOf( userForm.getSpecialty() ) );
         }
         setEnabled( user.getEnabled() );
     }
 
+    public Personnel () {
+
+    }
+
     /**
      * Empty constructor necessary for Hibernate.
      */
-    public Personnel () {
-
+    public Personnel ( final String username, final String password, final Role role, final boolean enabled ) {
+        super( username, password, role, enabled );
     }
 
     /**
@@ -235,46 +219,6 @@ public class Personnel extends User {
      */
     public void setId ( final Long id ) {
         this.id = id;
-    }
-
-    /**
-     * Get the user representation of this personnel
-     *
-     * @return the user representation of this personnel
-     */
-    public User getSelf () {
-        return self;
-    }
-
-    /**
-     * Set the user representation of this personnel
-     *
-     * @param self
-     *            the user representation to set this personnel to
-     */
-    public void setSelf ( final User self ) {
-        this.self = self;
-    }
-
-    /**
-     * Get whether or not this personnel is enabled
-     *
-     * @return whether or not this personnel is enabled
-     */
-    @Override
-    public boolean getEnabled () {
-        return enabled;
-    }
-
-    /**
-     * Set whether or not this personnel is enabled
-     *
-     * @param enabled
-     *            whether or not this personnel is enabled
-     */
-    @Override
-    public void setEnabled ( final boolean enabled ) {
-        this.enabled = enabled;
     }
 
     /**

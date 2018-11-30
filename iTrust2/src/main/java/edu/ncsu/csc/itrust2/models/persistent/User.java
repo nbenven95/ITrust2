@@ -33,7 +33,7 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
  *
  */
 @Entity
-@Inheritance ( strategy = InheritanceType.SINGLE_TABLE )
+@Inheritance ( strategy = InheritanceType.JOINED )
 @Table ( name = "Users" )
 public class User extends DomainObject<User> implements Serializable {
 

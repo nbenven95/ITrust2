@@ -89,48 +89,37 @@ public class HibernateDataGenerator {
      * Generate sample users for the iTrust2 system.
      */
     public static void generateUsers () {
-        final User hcp = new User( "hcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP,
-                true );
+
+        final Personnel hcp = new Personnel( "hcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                Role.ROLE_HCP, true );
+        hcp.setFirstName( "HCP" );
+        hcp.setLastName( "HCP" );
+        hcp.setEmail( "csc326.201.1@gmail.com" );
+        hcp.setAddress1( "1234 Road St." );
+        hcp.setCity( "town" );
+        hcp.setState( State.AK );
+        hcp.setZip( "12345" );
+        hcp.setPhone( "111-222-3333" );
+        hcp.setSpecialty( Specialty.SPECIALTY_NONE );
         hcp.save();
 
-        final Personnel p = new Personnel();
-        p.setSelf( hcp );
-        p.setFirstName( "HCP" );
-        p.setLastName( "HCP" );
-        p.setEmail( "csc326.201.1@gmail.com" );
-        p.setAddress1( "1234 Road St." );
-        p.setCity( "town" );
-        p.setState( State.AK );
-        p.setZip( "12345" );
-        p.setPhone( "111-222-3333" );
-        p.setSpecialty( Specialty.SPECIALTY_NONE );
-        p.save();
-
         // Create an opthalmology HCP
-        final User ophhcp = new User( "ophhcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_HCP, true );
+        final Personnel ophhcp = new Personnel( "ophhcp",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, true );
+        ophhcp.setFirstName( "P" );
+        ophhcp.setLastName( "Sherman" );
+        ophhcp.setEmail( "csc326.201.1@gmail.com" );
+        ophhcp.setAddress1( "42 Wallaby Way" );
+        ophhcp.setCity( "Sydney" );
+        ophhcp.setState( State.NC );
+        ophhcp.setZip( "12345" );
+        ophhcp.setPhone( "111-222-3333" );
+        ophhcp.setSpecialty( Specialty.SPECIALTY_OPHTHALMOLOGY );
         ophhcp.save();
 
-        final Personnel ophp = new Personnel();
-        ophp.setSelf( ophhcp );
-        ophp.setFirstName( "P" );
-        ophp.setLastName( "Sherman" );
-        ophp.setEmail( "csc326.201.1@gmail.com" );
-        ophp.setAddress1( "42 Wallaby Way" );
-        ophp.setCity( "Sydney" );
-        ophp.setState( State.NC );
-        ophp.setZip( "12345" );
-        ophp.setPhone( "111-222-3333" );
-        ophp.setSpecialty( Specialty.SPECIALTY_OPHTHALMOLOGY );
-        ophp.save();
-
         // Create an optometry HCP
-        final User opthcp = new User( "opthcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Personnel optp = new Personnel( "opthcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_HCP, true );
-        opthcp.save();
-
-        final Personnel optp = new Personnel();
-        optp.setSelf( opthcp );
         optp.setFirstName( "Preston" );
         optp.setLastName( "Garvey" );
         optp.setEmail( "csc326.201.1@gmail.com" );
@@ -142,98 +131,83 @@ public class HibernateDataGenerator {
         optp.setSpecialty( Specialty.SPECIALTY_OPTOMETRY );
         optp.save();
 
-        final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, true );
+        final Patient patient = new Patient( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                true );
         patient.save();
 
         final User admin = new User( "admin", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_ADMIN, true );
         admin.save();
 
-        final User er = new User( "er", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_ER,
-                true );
+        final Personnel er = new Personnel( "er", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                Role.ROLE_ER, true );
         er.save();
 
         final User alminister = new User( "alminister", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_ADMIN, true );
         alminister.save();
 
-        final User jbean = new User( "jbean", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, true );
+        final Patient jbean = new Patient( "jbean", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                true );
         jbean.save();
 
-        final User nsanderson = new User( "nsanderson", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, true );
+        final Patient nsanderson = new Patient( "nsanderson",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", true );
         nsanderson.save();
 
-        final User svang = new User( "svang", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Personnel svang = new Personnel( "svang", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_HCP, true );
+        svang.setSpecialty( Specialty.SPECIALTY_NONE );
         svang.save();
-        saveAsGeneralHCP( svang );
 
         // generate users for testing password change & reset
         for ( int i = 1; i <= 5; i++ ) {
-            final User pwtestuser = new User( "pwtestuser" + i,
+            final Personnel pwtestuser = new Personnel( "pwtestuser" + i,
                     "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, true );
+            pwtestuser.setSpecialty( Specialty.SPECIALTY_NONE );
             pwtestuser.save();
-            saveAsGeneralHCP( pwtestuser );
         }
 
-        final User lockoutUser = new User( "lockoutUser",
+        final Personnel lockoutUser = new Personnel( "lockoutUser",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, true );
+        lockoutUser.setSpecialty( Specialty.SPECIALTY_NONE );
         lockoutUser.save();
-        saveAsGeneralHCP( lockoutUser );
 
-        final User lockoutUser2 = new User( "lockoutUser2",
+        final Personnel lockoutUser2 = new Personnel( "lockoutUser2",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, true );
+        lockoutUser2.setSpecialty( Specialty.SPECIALTY_NONE );
         lockoutUser2.save();
-        saveAsGeneralHCP( lockoutUser2 );
 
-        final User knightSolaire = new User( "knightSolaire",
+        final Personnel knightSolaire = new Personnel( "knightSolaire",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_ER, true );
+        knightSolaire.setFirstName( "Knight" );
+        knightSolaire.setLastName( "Solaire" );
         knightSolaire.save();
-        final Personnel kniSolai = new Personnel();
-        kniSolai.setSelf( knightSolaire );
-        kniSolai.setFirstName( "Knight" );
-        kniSolai.setLastName( "Solaire" );
-        kniSolai.save();
 
-        final User labTech = new User( "labtech", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_LABTECH, true );
+        final Personnel labTech = new Personnel( "labtech",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_LABTECH, true );
+        labTech.setFirstName( "Lab" );
+        labTech.setLastName( "Technician" );
         labTech.save();
-        final Personnel labTechPerson = new Personnel();
-        labTechPerson.setSelf( labTech );
-        labTechPerson.setFirstName( "Lab" );
-        labTechPerson.setLastName( "Technician" );
-        labTechPerson.save();
 
-        final User larryTech = new User( "larrytech", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_LABTECH, true );
+        final Personnel larryTech = new Personnel( "larrytech",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_LABTECH, true );
+        larryTech.setFirstName( "Larry" );
+        larryTech.setLastName( "Teacher" );
         larryTech.save();
-        final Personnel larryTechPerson = new Personnel();
-        larryTechPerson.setSelf( larryTech );
-        larryTechPerson.setFirstName( "Larry" );
-        larryTechPerson.setLastName( "Teacher" );
-        larryTechPerson.save();
 
-        final Patient billy = new Patient();
+        final Patient billy = new Patient( "BillyBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                true );
         billy.setFirstName( "Billy" );
-        final User billyUser = new User( "BillyBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, true );
-        billyUser.save();
-        billy.setUsername( billyUser.getUsername() );
         billy.setLastName( "Bob" );
         final Calendar billyBirth = Calendar.getInstance();
         billyBirth.add( Calendar.YEAR, -40 ); // billy is 40 years old
         billy.setDateOfBirth( billyBirth );
         billy.save();
 
-        final Patient jill = new Patient();
+        final Patient jill = new Patient( "JillBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+                true );
         jill.setFirstName( "Jill" );
-        final User jillUser = new User( "JillBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, true );
-        jillUser.save();
-        jill.setUsername( jillUser.getUsername() );
         jill.setLastName( "Bob" );
         final Calendar jillBirth = Calendar.getInstance();
         jillBirth.add( Calendar.YEAR, -40 ); // jill is 40 years old
@@ -248,11 +222,9 @@ public class HibernateDataGenerator {
      * @throws NumberFormatException
      */
     public static void generateTestFaculties () throws NumberFormatException, ParseException {
-        final Patient tim = new Patient();
-        final User timUser = new User( "TimTheOneYearOld",
-                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, true );
-        timUser.save();
-        tim.setUsername( timUser.getUsername() );
+        final Patient tim = new Patient( "TimTheOneYearOld",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", true );
+        tim.setUsername( tim.getUsername() );
         tim.setFirstName( "TimTheOneYearOld" );
         tim.setLastName( "Smith" );
         final Calendar timBirth = Calendar.getInstance();
@@ -260,24 +232,18 @@ public class HibernateDataGenerator {
         tim.setDateOfBirth( timBirth );
         tim.save();
 
-        final Patient bob = new Patient();
+        final Patient bob = new Patient( "BobTheFourYearOld",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", true );
         bob.setFirstName( "BobTheFourYearOld" );
-        final User bobUser = new User( "BobTheFourYearOld",
-                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, true );
-        bobUser.save();
-        bob.setUsername( bobUser.getUsername() );
         bob.setLastName( "Smith" );
         final Calendar bobBirth = Calendar.getInstance();
         bobBirth.add( Calendar.YEAR, -4 ); // bob is four years old
         bob.setDateOfBirth( bobBirth );
         bob.save();
 
-        final Patient alice = new Patient();
+        final Patient alice = new Patient( "AliceThirteen",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", true );
         alice.setFirstName( "AliceThirteen" );
-        final User aliceUser = new User( "AliceThirteen",
-                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, true );
-        aliceUser.save();
-        alice.setUsername( aliceUser.getUsername() );
         alice.setLastName( "Smith" );
         final Calendar aliceBirth = Calendar.getInstance();
         aliceBirth.add( Calendar.YEAR, -13 ); // alice is thirteen years old
@@ -509,11 +475,4 @@ public class HibernateDataGenerator {
         siegOffVisit.save();
     }
 
-    private static void saveAsGeneralHCP ( final User u ) {
-        final Personnel p = new Personnel();
-        p.setSelf( u );
-        p.setSpecialty( Specialty.SPECIALTY_NONE );
-        p.setEnabled( u.getEnabled() );
-        p.save();
-    }
 }

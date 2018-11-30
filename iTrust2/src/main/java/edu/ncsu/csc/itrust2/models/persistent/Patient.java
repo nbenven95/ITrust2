@@ -13,12 +13,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.criterion.Criterion;
@@ -195,15 +193,6 @@ public class Patient extends User {
         }
         setRepresented( repd );
     }
-
-    /**
-     * This stores a reference to the User object that this patient is.
-     * Mandatory.
-     */
-    @OneToOne
-    @JoinColumn ( name = "self_id", columnDefinition = "varchar(100)" )
-    @Id
-    private User         self;
 
     /**
      * For keeping track of the User who is the mother of this patient.
@@ -778,7 +767,7 @@ public class Patient extends User {
      * @return the prescriptions for this patient.
      */
     public List<Prescription> getPrescriptions () {
-        return Prescription.getForPatient( this.self.getUsername() );
+        return Prescription.getForPatient( this.getUsername() );
     }
 
     /**
@@ -787,6 +776,6 @@ public class Patient extends User {
      * @return the diagnoses for this patient.
      */
     public List<Diagnosis> getDiagnoses () {
-        return Diagnosis.getForPatient( this.self );
+        return Diagnosis.getForPatient( this );
     }
 }

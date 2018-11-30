@@ -21,7 +21,6 @@ import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.AppointmentRequest;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
-import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.HibernateDataGenerator;
 
 /**
@@ -79,24 +78,20 @@ public class RequestAppointmentWithSpecialistStepDefs extends CucumberTest {
         attemptLogout();
 
         // Create an HCP user (password is 123456)
-        final User specialHCPUser = new User( name, "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_HCP, true );
-        specialHCPUser.save();
-
         // Create the personnel object associated with the above User object
         // with the specified specialty
-        final Personnel specialHCPPersonnel = new Personnel();
-        specialHCPPersonnel.setFirstName( "First" );
-        specialHCPPersonnel.setLastName( "Last" );
-        specialHCPPersonnel.setEmail( "someEmail@gmail.com" );
-        specialHCPPersonnel.setAddress1( "123 Somestreet St." );
-        specialHCPPersonnel.setCity( "Somecity" );
-        specialHCPPersonnel.setState( State.NC );
-        specialHCPPersonnel.setZip( "12345" );
-        specialHCPPersonnel.setPhone( "111-222-3333" );
-        specialHCPPersonnel.setSpecialty( Specialty.parse( specialty ) );
-        specialHCPPersonnel.setSelf( specialHCPUser );
-        specialHCPPersonnel.save();
+        final Personnel specialHCPUser = new Personnel( name,
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP, true );
+        specialHCPUser.setFirstName( "First" );
+        specialHCPUser.setLastName( "Last" );
+        specialHCPUser.setEmail( "someEmail@gmail.com" );
+        specialHCPUser.setAddress1( "123 Somestreet St." );
+        specialHCPUser.setCity( "Somecity" );
+        specialHCPUser.setState( State.NC );
+        specialHCPUser.setZip( "12345" );
+        specialHCPUser.setPhone( "111-222-3333" );
+        specialHCPUser.setSpecialty( Specialty.parse( specialty ) );
+        specialHCPUser.save();
 
         assertNotNull( Personnel.getByName( specialHCPUser ) );
     }

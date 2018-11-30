@@ -100,9 +100,9 @@ public class APIPersonnelController extends APIController {
         final User self = User.getByName( LoggerUtil.currentUser() );
         personnelF.setSelf( self.getUsername() );
         final Personnel personnel = new Personnel( personnelF );
-        if ( null != Personnel.getByName( personnel.getSelf() ) ) {
+        if ( null != Personnel.getByName( personnel.getUsername() ) ) {
             return new ResponseEntity(
-                    errorResponse( "Personnel with the id " + personnel.getSelf() + " already exists" ),
+                    errorResponse( "Personnel with the id " + personnel.getUsername() + " already exists" ),
                     HttpStatus.CONFLICT );
         }
         try {
@@ -132,8 +132,8 @@ public class APIPersonnelController extends APIController {
     public ResponseEntity updatePersonnel ( @PathVariable final String id,
             @RequestBody final PersonnelForm personnelF ) {
         final Personnel personnel = new Personnel( personnelF );
-        if ( null != personnel.getSelf() && null != personnel.getSelf().getUsername()
-                && !id.equals( personnel.getSelf().getUsername() ) ) {
+        if ( null != personnel.getUsername() && null != personnel.getUsername()
+                && !id.equals( personnel.getUsername() ) ) {
             return new ResponseEntity(
                     errorResponse( "The ID provided does not match the ID of the Personnel provided" ),
                     HttpStatus.CONFLICT );

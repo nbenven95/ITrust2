@@ -149,7 +149,6 @@ public class PasswordChangeStepDefs extends CucumberTest {
                 if ( null == dbPersonnel ) {
                     dbPersonnel = new Personnel();
                 }
-                dbPersonnel.setSelf( user );
                 dbPersonnel.setFirstName( "Test" );
                 dbPersonnel.setLastName( "User" );
                 dbPersonnel.setEmail( email );
