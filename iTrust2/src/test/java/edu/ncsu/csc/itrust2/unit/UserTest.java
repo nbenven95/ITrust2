@@ -30,9 +30,9 @@ public class UserTest {
         assertFalse( u1.equals( null ) );
         assertTrue( u1.equals( u1 ) );
 
-        u1.setEnabled( 1 );
-        assertTrue( 1 == u1.getEnabled() );
-        u2.setEnabled( 1 );
+        u1.setEnabled( true );
+        assertTrue( u1.getEnabled() );
+        u2.setEnabled( true );
 
         u1.setPassword( "abcdefg" );
         assertEquals( "abcdefg", u1.getPassword() );

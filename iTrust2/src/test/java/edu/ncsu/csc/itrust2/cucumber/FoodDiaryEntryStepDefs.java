@@ -40,16 +40,17 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
      */
     public void assertTextPresent ( final String text ) {
         try {
-            assertTrue( driver.getPageSource().contains(text) );
-        } catch ( Exception e ) {
+            assertTrue( driver.getPageSource().contains( text ) );
+        }
+        catch ( final Exception e ) {
             fail();
         }
     }
 
-    private void clickAndCheckDateButton( String viewDate ) {
-        List<WebElement> radioList = driver.findElements( By.name( "date" ) );
+    private void clickAndCheckDateButton ( String viewDate ) {
+        final List<WebElement> radioList = driver.findElements( By.name( "date" ) );
 
-        for ( WebElement element : radioList ) {
+        for ( final WebElement element : radioList ) {
             if ( element.getAttribute( "value" ).equals( viewDate ) ) {
                 element.click();
                 assertTextPresent( "Food Diary Entries for: " + viewDate );
@@ -66,12 +67,13 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
 
         // Create the test User
         final User user = new User( patientString, "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
+                Role.ROLE_PATIENT, true );
         user.save();
 
-        // The User must also be created as a Patient 
+        // The User must also be created as a Patient
         // to show up in the list of Patients
-        final Patient patient = new Patient( user.getUsername() );
+        final Patient patient = new Patient();
+        patient.setUsername( patientString );
         patient.save();
 
         // All tests can safely assume the existence of the 'hcp', 'admin', and
@@ -83,7 +85,7 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
         attemptLogout();
 
         final User hcp = new User( hcpString, "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_HCP, 1 );
+                Role.ROLE_HCP, true );
         hcp.save();
 
         // All tests can safely assume the existence of the 'hcp', 'admin', and
@@ -93,7 +95,7 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
     @Then ( "^I log on as a patient for diaries.$" )
     public void loginPatientDiaries () {
         attemptLogout();
-        
+
         driver.get( baseUrl );
         final WebElement username = driver.findElement( By.name( "username" ) );
         username.clear();
@@ -108,36 +110,36 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
     }
 
     @When ( "^I navigate to the view food diary entries page.$" )
-    public void navigateToView() {
+    public void navigateToView () {
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('viewFoodDiaryEntries').click();" );
 
         assertEquals( "iTrust2: View Food Diary Entries", driver.getTitle() );
     }
 
-    @Then ( "^(.+) is displayed.$")
-    public void noDiaryEntries( String text) {
+    @Then ( "^(.+) is displayed.$" )
+    public void noDiaryEntries ( String text ) {
         waitForAngular();
         assertTextPresent( text );
     }
 
-
     @When ( "^I navigate to the Add Diary Entry page.$" )
     public void requestAddDiaryPage () {
         ( (JavascriptExecutor) driver ).executeScript( "document.getElementById('addFoodDiaryEntry').click();" );
-        WebDriverWait wait = new WebDriverWait(driver, 20 );
+        final WebDriverWait wait = new WebDriverWait( driver, 20 );
         wait.until( ExpectedConditions.titleContains( "Add Food Diary Entry" ) );
         assertEquals( "iTrust2: Add Food Diary Entry", driver.getTitle() );
     }
 
-    @And( "^I choose to add a new diary entry with (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$")
-    public void addEntry( String date, String type, String name, int servings, int calories, int fat, int sodium, int carbs, int sugars, int fiber, int protein ) {
+    @And ( "^I choose to add a new diary entry with (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$" )
+    public void addEntry ( String date, String type, String name, int servings, int calories, int fat, int sodium,
+            int carbs, int sugars, int fiber, int protein ) {
         waitForAngular();
 
-        WebElement dateElement = driver.findElement( By.name( "date" ) );
+        final WebElement dateElement = driver.findElement( By.name( "date" ) );
         dateElement.sendKeys( date.replace( "/", "" ) );
 
-        Select dropdown = new Select( driver.findElement( By.name( "mealType" ) ) );
-        dropdown.selectByVisibleText(type);
+        final Select dropdown = new Select( driver.findElement( By.name( "mealType" ) ) );
+        dropdown.selectByVisibleText( type );
 
         driver.findElement( By.name( "food" ) ).clear();
         driver.findElement( By.name( "food" ) ).sendKeys( name );
@@ -158,25 +160,27 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
         driver.findElement( By.name( "protein" ) ).clear();
         driver.findElement( By.name( "protein" ) ).sendKeys( Integer.toString( protein ) );
 
-        driver.findElement ( By.name( "submit" ) ).click();
+        driver.findElement( By.name( "submit" ) ).click();
 
     }
-    @Then ( "^The diary entry is added successfully.$")
-    public void checkForSuccess() {
-        WebDriverWait wait = new WebDriverWait(driver, 20 );
+
+    @Then ( "^The diary entry is added successfully.$" )
+    public void checkForSuccess () {
+        final WebDriverWait wait = new WebDriverWait( driver, 20 );
         wait.until( ExpectedConditions.titleContains( "View Food Diary Entries" ) );
         assertEquals( "iTrust2: View Food Diary Entries", driver.getTitle() );
     }
 
     @And ( "^I choose to incorrectly add a new diary entry with (.+), (.+), (.+), (.+), (.+), (.+), (.+), (.+), (.+), (.+), (.+).$" )
-    public void incorrectlyAdd( String date, String type, String name, String servings, String calories, String fat, String sodium, String carbs, String sugars, String fiber, String protein ) {
+    public void incorrectlyAdd ( String date, String type, String name, String servings, String calories, String fat,
+            String sodium, String carbs, String sugars, String fiber, String protein ) {
         waitForAngular();
-        
-        WebElement dateElement = driver.findElement( By.name( "date" ) );
+
+        final WebElement dateElement = driver.findElement( By.name( "date" ) );
         dateElement.sendKeys( date.replace( "/", "" ) );
 
-        Select dropdown = new Select(driver.findElement(By.name("mealType")));
-        dropdown.selectByVisibleText(type);
+        final Select dropdown = new Select( driver.findElement( By.name( "mealType" ) ) );
+        dropdown.selectByVisibleText( type );
         driver.findElement( By.name( "food" ) ).clear();
         driver.findElement( By.name( "food" ) ).sendKeys( name );
         driver.findElement( By.name( "servings" ) ).clear();
@@ -196,59 +200,61 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
         driver.findElement( By.name( "protein" ) ).clear();
         driver.findElement( By.name( "protein" ) ).sendKeys( protein );
 
-        driver.findElement ( By.name( "submit" ) ).click();
+        driver.findElement( By.name( "submit" ) ).click();
     }
 
     @Then ( "^The diary entry is not added.$" )
     public void checkForFailure () {
         assertTrue( driver.getPageSource().contains( "Could not add diary entry." ) );
-        //assertTextPresent( "Could not add diary entry", driver );
+        // assertTextPresent( "Could not add diary entry", driver );
     }
 
-    @And( "^The patient has added a entry (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$" )
-    public void addDiaryEntry ( String date, String type, String name, int servings, int calories, int fat, int sodium, int carbs, int sugars, int fiber, int protein ) {
+    @And ( "^The patient has added a entry (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$" )
+    public void addDiaryEntry ( String date, String type, String name, int servings, int calories, int fat, int sodium,
+            int carbs, int sugars, int fiber, int protein ) {
         loginPatientDiaries();
         requestAddDiaryPage();
         addEntry( date, type, name, servings, calories, fat, sodium, carbs, sugars, fiber, protein );
     }
 
-    @Then( "^The patient has navigated to food diary dashboard.$")
-    public void onViewPagePatient() {
-        WebDriverWait wait = new WebDriverWait(driver, 20 );
+    @Then ( "^The patient has navigated to food diary dashboard.$" )
+    public void onViewPagePatient () {
+        final WebDriverWait wait = new WebDriverWait( driver, 20 );
         wait.until( ExpectedConditions.titleContains( "View Food Diary Entries" ) );
-        
+
         assertEquals( "iTrust2: View Food Diary Entries", driver.getTitle() );
     }
 
-    @And( "^The patient selects (.+).")
-    public void selectDate( String viewDate ) {
+    @And ( "^The patient selects (.+)." )
+    public void selectDate ( String viewDate ) {
         clickAndCheckDateButton( viewDate );
     }
 
-    @Then( "^The patient can view the entry (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$")
-    public void viewEntryPatient( String date, String type, String name, int servings, int calories, int fat, int sodium, int carbs, int sugars, int fiber, int protein ) {
+    @Then ( "^The patient can view the entry (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$" )
+    public void viewEntryPatient ( String date, String type, String name, int servings, int calories, int fat,
+            int sodium, int carbs, int sugars, int fiber, int protein ) {
         assertEquals( type, driver.findElement( By.id( "mealType-0" ) ).getText() );
         assertEquals( name, driver.findElement( By.id( "name-0" ) ).getText() );
-        assertEquals( servings, Integer.parseInt(driver.findElement( By.id( "servings-0" ) ).getText() ) );
-        assertEquals( calories, Integer.parseInt(driver.findElement( By.id( "calories-0" ) ).getText() ) );
-        assertEquals( fat, Integer.parseInt(driver.findElement( By.id( "fat-0" ) ).getText() ) );
-        assertEquals( sodium, Integer.parseInt(driver.findElement( By.id( "sodium-0" ) ).getText() ) );
-        assertEquals( carbs, Integer.parseInt(driver.findElement( By.id( "carbs-0" ) ).getText() ) );
-        assertEquals( sugars, Integer.parseInt(driver.findElement( By.id( "sugars-0" ) ).getText() ) );
-        assertEquals( fiber, Integer.parseInt(driver.findElement( By.id( "fiber-0" ) ).getText() ) );
-        assertEquals( protein, Integer.parseInt(driver.findElement( By.id( "protein-0" ) ).getText() ) );
+        assertEquals( servings, Integer.parseInt( driver.findElement( By.id( "servings-0" ) ).getText() ) );
+        assertEquals( calories, Integer.parseInt( driver.findElement( By.id( "calories-0" ) ).getText() ) );
+        assertEquals( fat, Integer.parseInt( driver.findElement( By.id( "fat-0" ) ).getText() ) );
+        assertEquals( sodium, Integer.parseInt( driver.findElement( By.id( "sodium-0" ) ).getText() ) );
+        assertEquals( carbs, Integer.parseInt( driver.findElement( By.id( "carbs-0" ) ).getText() ) );
+        assertEquals( sugars, Integer.parseInt( driver.findElement( By.id( "sugars-0" ) ).getText() ) );
+        assertEquals( fiber, Integer.parseInt( driver.findElement( By.id( "fiber-0" ) ).getText() ) );
+        assertEquals( protein, Integer.parseInt( driver.findElement( By.id( "protein-0" ) ).getText() ) );
     }
 
     @And ( "^This patient behavior is logged on the iTrust2 homepage.$" )
-    public void checkLogsPatient() {
+    public void checkLogsPatient () {
         driver.get( baseUrl );
 
         waitForAngular();
         assertTextPresent( "Patient Views Food Diary Entry" );
     }
 
-    @Then( "^The HCP logs in and has navigated to the food diary entry dashboard.$" )
-    public void onViewPageHCP() {
+    @Then ( "^The HCP logs in and has navigated to the food diary entry dashboard.$" )
+    public void onViewPageHCP () {
         attemptLogout();
 
         driver.get( baseUrl );
@@ -268,8 +274,8 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
         assertEquals( "iTrust2: View Patient Food Diary", driver.getTitle() );
     }
 
-    @And( "^The HCP selects the entries for the patient on (.+).$" )
-    public void selectDateHCP( String viewDate ) {
+    @And ( "^The HCP selects the entries for the patient on (.+).$" )
+    public void selectDateHCP ( String viewDate ) {
         waitForAngular();
         driver.findElement( By.id( "bobby" ) ).click();
 
@@ -277,40 +283,41 @@ public class FoodDiaryEntryStepDefs extends CucumberTest {
         clickAndCheckDateButton( viewDate );
     }
 
-    @Then("^The HCP can view the entry (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+)\\.$")
-    public void viewEntryHCP( String date, String type, String name, int servings, int calories, int fat, int sodium, int carbs, int sugars, int fiber, int protein ) throws Throwable {
+    @Then ( "^The HCP can view the entry (.+), (.+), (.+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+)\\.$" )
+    public void viewEntryHCP ( String date, String type, String name, int servings, int calories, int fat, int sodium,
+            int carbs, int sugars, int fiber, int protein ) throws Throwable {
         assertEquals( type, driver.findElement( By.id( "mealType-0" ) ).getText() );
         assertEquals( name, driver.findElement( By.id( "name-0" ) ).getText() );
-        assertEquals( servings, Integer.parseInt(driver.findElement( By.id( "servings-0" ) ).getText() ) );
-        assertEquals( calories, Integer.parseInt(driver.findElement( By.id( "calories-0" ) ).getText() ) );
-        assertEquals( fat, Integer.parseInt(driver.findElement( By.id( "fat-0" ) ).getText() ) );
-        assertEquals( sodium, Integer.parseInt(driver.findElement( By.id( "sodium-0" ) ).getText() ) );
-        assertEquals( carbs, Integer.parseInt(driver.findElement( By.id( "carbs-0" ) ).getText() ) );
-        assertEquals( sugars, Integer.parseInt(driver.findElement( By.id( "sugars-0" ) ).getText() ) );
-        assertEquals( fiber, Integer.parseInt(driver.findElement( By.id( "fiber-0" ) ).getText() ) );
-        assertEquals( protein, Integer.parseInt(driver.findElement( By.id( "protein-0" ) ).getText() ) );
+        assertEquals( servings, Integer.parseInt( driver.findElement( By.id( "servings-0" ) ).getText() ) );
+        assertEquals( calories, Integer.parseInt( driver.findElement( By.id( "calories-0" ) ).getText() ) );
+        assertEquals( fat, Integer.parseInt( driver.findElement( By.id( "fat-0" ) ).getText() ) );
+        assertEquals( sodium, Integer.parseInt( driver.findElement( By.id( "sodium-0" ) ).getText() ) );
+        assertEquals( carbs, Integer.parseInt( driver.findElement( By.id( "carbs-0" ) ).getText() ) );
+        assertEquals( sugars, Integer.parseInt( driver.findElement( By.id( "sugars-0" ) ).getText() ) );
+        assertEquals( fiber, Integer.parseInt( driver.findElement( By.id( "fiber-0" ) ).getText() ) );
+        assertEquals( protein, Integer.parseInt( driver.findElement( By.id( "protein-0" ) ).getText() ) );
     }
 
     @And ( "^The HCP behavior is logged on the iTrust2 homepage.$" )
-    public void checkLoggingHCP() {
+    public void checkLoggingHCP () {
         driver.get( baseUrl );
 
         waitForAngular();
         assertTextPresent( "HCP Views Food Diary Entry" );
     }
 
-    @Then ("^The patient can view the proper totals based on (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$" )
-    public void checkTotals( int calories, int fat, int sodium, int carbs, int sugars, int fiber, int protein ) {
+    @Then ( "^The patient can view the proper totals based on (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+), (\\d+).$" )
+    public void checkTotals ( int calories, int fat, int sodium, int carbs, int sugars, int fiber, int protein ) {
         waitForAngular();
 
-        int index = 2;
-        assertEquals( index * calories, Integer.parseInt(driver.findElement( By.id( "totalCalories" ) ).getText() ) );
-        assertEquals( index * fat, Integer.parseInt(driver.findElement( By.id( "totalFat" ) ).getText() ) );
-        assertEquals( index * sodium, Integer.parseInt(driver.findElement( By.id( "totalSodium" ) ).getText() ) );
-        assertEquals( index * carbs, Integer.parseInt(driver.findElement( By.id( "totalCarbs" ) ).getText() ) );
-        assertEquals( index * sugars, Integer.parseInt(driver.findElement( By.id( "totalSugars" ) ).getText() ) );
-        assertEquals( index * fiber, Integer.parseInt(driver.findElement( By.id( "totalFiber" ) ).getText() ) );
-        assertEquals( index * protein, Integer.parseInt(driver.findElement( By.id( "totalProtein" ) ).getText() ) );
+        final int index = 2;
+        assertEquals( index * calories, Integer.parseInt( driver.findElement( By.id( "totalCalories" ) ).getText() ) );
+        assertEquals( index * fat, Integer.parseInt( driver.findElement( By.id( "totalFat" ) ).getText() ) );
+        assertEquals( index * sodium, Integer.parseInt( driver.findElement( By.id( "totalSodium" ) ).getText() ) );
+        assertEquals( index * carbs, Integer.parseInt( driver.findElement( By.id( "totalCarbs" ) ).getText() ) );
+        assertEquals( index * sugars, Integer.parseInt( driver.findElement( By.id( "totalSugars" ) ).getText() ) );
+        assertEquals( index * fiber, Integer.parseInt( driver.findElement( By.id( "totalFiber" ) ).getText() ) );
+        assertEquals( index * protein, Integer.parseInt( driver.findElement( By.id( "totalProtein" ) ).getText() ) );
     }
 
 }

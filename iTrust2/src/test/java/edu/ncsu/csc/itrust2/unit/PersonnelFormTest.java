@@ -25,7 +25,7 @@ public class PersonnelFormTest {
     @Test
     public void testPersonnelForm () {
         final Personnel person = new Personnel();
-        person.setSelf( new User( "username", "password", Role.ROLE_PATIENT, 1 ) );
+        person.setSelf( new User( "username", "password", Role.ROLE_PATIENT, true ) );
         person.setFirstName( "first" );
         person.setLastName( "last" );
         person.setAddress1( "address1" );

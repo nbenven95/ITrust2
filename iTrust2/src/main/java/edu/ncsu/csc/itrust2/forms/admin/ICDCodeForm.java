@@ -33,7 +33,7 @@ public class ICDCodeForm {
     public ICDCodeForm ( final ICDCode code ) {
         setCode( code.getCode() );
         setDescription( code.getDescription() );
-        setId( code.getId() );
+        setId( code.getUsername() );
     }
 
     /**

@@ -30,7 +30,12 @@ import edu.ncsu.csc.itrust2.models.enums.State;
  */
 @Entity
 @Table ( name = "Personnel" )
-public class Personnel extends DomainObject<Personnel> {
+public class Personnel extends User {
+
+    /**
+     * The UID of the user
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * Get the personnel by username
@@ -212,7 +217,7 @@ public class Personnel extends DomainObject<Personnel> {
         if ( user.getRole().equals( Role.ROLE_HCP ) ) {
             setSpecialty( Specialty.valueOf( userForm.getSpecialty() ) );
         }
-        setEnabled( user.getEnabled() == 1 ? true : false );
+        setEnabled( user.getEnabled() );
     }
 
     /**
@@ -220,16 +225,6 @@ public class Personnel extends DomainObject<Personnel> {
      */
     public Personnel () {
 
-    }
-
-    /**
-     * Get the id of this personnel
-     *
-     * @return the id of this personnel
-     */
-    @Override
-    public Long getId () {
-        return id;
     }
 
     /**
@@ -266,6 +261,7 @@ public class Personnel extends DomainObject<Personnel> {
      *
      * @return whether or not this personnel is enabled
      */
+    @Override
     public boolean getEnabled () {
         return enabled;
     }
@@ -276,6 +272,7 @@ public class Personnel extends DomainObject<Personnel> {
      * @param enabled
      *            whether or not this personnel is enabled
      */
+    @Override
     public void setEnabled ( final boolean enabled ) {
         this.enabled = enabled;
     }

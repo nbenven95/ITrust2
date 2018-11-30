@@ -266,7 +266,7 @@ public abstract class DomainObject <D extends DomainObject<D>> {
      *
      * @return ID of the DomainObject.
      */
-    abstract public Serializable getId ();
+    abstract public Serializable getUsername ();
 
     /*
      * All of these are useful for creating the Criterion used to retrieve

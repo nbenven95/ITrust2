@@ -37,7 +37,7 @@ public class PrescriptionForm implements Serializable {
      *            the prescription object
      */
     public PrescriptionForm ( Prescription prescription ) {
-        setId( prescription.getId() );
+        setId( prescription.getUsername() );
         setDrug( prescription.getDrug().getCode() );
         setDosage( prescription.getDosage() );
         final SimpleDateFormat tempDate = new SimpleDateFormat( "MM/dd/yyyy", Locale.ENGLISH );

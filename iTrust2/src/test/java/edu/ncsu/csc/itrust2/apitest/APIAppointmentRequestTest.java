@@ -150,7 +150,7 @@ public class APIAppointmentRequestTest {
          * We need the ID of the appointment request that actually got _saved_
          * when calling the API above. This will get it
          */
-        final Long id = AppointmentRequest.getAppointmentRequestsForPatient( patient.getUsername() ).get( 0 ).getId();
+        final Long id = AppointmentRequest.getAppointmentRequestsForPatient( patient.getUsername() ).get( 0 ).getUsername();
 
         mvc.perform( get( "/api/v1/appointmentrequests/" + id ) ).andExpect( status().isOk() )
                 .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );

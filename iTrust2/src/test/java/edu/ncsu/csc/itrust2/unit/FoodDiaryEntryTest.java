@@ -27,7 +27,7 @@ public class FoodDiaryEntryTest {
 
     /** Patient to be used for testing */
     final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-            Role.ROLE_PATIENT, 1 );
+            Role.ROLE_PATIENT, true );
 
     @Before
     public void setUp () {
@@ -58,8 +58,8 @@ public class FoodDiaryEntryTest {
         entry.setPatient( "patient" );
         entry.save();
 
-        final FoodDiaryEntry copy = FoodDiaryEntry.getById( entry.getId() );
-        assertEquals( entry.getId(), copy.getId() );
+        final FoodDiaryEntry copy = FoodDiaryEntry.getById( entry.getUsername() );
+        assertEquals( entry.getUsername(), copy.getUsername() );
         assertEquals( entry.getServings(), copy.getServings() );
         assertEquals( entry.getCalories(), copy.getCalories() );
         assertEquals( entry.getMealType(), copy.getMealType() );
@@ -88,7 +88,7 @@ public class FoodDiaryEntryTest {
         entry2.setPatient( "patient" );
         entry2.save();
 
-        assertNotEquals( entry.getId(), entry2.getId() );
+        assertNotEquals( entry.getUsername(), entry2.getUsername() );
         assertEquals( entry.getServings(), entry2.getServings() );
         assertEquals( entry.getCalories(), entry2.getCalories() );
         assertEquals( entry.getMealType(), entry2.getMealType() );

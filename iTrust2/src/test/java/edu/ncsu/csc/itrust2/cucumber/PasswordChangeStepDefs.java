@@ -99,7 +99,7 @@ public class PasswordChangeStepDefs extends CucumberTest {
 
         }
         catch ( final Exception e ) {
-            fail( driver.findElement( By.name( "message" ) ).getText() + "\n" + token.getId() + "\n"
+            fail( driver.findElement( By.name( "message" ) ).getText() + "\n" + token.getUsername() + "\n"
                     + token.getTempPasswordPlaintext() );
         }
 
@@ -117,7 +117,7 @@ public class PasswordChangeStepDefs extends CucumberTest {
         }
         catch ( final Exception e ) {
             fail( driver.findElement( By.name( "message" ) ).getText() + "\n"
-                    + ( null == token ? "" : ( token.getId() + "\n" + token.getTempPasswordPlaintext() ) ) );
+                    + ( null == token ? "" : ( token.getUsername() + "\n" + token.getTempPasswordPlaintext() ) ) );
         }
     }
 
@@ -133,7 +133,7 @@ public class PasswordChangeStepDefs extends CucumberTest {
                 if ( null == dbPatient ) {
                     dbPatient = new Patient();
                 }
-                dbPatient.setSelf( user );
+                dbPatient.setUsername( username );
                 dbPatient.setFirstName( "Test" );
                 dbPatient.setLastName( "User" );
                 dbPatient.setEmail( email );
@@ -222,7 +222,7 @@ public class PasswordChangeStepDefs extends CucumberTest {
         waitForAngular();
         // NOTE: can host be localhost always?
         // Token should not be null at this point
-        final String link = "http://localhost:8080/iTrust2/resetPassword?tkid=" + token.getId();
+        final String link = "http://localhost:8080/iTrust2/resetPassword?tkid=" + token.getUsername();
         driver.get( link );
     }
 

@@ -147,7 +147,7 @@ public class APIPrescriptionTest {
                         .content( TestUtils.asJsonString( new PrescriptionForm( p1 ) ) ) )
                 .andReturn().getResponse().getContentAsString();
         final Prescription edited = gson.fromJson( editContent, Prescription.class );
-        assertEquals( p1.getId(), edited.getId() );
+        assertEquals( p1.getUsername(), edited.getUsername() );
         assertEquals( p1.getDosage(), edited.getDosage() );
 
         // Get single prescription
@@ -156,7 +156,7 @@ public class APIPrescriptionTest {
                         .content( TestUtils.asJsonString( new PrescriptionForm( p1 ) ) ) )
                 .andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
         final Prescription fetched = gson.fromJson( getContent, Prescription.class );
-        assertEquals( p1.getId(), fetched.getId() );
+        assertEquals( p1.getUsername(), fetched.getUsername() );
 
         // Attempt invalid edit
         p2.setRenewals( -1 );
@@ -164,10 +164,10 @@ public class APIPrescriptionTest {
                 .content( TestUtils.asJsonString( new PrescriptionForm( p2 ) ) ) ).andExpect( status().isBadRequest() );
 
         // Delete test objects
-        mvc.perform( delete( "/api/v1/prescriptions/" + p1.getId() ) ).andExpect( status().isOk() )
-                .andExpect( content().string( p1.getId().toString() ) );
-        mvc.perform( delete( "/api/v1/prescriptions/" + p2.getId() ) ).andExpect( status().isOk() )
-                .andExpect( content().string( p2.getId().toString() ) );
+        mvc.perform( delete( "/api/v1/prescriptions/" + p1.getUsername() ) ).andExpect( status().isOk() )
+                .andExpect( content().string( p1.getUsername().toString() ) );
+        mvc.perform( delete( "/api/v1/prescriptions/" + p2.getUsername() ) ).andExpect( status().isOk() )
+                .andExpect( content().string( p2.getUsername().toString() ) );
     }
 
 }

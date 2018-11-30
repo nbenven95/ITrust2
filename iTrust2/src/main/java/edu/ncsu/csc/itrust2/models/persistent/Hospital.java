@@ -216,7 +216,7 @@ public class Hospital extends DomainObject<Hospital> implements Serializable {
      * Retrieves the ID (Name) of this Hospital
      */
     @Override
-    public String getId () {
+    public String getUsername () {
         return getName();
     }
 

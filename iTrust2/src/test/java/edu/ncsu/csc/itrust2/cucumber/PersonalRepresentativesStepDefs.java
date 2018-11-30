@@ -15,7 +15,6 @@ import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
-import edu.ncsu.csc.itrust2.models.persistent.User;
 
 /**
  * Class for Cucumber Testing of Personal Representatives feature.
@@ -58,7 +57,7 @@ public class PersonalRepresentativesStepDefs extends CucumberTest {
         driver.findElement( By.id( "submit" ) ).click();
         final Patient wario = new Patient();
         waitForAngular();
-        wario.setSelf( User.getByName( "Wario" ) );
+        wario.setUsername( "Wario" );
         wario.setFirstName( "wario" );
         wario.setLastName( "Smith" );
         final Calendar warioBirth = Calendar.getInstance();
@@ -80,7 +79,7 @@ public class PersonalRepresentativesStepDefs extends CucumberTest {
 
         final Patient waluigi = new Patient();
         waitForAngular();
-        waluigi.setSelf( User.getByName( "Waluigi" ) );
+        waluigi.setUsername( "Waluigi" );
         waluigi.setFirstName( "waluigi" );
         waluigi.setLastName( "Smith" );
         final Calendar waluigiBirth = Calendar.getInstance();

@@ -42,7 +42,7 @@ public class Diagnosis extends DomainObject<Diagnosis> {
     private ICDCode     code;
 
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 
@@ -161,7 +161,7 @@ public class Diagnosis extends DomainObject<Diagnosis> {
      */
     public static List<Diagnosis> getForPatient ( final User user ) {
         final List<Diagnosis> diagnoses = new Vector<Diagnosis>();
-        OfficeVisit.getForPatient( user.getId() ).stream().map( OfficeVisit::getId )
+        OfficeVisit.getForPatient( user.getUsername() ).stream().map( OfficeVisit::getUsername )
                 .forEach( e -> diagnoses.addAll( getByVisit( e ) ) );
         return diagnoses;
 

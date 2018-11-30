@@ -26,7 +26,7 @@ public class LockoutTest {
             user = new User();
             user.setUsername( userName );
             user.setPassword( "pw" );
-            user.setEnabled( 1 );
+            user.setEnabled( true );
             user.setRole( Role.ROLE_HCP );
             user.save();
         }

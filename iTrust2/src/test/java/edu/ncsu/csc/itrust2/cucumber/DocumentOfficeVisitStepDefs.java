@@ -27,7 +27,6 @@ import edu.ncsu.csc.itrust2.models.persistent.DomainObject;
 import edu.ncsu.csc.itrust2.models.persistent.Hospital;
 import edu.ncsu.csc.itrust2.models.persistent.OfficeVisit;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
-import edu.ncsu.csc.itrust2.models.persistent.User;
 
 public class DocumentOfficeVisitStepDefs extends CucumberTest {
 
@@ -58,7 +57,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
         /* Create patient record */
 
         final Patient patient = new Patient();
-        patient.setSelf( User.getByName( "patient" ) );
+        patient.setUsername( "patient" );
         patient.setFirstName( "Karl" );
         patient.setLastName( "Liebknecht" );
         patient.setEmail( "karl_liebknecht@mail.de" );
@@ -371,7 +370,7 @@ public class DocumentOfficeVisitStepDefs extends CucumberTest {
         attemptLogout();
 
         final Patient patient = new Patient();
-        patient.setSelf( User.getByName( "patient" ) );
+        patient.setUsername( "patient" );
 
         patient.setFirstName( name.split( " " )[0] );
         patient.setLastName( name.split( " " )[1] );

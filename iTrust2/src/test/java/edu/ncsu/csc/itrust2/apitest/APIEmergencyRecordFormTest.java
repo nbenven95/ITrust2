@@ -117,20 +117,20 @@ public class APIEmergencyRecordFormTest {
         final Patient comparison = Patient.getByName( "onionman" );
 
         // Assert that the getPatient returns the correct patient.
-        assertEquals( form.getPatient().getSelf().getId(), comparison.getSelf().getId() );
+        assertEquals( form.getPatient().getUsername(), comparison.getUsername() );
 
         // Assert that the getDiagnoses fetch the right Diagnoses
         final List<Diagnosis> recordDiagnoses = form.getDiagnoses();
         final List<Diagnosis> actualDiagnoses = Diagnosis.getForPatient( User.getByName( "onionman" ) );
         for ( int i = 0; i < recordDiagnoses.size(); i++ ) {
-            assertEquals( recordDiagnoses.get( i ).getId(), actualDiagnoses.get( i ).getId() );
+            assertEquals( recordDiagnoses.get( i ).getUsername(), actualDiagnoses.get( i ).getUsername() );
         }
 
         // Assert that the getPrescriptions fetch the right Prescriptions
         final List<Prescription> recordPrescriptions = form.getPrescriptions();
         final List<Prescription> actualPrescriptions = Prescription.getForPatient( "onionman" );
         for ( int i = 0; i < recordPrescriptions.size(); i++ ) {
-            assertEquals( recordPrescriptions.get( i ).getId(), actualPrescriptions.get( i ).getId() );
+            assertEquals( recordPrescriptions.get( i ).getUsername(), actualPrescriptions.get( i ).getUsername() );
         }
 
         // Test all null statements in EmergencyRecordForm

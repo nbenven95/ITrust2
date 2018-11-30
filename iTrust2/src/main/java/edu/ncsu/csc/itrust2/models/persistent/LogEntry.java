@@ -180,7 +180,7 @@ public class LogEntry extends DomainObject<LogEntry> {
      * Retrieves the ID of the LogEntry
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

@@ -49,11 +49,11 @@ public class AppointmentRequestStepDefs extends CucumberTest {
         attemptLogout();
 
         final User hcp = new User( "hcp", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_HCP,
-                1 );
+                true );
         hcp.save();
 
         final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
+                Role.ROLE_PATIENT, true );
         patient.save();
     }
 

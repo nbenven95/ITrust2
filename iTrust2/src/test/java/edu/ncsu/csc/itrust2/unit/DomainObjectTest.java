@@ -81,9 +81,9 @@ public class DomainObjectTest {
         assertEquals( h.getState(), h2.getState() );
         assertEquals( h.getZip(), h2.getZip() );
         assertEquals( h.getName(), h2.getName() );
-        assertEquals( h.getId(), h2.getId() );
+        assertEquals( h.getUsername(), h2.getUsername() );
 
-        assertEquals( h2.getName(), ( (Hospital) Hospital.getById( Hospital.class, h.getId() ) ).getName() );
+        assertEquals( h2.getName(), ( (Hospital) Hospital.getById( Hospital.class, h.getUsername() ) ).getName() );
     }
 
     @Test

@@ -191,7 +191,7 @@ public class AppointmentRequest extends DomainObject<AppointmentRequest> {
      * Retrieves the ID of the AppointmentRequest
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

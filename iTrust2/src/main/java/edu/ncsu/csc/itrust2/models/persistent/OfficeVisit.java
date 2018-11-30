@@ -388,7 +388,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
      * @return the id of this office visit
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 
@@ -521,7 +521,7 @@ public class OfficeVisit extends DomainObject<OfficeVisit> {
     public boolean equals ( final Object o ) {
         if ( o instanceof OfficeVisit ) {
             final OfficeVisit v = (OfficeVisit) o;
-            return id.equals( v.getId() );
+            return id.equals( v.getUsername() );
         }
         return false;
     }

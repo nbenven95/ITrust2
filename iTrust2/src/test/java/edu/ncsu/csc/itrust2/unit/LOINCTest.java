@@ -48,7 +48,7 @@ public class LOINCTest {
         assertEquals( form, f2 );
 
         assertEquals( "12345-1", code.getCode() );
-        assertTrue( code.getId().equals( 1L ) );
+        assertTrue( code.getUsername().equals( 1L ) );
         assertEquals( "Do cool things", code.getCommonName() );
         assertEquals( "Some", code.getProperty() );
         assertEquals( "None", code.getComponent() );
@@ -225,7 +225,7 @@ public class LOINCTest {
             assertNull( c );
         }
 
-        c = LOINC.getById( l.getId() );
+        c = LOINC.getById( l.getUsername() );
         assertEquals( c.getCode(), "12345-1" );
         assertEquals( c.getCommonName(), "Jump around" );
         assertEquals( c.getComponent(), "Jump jump jump" );

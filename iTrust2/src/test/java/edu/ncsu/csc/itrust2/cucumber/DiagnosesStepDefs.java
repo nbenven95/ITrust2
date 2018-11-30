@@ -25,7 +25,6 @@ import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
-import edu.ncsu.csc.itrust2.models.persistent.User;
 
 public class DiagnosesStepDefs extends CucumberTest {
 
@@ -67,7 +66,7 @@ public class DiagnosesStepDefs extends CucumberTest {
         /* Create patient record */
 
         final Patient patient = new Patient();
-        patient.setSelf( User.getByName( "patient" ) );
+        patient.setUsername( "patient" );
         patient.setFirstName( name.split( " " )[0] );
         patient.setLastName( name.split( " " )[1] );
         patient.setEmail( "email@mail.com" );

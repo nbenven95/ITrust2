@@ -44,7 +44,7 @@ public class LoginBan extends DomainObject<LoginBan> {
      * @return the id
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

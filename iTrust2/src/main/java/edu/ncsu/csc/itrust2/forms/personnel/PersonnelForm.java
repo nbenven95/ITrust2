@@ -149,7 +149,7 @@ public class PersonnelForm {
         setPhone( p.getPhone() );
         setSpecialty( p.getSpecialty().toString() );
         setEmail( p.getEmail() );
-        setId( p.getId().toString() );
+        setId( p.getUsername().toString() );
     }
 
     /**

@@ -74,7 +74,7 @@ public class APILogEntryTest {
     public void testLogByDateLarge () throws Exception {
 
         final User user = new User( "logapitest", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
+                Role.ROLE_PATIENT, true );
         user.save();
 
         for ( Integer i = 0; i < 500; ++i ) {

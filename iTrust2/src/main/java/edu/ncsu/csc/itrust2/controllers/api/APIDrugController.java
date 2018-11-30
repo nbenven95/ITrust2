@@ -78,7 +78,7 @@ public class APIDrugController extends APIController {
             final Drug drug = new Drug( form );
 
             // Check for existing drug in database
-            final Drug savedDrug = Drug.getById( drug.getId() );
+            final Drug savedDrug = Drug.getById( drug.getUsername() );
             if ( savedDrug == null ) {
                 return new ResponseEntity( errorResponse( "No drug found with code " + drug.getCode() ),
                         HttpStatus.NOT_FOUND );
@@ -86,7 +86,7 @@ public class APIDrugController extends APIController {
 
             // If the code was changed, make sure it is unique
             final Drug sameCode = Drug.getByCode( drug.getCode() );
-            if ( sameCode != null && !sameCode.getId().equals( savedDrug.getId() ) ) {
+            if ( sameCode != null && !sameCode.getUsername().equals( savedDrug.getUsername() ) ) {
                 return new ResponseEntity( errorResponse( "Drug with code " + drug.getCode() + " already exists" ),
                         HttpStatus.CONFLICT );
             }
@@ -94,7 +94,7 @@ public class APIDrugController extends APIController {
             drug.save(); /* Overwrite existing drug */
 
             LoggerUtil.log( TransactionType.DRUG_EDIT, LoggerUtil.currentUser(),
-                    "Drug with id " + drug.getId() + " edited" );
+                    "Drug with id " + drug.getUsername() + " edited" );
             return new ResponseEntity( drug, HttpStatus.OK );
         }
         catch ( final Exception e ) {
@@ -124,7 +124,7 @@ public class APIDrugController extends APIController {
             }
             drug.delete();
             LoggerUtil.log( TransactionType.DRUG_DELETE, LoggerUtil.currentUser(),
-                    "Deleted drug with id " + drug.getId() );
+                    "Deleted drug with id " + drug.getUsername() );
             return new ResponseEntity( id, HttpStatus.OK );
         }
         catch ( final Exception e ) {

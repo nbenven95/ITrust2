@@ -319,7 +319,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
      * Get's the id of this LabProcedure
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 
@@ -409,7 +409,7 @@ public class LabProcedure extends DomainObject<LabProcedure> {
     public boolean equals ( final Object o ) {
         if ( o instanceof LabProcedure ) {
             final LabProcedure lp = (LabProcedure) o;
-            return id.equals( lp.getId() );
+            return id.equals( lp.getUsername() );
         }
         return false;
     }

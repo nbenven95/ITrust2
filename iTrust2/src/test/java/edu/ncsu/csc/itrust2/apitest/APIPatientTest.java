@@ -98,7 +98,7 @@ public class APIPatientTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "antti" );
+        patient.setUsername( "antti" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
 
@@ -159,7 +159,7 @@ public class APIPatientTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "bobbo" );
+        patient.setUsername( "bobbo" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -181,7 +181,7 @@ public class APIPatientTest {
         rep.setGender( Gender.Male.toString() );
         rep.setLastName( "Walhelm" );
         rep.setPhone( "123-456-7890" );
-        rep.setSelf( "terry" );
+        rep.setUsername( "terry" );
         rep.setState( State.NC.toString() );
         rep.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -203,7 +203,7 @@ public class APIPatientTest {
         jer.setGender( Gender.Male.toString() );
         jer.setLastName( "Walhelm" );
         jer.setPhone( "123-456-7890" );
-        jer.setSelf( "jerry" );
+        jer.setUsername( "jerry" );
         jer.setState( State.NC.toString() );
         jer.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -309,7 +309,7 @@ public class APIPatientTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "bobbo" );
+        patient.setUsername( "bobbo" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -331,7 +331,7 @@ public class APIPatientTest {
         rep.setGender( Gender.Male.toString() );
         rep.setLastName( "Walhelm" );
         rep.setPhone( "123-456-7890" );
-        rep.setSelf( "terry" );
+        rep.setUsername( "terry" );
         rep.setState( State.NC.toString() );
         rep.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -350,7 +350,7 @@ public class APIPatientTest {
         a.setGender( Gender.Male.toString() );
         a.setLastName( "Walhelm" );
         a.setPhone( "123-456-7890" );
-        a.setSelf( "antti" );
+        a.setUsername( "antti" );
         a.setState( State.NC.toString() );
         a.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -396,7 +396,7 @@ public class APIPatientTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "antti" );
+        patient.setUsername( "antti" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
 
@@ -424,7 +424,7 @@ public class APIPatientTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "antti" );
+        patient.setUsername( "antti" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
 
@@ -436,7 +436,7 @@ public class APIPatientTest {
                 .content( TestUtils.asJsonString( patient ) ) ).andExpect( status().isOk() );
 
         // but they can't edit someone else's
-        patient.setSelf( "patient" );
+        patient.setUsername( "patient" );
         mvc.perform( put( "/api/v1/patients/patient" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( patient ) ) ).andExpect( status().isUnauthorized() );
     }

@@ -46,11 +46,11 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
     @When ( "A patient with (.+) exists with no documented office visits" )
     public void addPatient ( final String patientName ) throws Exception {
         final User pt = new User( patientName, "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
+                Role.ROLE_PATIENT, true );
         pt.save();
 
         final Patient patient = new Patient();
-        patient.setSelf( User.getByName( patientName ) );
+        patient.setUsername( patientName );
         patient.setFirstName( "Karl" );
         patient.setLastName( "Liebknecht" );
         patient.setEmail( "karl_liebknecht@mail.de" );

@@ -34,8 +34,8 @@ public class AppointmentRequestForm {
         setTime( timeTemp.format( ar.getDate().getTime() ) );
         setType( ar.getType().toString() );
         setComments( ar.getComments() );
-        if ( null != ar.getId() ) {
-            setId( ar.getId().toString() );
+        if ( null != ar.getUsername() ) {
+            setId( ar.getUsername().toString() );
         }
         setStatus( ar.getStatus().toString() );
     }

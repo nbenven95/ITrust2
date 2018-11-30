@@ -74,7 +74,7 @@ public class APIOfficeVisitController extends APIController {
     public List<OfficeVisit> getMyOfficeVisits () {
         final User self = User.getByName( LoggerUtil.currentUser() );
         LoggerUtil.log( TransactionType.OFFICE_VISIT_PATIENT_VIEW, self );
-        return OfficeVisit.getForPatient( self.getId() );
+        return OfficeVisit.getForPatient( self.getUsername() );
     }
 
     /**
@@ -139,9 +139,9 @@ public class APIOfficeVisitController extends APIController {
                     return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );
             }
 
-            if ( null != OfficeVisit.getById( visit.getId() ) ) {
+            if ( null != OfficeVisit.getById( visit.getUsername() ) ) {
                 return new ResponseEntity(
-                        errorResponse( "Office visit with the id " + visit.getId() + " already exists" ),
+                        errorResponse( "Office visit with the id " + visit.getUsername() + " already exists" ),
                         HttpStatus.CONFLICT );
             }
 
@@ -216,7 +216,7 @@ public class APIOfficeVisitController extends APIController {
                     return new ResponseEntity( errorResponse( "Invalid visit type" ), HttpStatus.BAD_REQUEST );
             }
 
-            if ( null != visit.getId() && !id.equals( visit.getId() ) ) {
+            if ( null != visit.getUsername() && !id.equals( visit.getUsername() ) ) {
                 return new ResponseEntity(
                         errorResponse( "The ID provided does not match the ID of the OfficeVisit provided" ),
                         HttpStatus.CONFLICT );

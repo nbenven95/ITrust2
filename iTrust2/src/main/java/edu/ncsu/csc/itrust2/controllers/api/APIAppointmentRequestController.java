@@ -121,9 +121,9 @@ public class APIAppointmentRequestController extends APIController {
     public ResponseEntity createAppointmentRequest ( @RequestBody final AppointmentRequestForm requestF ) {
         try {
             final AppointmentRequest request = new AppointmentRequest( requestF );
-            if ( null != AppointmentRequest.getById( request.getId() ) ) {
+            if ( null != AppointmentRequest.getById( request.getUsername() ) ) {
                 return new ResponseEntity(
-                        errorResponse( "AppointmentRequest with the id " + request.getId() + " already exists" ),
+                        errorResponse( "AppointmentRequest with the id " + request.getUsername() + " already exists" ),
                         HttpStatus.CONFLICT );
             }
             request.save();
@@ -188,7 +188,7 @@ public class APIAppointmentRequestController extends APIController {
             final AppointmentRequest request = new AppointmentRequest( requestF );
             request.setId( id );
 
-            if ( null != request.getId() && !id.equals( request.getId() ) ) {
+            if ( null != request.getUsername() && !id.equals( request.getUsername() ) ) {
                 return new ResponseEntity(
                         errorResponse( "The ID provided does not match the ID of the AppointmentRequest provided" ),
                         HttpStatus.CONFLICT );

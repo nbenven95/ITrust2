@@ -21,7 +21,6 @@ import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
 import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
-import edu.ncsu.csc.itrust2.models.persistent.User;
 
 /**
  * Step Definitions for Edit Demographics class
@@ -48,7 +47,7 @@ public class HCPEditPatientStepDefs extends CucumberTest {
 
         final Patient dbJim = Patient.getByName( "jbean" );
         final Patient jbean = null == dbJim ? new Patient() : dbJim;
-        jbean.setSelf( User.getByName( "jbean" ) );
+        jbean.setUsername( "jbean" );
         jbean.setFirstName( "Jim" );
         jbean.setLastName( "Bean" );
         jbean.setEmail( "jbean@gmail.com" );
@@ -75,7 +74,7 @@ public class HCPEditPatientStepDefs extends CucumberTest {
         final Patient dbNellie = Patient.getByName( "nsanderson" );
 
         final Patient nsanderson = null == dbNellie ? new Patient() : dbNellie;
-        nsanderson.setSelf( User.getByName( "nsanderson" ) );
+        nsanderson.setUsername( "nsanderson" );
         nsanderson.setFirstName( "Nellie" );
         nsanderson.setLastName( "Sanderson" );
         nsanderson.setEmail( "nsanderson@gmail.com" );

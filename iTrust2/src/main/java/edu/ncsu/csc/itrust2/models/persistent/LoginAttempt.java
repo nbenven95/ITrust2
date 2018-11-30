@@ -49,7 +49,7 @@ public class LoginAttempt extends DomainObject<LoginAttempt> {
      * @return the id
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

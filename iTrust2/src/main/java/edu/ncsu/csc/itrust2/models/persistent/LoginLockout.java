@@ -46,7 +46,7 @@ public class LoginLockout extends DomainObject<LoginLockout> {
      * @return the id
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

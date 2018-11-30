@@ -41,17 +41,17 @@ import edu.ncsu.csc.itrust2.models.persistent.User;
 public class LabProcedureTest {
 
     final User assignedTech  = new User( "labtech", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-            Role.ROLE_LABTECH, 1 );
+            Role.ROLE_LABTECH, true );
     final User patient       = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-            Role.ROLE_PATIENT, 1 );
+            Role.ROLE_PATIENT, true );
     final User assignedTech2 = new User( "labtech2", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-            Role.ROLE_LABTECH, 1 );
+            Role.ROLE_LABTECH, true );
     final User patient2      = new User( "patient2", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-            Role.ROLE_PATIENT, 1 );
+            Role.ROLE_PATIENT, true );
     final User assignedTech3 = new User( "labtech3", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-            Role.ROLE_LABTECH, 1 );
+            Role.ROLE_LABTECH, true );
     final User patient3      = new User( "patient3", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-            Role.ROLE_PATIENT, 1 );
+            Role.ROLE_PATIENT, true );
 
     /**
      * Tests the functionality of the LabProcedureForm object.
@@ -80,23 +80,23 @@ public class LabProcedureTest {
         l.setComponent( "Jump jump jump" );
         l.setProperty( "JUMP" );
         l.save();
-        form.setLoincId( l.getId() );
-        assertEquals( form.getLoincId(), l.getId() );
+        form.setLoincId( l.getUsername() );
+        assertEquals( form.getLoincId(), l.getUsername() );
         final OfficeVisit of = makeOfficeVisit();
-        form.setVisitId( of.getId() );
-        assertEquals( of.getId(), form.getVisitId() );
+        form.setVisitId( of.getUsername() );
+        assertEquals( of.getUsername(), form.getVisitId() );
 
         // Make a LabProcedure from the form
         final LabProcedure lp = new LabProcedure( form );
-        assertTrue( lp.getId().equals( 1L ) );
-        assertEquals( LOINC.getById( l.getId() ), lp.getLoinc() );
+        assertTrue( lp.getUsername().equals( 1L ) );
+        assertEquals( LOINC.getById( l.getUsername() ), lp.getLoinc() );
         assertEquals( User.getByName( "onionman" ), lp.getPatient() );
         assertEquals( "These are some fancy comments!", lp.getComments() );
         assertEquals( Priority.CRITICAL, lp.getPriority() );
         assertEquals( LabStatus.ASSIGNED, lp.getStatus() );
         assertEquals( User.getByName( assignedTech.getUsername() ), lp.getAssignedTech() );
-        assertEquals( OfficeVisit.getById( of.getId() ).getId(), lp.getVisit().getId() );
-        final OfficeVisit ov1 = OfficeVisit.getById( of.getId() );
+        assertEquals( OfficeVisit.getById( of.getUsername() ).getUsername(), lp.getVisit().getUsername() );
+        final OfficeVisit ov1 = OfficeVisit.getById( of.getUsername() );
         final OfficeVisit ov2 = lp.getVisit();
         assertEquals( ov1, ov2 );
         // assertEquals( OfficeVisit.getById( of.getId() ), lp.getVisit() );
@@ -228,9 +228,9 @@ public class LabProcedureTest {
         assertEquals( "1", form.getStatus() );
         form.setAssignedTech( assignedTech.getUsername() );
         assertEquals( assignedTech.getUsername(), form.getAssignedTech() );
-        form.setLoincId( l.getId() );
-        assertEquals( form.getLoincId(), l.getId() );
-        form.setVisitId( visit.getId() );
+        form.setLoincId( l.getUsername() );
+        assertEquals( form.getLoincId(), l.getUsername() );
+        form.setVisitId( visit.getUsername() );
         final LabProcedure lp = new LabProcedure( form );
         form.setAssignedTech( assignedTech2.getUsername() );
         form.setPatient( patient2.getUsername() );
@@ -258,14 +258,14 @@ public class LabProcedureTest {
             assertNull( c );
         }
 
-        c = LabProcedure.getById( lp.getId() );
-        assertEquals( LOINC.getById( l.getId() ), c.getLoinc() );
+        c = LabProcedure.getById( lp.getUsername() );
+        assertEquals( LOINC.getById( l.getUsername() ), c.getLoinc() );
         assertEquals( User.getByName( "patient" ), c.getPatient() );
         assertEquals( "These are some fancy comments!", c.getComments() );
         assertEquals( Priority.CRITICAL, c.getPriority() );
         assertEquals( LabStatus.ASSIGNED, c.getStatus() );
         assertEquals( User.getByName( assignedTech.getUsername() ), c.getAssignedTech() );
-        assertEquals( OfficeVisit.getById( visit.getId() ), lp.getVisit() );
+        assertEquals( OfficeVisit.getById( visit.getUsername() ), lp.getVisit() );
 
         final List<LabProcedure> patientLPs = LabProcedure.getForPatient( "patient2" );
         assertEquals( 2, patientLPs.size() );
@@ -337,9 +337,9 @@ public class LabProcedureTest {
         assertEquals( "1", form.getStatus() );
         form.setAssignedTech( assignedTech.getUsername() );
         assertEquals( assignedTech.getUsername(), form.getAssignedTech() );
-        form.setLoincId( l.getId() );
-        assertEquals( form.getLoincId(), l.getId() );
-        form.setVisitId( visit.getId() );
+        form.setLoincId( l.getUsername() );
+        assertEquals( form.getLoincId(), l.getUsername() );
+        form.setVisitId( visit.getUsername() );
         final LabProcedure lp = new LabProcedure( form );
         assertTrue( lp.getLoinc() != null );
         assertTrue( lp.getAssignedTech() != null );
@@ -353,7 +353,7 @@ public class LabProcedureTest {
         assertEquals( "1", lpf.getPriority() );
         assertEquals( "1", lpf.getStatus() );
         assertEquals( assignedTech.getUsername(), lpf.getAssignedTech() );
-        assertEquals( l.getId(), lpf.getLoincId() );
+        assertEquals( l.getUsername(), lpf.getLoincId() );
 
         LabProcedure.deleteAll();
         assertEquals( 0, LabProcedure.getLabProcedures().size() );

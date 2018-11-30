@@ -142,7 +142,7 @@ public class APIPersonnelController extends APIController {
         if ( null == dbPersonnel ) {
             return new ResponseEntity( errorResponse( "No personnel found for id " + id ), HttpStatus.NOT_FOUND );
         }
-        personnel.setId( dbPersonnel.getId() );
+        personnel.setUsername( dbPersonnel.getUsername() );
         try {
             personnel.save();
             LoggerUtil.log( TransactionType.EDIT_DEMOGRAPHICS, LoggerUtil.currentUser() );

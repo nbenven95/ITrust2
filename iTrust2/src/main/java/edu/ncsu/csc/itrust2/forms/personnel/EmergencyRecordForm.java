@@ -277,7 +277,7 @@ public class EmergencyRecordForm implements Serializable {
     public void setDiagnoses () {
         try {
             final List<Diagnosis> allDiagnoses = Diagnosis
-                    .getForPatient( User.getByName( this.patient.getSelf().getUsername() ) );
+                    .getForPatient( User.getByName( this.patient.getUsername() ) );
             final List<Diagnosis> recentDiagnoses = new ArrayList<Diagnosis>();
 
             final Date date = new Date();
@@ -312,8 +312,7 @@ public class EmergencyRecordForm implements Serializable {
      */
     public void setPrescriptions () {
         try {
-            final List<Prescription> allPrescriptions = Prescription
-                    .getForPatient( this.patient.getSelf().getUsername() );
+            final List<Prescription> allPrescriptions = Prescription.getForPatient( this.patient.getUsername() );
             final List<Prescription> recentPrescriptions = new ArrayList<Prescription>();
 
             final Date date = new Date();

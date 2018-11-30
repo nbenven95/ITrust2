@@ -80,7 +80,7 @@ public class RequestAppointmentWithSpecialistStepDefs extends CucumberTest {
 
         // Create an HCP user (password is 123456)
         final User specialHCPUser = new User( name, "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_HCP, 1 );
+                Role.ROLE_HCP, true );
         specialHCPUser.save();
 
         // Create the personnel object associated with the above User object

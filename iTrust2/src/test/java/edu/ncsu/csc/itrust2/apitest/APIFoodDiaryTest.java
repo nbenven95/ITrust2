@@ -94,7 +94,7 @@ public class APIFoodDiaryTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "patient" );
+        patient.setUsername( "patient" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -143,7 +143,7 @@ public class APIFoodDiaryTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "patient" );
+        patient.setUsername( "patient" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
@@ -210,7 +210,7 @@ public class APIFoodDiaryTest {
         patient.setGender( Gender.Male.toString() );
         patient.setLastName( "Walhelm" );
         patient.setPhone( "123-456-7890" );
-        patient.setSelf( "patient" );
+        patient.setUsername( "patient" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )

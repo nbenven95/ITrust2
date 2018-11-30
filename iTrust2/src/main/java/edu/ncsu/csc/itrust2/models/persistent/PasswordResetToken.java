@@ -148,7 +148,7 @@ public class PasswordResetToken extends DomainObject<PasswordResetToken> {
      * @return the id
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

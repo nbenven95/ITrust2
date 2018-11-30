@@ -44,7 +44,7 @@ public class APIPrescriptionController extends APIController {
             final Prescription p = new Prescription( form );
             p.save();
             LoggerUtil.log( TransactionType.PRESCRIPTION_CREATE, LoggerUtil.currentUser(), p.getPatient().getUsername(),
-                    "Created prescription with id " + p.getId() );
+                    "Created prescription with id " + p.getUsername() );
             return new ResponseEntity( p, HttpStatus.OK );
         }
         catch ( final Exception e ) {
@@ -68,16 +68,16 @@ public class APIPrescriptionController extends APIController {
     public ResponseEntity editPrescription ( @RequestBody final PrescriptionForm form ) {
         try {
             final Prescription p = new Prescription( form );
-            final Prescription saved = Prescription.getById( p.getId() );
+            final Prescription saved = Prescription.getById( p.getUsername() );
             if ( saved == null ) {
                 LoggerUtil.log( TransactionType.PRESCRIPTION_EDIT, LoggerUtil.currentUser(),
-                        "No prescription found with id " + p.getId() );
-                return new ResponseEntity( errorResponse( "No prescription found with id " + p.getId() ),
+                        "No prescription found with id " + p.getUsername() );
+                return new ResponseEntity( errorResponse( "No prescription found with id " + p.getUsername() ),
                         HttpStatus.NOT_FOUND );
             }
             p.save(); /* Overwrite existing */
             LoggerUtil.log( TransactionType.PRESCRIPTION_EDIT, LoggerUtil.currentUser(), p.getPatient().getUsername(),
-                    "Edited prescription with id " + p.getId() );
+                    "Edited prescription with id " + p.getUsername() );
             return new ResponseEntity( p, HttpStatus.OK );
         }
         catch ( final Exception e ) {
@@ -105,8 +105,8 @@ public class APIPrescriptionController extends APIController {
         try {
             p.delete();
             LoggerUtil.log( TransactionType.PRESCRIPTION_DELETE, LoggerUtil.currentUser(), p.getPatient().getUsername(),
-                    "Deleted prescription with id " + p.getId() );
-            return new ResponseEntity( p.getId(), HttpStatus.OK );
+                    "Deleted prescription with id " + p.getUsername() );
+            return new ResponseEntity( p.getUsername(), HttpStatus.OK );
         }
         catch ( final Exception e ) {
             LoggerUtil.log( TransactionType.PRESCRIPTION_DELETE, LoggerUtil.currentUser(), p.getPatient().getUsername(),

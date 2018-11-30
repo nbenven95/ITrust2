@@ -39,11 +39,11 @@ public class PatientTest {
      */
     @Test
     public void testPatientDateOfDeath () throws ParseException {
-        final User patient = new User( "patientTestPatient", "123456", Role.ROLE_PATIENT, 1 );
+        final User patient = new User( "patientTestPatient", "123456", Role.ROLE_PATIENT, true );
         patient.save();
-        final User mom = new User( "patientTestMom", "123456", Role.ROLE_PATIENT, 1 );
+        final User mom = new User( "patientTestMom", "123456", Role.ROLE_PATIENT, true );
         mom.save();
-        final User dad = new User( "patientTestDad", "123456", Role.ROLE_PATIENT, 1 );
+        final User dad = new User( "patientTestDad", "123456", Role.ROLE_PATIENT, true );
         dad.save();
         final PatientForm form = new PatientForm();
         form.setMother( mom.getUsername() );
@@ -64,7 +64,7 @@ public class PatientTest {
         form.setBloodType( BloodType.ABPos.getName() );
         form.setEthnicity( Ethnicity.Asian.getName() );
         form.setGender( Gender.Male.getName() );
-        form.setSelf( patient.getUsername() );
+        form.setUsername( patient.getUsername() );
 
         final Patient testPatient = new Patient( form );
         testPatient.save();
@@ -193,7 +193,7 @@ public class PatientTest {
      */
     @Test
     public void personalRepresentatives () throws ParseException {
-        final User patient = new User( "patientTestPatient", "123456", Role.ROLE_PATIENT, 1 );
+        final User patient = new User( "patientTestPatient", "123456", Role.ROLE_PATIENT, true );
         patient.save();
         PatientForm form = new PatientForm();
         form.setFirstName( "patient" );
@@ -205,11 +205,11 @@ public class PatientTest {
         form.setZip( "27606" );
         form.setPhone( "111-111-1111" );
         form.setDateOfBirth( "01/01/1901" );
-        form.setSelf( patient.getUsername() );
+        form.setUsername( patient.getUsername() );
         final Patient testPatient = new Patient( form );
         testPatient.save();
 
-        final User rep = new User( "patientTestRep", "123456", Role.ROLE_PATIENT, 1 );
+        final User rep = new User( "patientTestRep", "123456", Role.ROLE_PATIENT, true );
         rep.save();
         form = new PatientForm();
         form.setFirstName( "rep" );
@@ -221,7 +221,7 @@ public class PatientTest {
         form.setZip( "27606" );
         form.setPhone( "111-222-1111" );
         form.setDateOfBirth( "01/01/1901" );
-        form.setSelf( rep.getUsername() );
+        form.setUsername( rep.getUsername() );
         final Patient testRep = new Patient( form );
         testRep.save();
 

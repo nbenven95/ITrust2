@@ -85,8 +85,8 @@ public class OphthalmologySurgeryTest {
         visit.save();
 
         // Test the visit's persistence
-        final OphthalmologySurgery copy = (OphthalmologySurgery) OfficeVisit.getById( visit.getId() );
-        assertEquals( visit.getId(), copy.getId() );
+        final OphthalmologySurgery copy = (OphthalmologySurgery) OfficeVisit.getById( visit.getUsername() );
+        assertEquals( visit.getUsername(), copy.getUsername() );
         assertEquals( visit.getAppointment(), copy.getAppointment() );
         assertEquals( visit.getBasicHealthMetrics(), copy.getBasicHealthMetrics() );
         assertEquals( visit.getHcp(), copy.getHcp() );
@@ -98,14 +98,14 @@ public class OphthalmologySurgeryTest {
         // Test the form object
         final OfficeVisitForm form = new OfficeVisitForm( visit );
         form.setPreScheduled( null );
-        assertEquals( visit.getId().toString(), form.getId() );
+        assertEquals( visit.getUsername().toString(), form.getId() );
         assertEquals( visit.getHcp().getUsername(), form.getHcp() );
         assertEquals( visit.getHospital().getName(), form.getHospital() );
         assertEquals( visit.getPatient().getUsername(), form.getPatient() );
         assertEquals( visit.getSurgeryType().toString(), form.getSurgeryType() );
 
         final OfficeVisit clone = new OfficeVisit( form );
-        assertEquals( visit.getId(), clone.getId() );
+        assertEquals( visit.getUsername(), clone.getUsername() );
         assertEquals( visit.getAppointment(), clone.getAppointment() );
         assertEquals( visit.getBasicHealthMetrics().getDiastolic(), clone.getBasicHealthMetrics().getDiastolic() );
         assertEquals( visit.getHcp(), clone.getHcp() );

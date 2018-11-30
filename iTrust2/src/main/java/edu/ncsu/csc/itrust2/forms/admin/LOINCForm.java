@@ -40,7 +40,7 @@ public class LOINCForm {
         setCommonName( code.getCommonName() );
         setComponent( code.getComponent() );
         setProperty( code.getProperty() );
-        setId( code.getId() );
+        setId( code.getUsername() );
     }
 
     /**

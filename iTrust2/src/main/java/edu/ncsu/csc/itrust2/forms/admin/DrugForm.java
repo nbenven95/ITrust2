@@ -29,7 +29,7 @@ public class DrugForm {
      *            the drug object
      */
     public DrugForm ( final Drug drug ) {
-        setId( drug.getId() );
+        setId( drug.getUsername() );
         setName( drug.getName() );
         setCode( drug.getCode() );
         setDescription( drug.getDescription() );

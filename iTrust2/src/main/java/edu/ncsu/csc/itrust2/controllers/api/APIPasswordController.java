@@ -118,7 +118,7 @@ public class APIPasswordController extends APIController {
             final String port = "8080";
             final String host = InetAddress.getLocalHost().getHostAddress();
 
-            final String link = "http://" + host + ":" + port + "/iTrust2/resetPassword?tkid=" + token.getId();
+            final String link = "http://" + host + ":" + port + "/iTrust2/resetPassword?tkid=" + token.getUsername();
 
             String addr = "";
             String firstName = "";
@@ -134,7 +134,7 @@ public class APIPasswordController extends APIController {
                     firstName = patient.getFirstName();
                 }
                 else {
-                    throw new Exception( "No Patient or Personnel on file for " + user.getId() );
+                    throw new Exception( "No Patient or Personnel on file for " + user.getUsername() );
                 }
             }
 

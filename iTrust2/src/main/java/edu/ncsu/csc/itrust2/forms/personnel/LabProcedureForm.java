@@ -72,14 +72,14 @@ public class LabProcedureForm implements Serializable {
      *            LabProcedure to turn into a LabProcedureForm
      */
     public LabProcedureForm ( final LabProcedure lp ) {
-        setLoincId( lp.getLoinc().getId() );
+        setLoincId( lp.getLoinc().getUsername() );
         setPatient( lp.getPatient().getUsername() );
         setPriority( Integer.toString( lp.getPriority().getCode() ) );
         setComments( lp.getComments() );
         setStatus( Integer.toString( lp.getStatus().getCode() ) );
-        setId( lp.getId() );
+        setId( lp.getUsername() );
         setAssignedTech( lp.getAssignedTech().getUsername() );
-        setVisitId( lp.getVisit().getId() );
+        setVisitId( lp.getVisit().getUsername() );
     }
 
     /**

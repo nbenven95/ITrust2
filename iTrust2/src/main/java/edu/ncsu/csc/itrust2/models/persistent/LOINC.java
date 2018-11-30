@@ -46,7 +46,7 @@ public class LOINC extends DomainObject<LOINC> {
     private String property;
 
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 
@@ -175,7 +175,7 @@ public class LOINC extends DomainObject<LOINC> {
     public boolean equals ( final Object o ) {
         if ( o instanceof LOINC ) {
             final LOINC c = (LOINC) o;
-            return id.equals( c.getId() ) && commonName.equals( c.getCommonName() ) && code.equals( c.getCode() )
+            return id.equals( c.getUsername() ) && commonName.equals( c.getCommonName() ) && code.equals( c.getCode() )
                     && component.equals( c.getComponent() ) && property.equals( c.getProperty() );
         }
         return false;

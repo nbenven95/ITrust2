@@ -40,7 +40,7 @@ public class ICDCode extends DomainObject<Diagnosis> {
     private String description;
 
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 
@@ -149,7 +149,7 @@ public class ICDCode extends DomainObject<Diagnosis> {
     public boolean equals ( final Object o ) {
         if ( o instanceof ICDCode ) {
             final ICDCode c = (ICDCode) o;
-            return id.equals( c.getId() ) && description.equals( c.getDescription() ) && code.equals( c.getCode() );
+            return id.equals( c.getUsername() ) && description.equals( c.getDescription() ) && code.equals( c.getCode() );
         }
         return false;
     }

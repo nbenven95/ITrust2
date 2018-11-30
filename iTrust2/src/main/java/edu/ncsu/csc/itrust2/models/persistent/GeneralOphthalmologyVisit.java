@@ -124,7 +124,7 @@ public class GeneralOphthalmologyVisit extends OfficeVisit {
 
         // get list of ids associated with this visit if this visit already
         // exists
-        final Set<Long> previous = Diagnosis.getByVisit( id ).stream().map( Diagnosis::getId )
+        final Set<Long> previous = Diagnosis.getByVisit( id ).stream().map( Diagnosis::getUsername )
                 .collect( Collectors.toSet() );
         if ( getDiagnoses() != null ) {
             for ( final Diagnosis d : getDiagnoses() ) {
@@ -132,7 +132,7 @@ public class GeneralOphthalmologyVisit extends OfficeVisit {
                     continue;
                 }
 
-                final boolean had = previous.remove( d.getId() );
+                final boolean had = previous.remove( d.getUsername() );
                 try {
                     if ( !had ) {
                         // new Diagnosis
@@ -141,7 +141,7 @@ public class GeneralOphthalmologyVisit extends OfficeVisit {
                     }
                     else {
                         // already had - check if edited
-                        final Diagnosis old = Diagnosis.getById( d.getId() );
+                        final Diagnosis old = Diagnosis.getById( d.getUsername() );
                         if ( !old.getCode().getCode().equals( d.getCode().getCode() )
                                 || !old.getNote().equals( d.getNote() ) ) {
                             // was edited:

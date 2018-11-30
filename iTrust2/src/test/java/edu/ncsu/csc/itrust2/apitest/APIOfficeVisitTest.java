@@ -218,7 +218,7 @@ public class APIOfficeVisitTest {
         patient1.setGender( Gender.Male.toString() );
         patient1.setLastName( "Walhelm" );
         patient1.setPhone( "123-456-7890" );
-        patient1.setSelf( "antti" );
+        patient1.setUsername( "antti" );
         patient1.setState( State.NC.toString() );
         patient1.setZip( "27514" );
 
@@ -234,7 +234,7 @@ public class APIOfficeVisitTest {
         assertEquals( Gender.Male.toString(), patient1.getGender() );
         assertEquals( "Walhelm", patient1.getLastName() );
         assertEquals( "123-456-7890", patient1.getPhone() );
-        assertEquals( "antti", patient1.getSelf() );
+        assertEquals( "antti", patient1.getUsername() );
         assertEquals( State.NC.toString(), patient1.getState() );
         assertEquals( "27514", patient1.getZip() );
 
@@ -386,7 +386,7 @@ public class APIOfficeVisitTest {
         patient2.setDateOfBirth( "6/15/2040" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( patient2 ) ) );
-        visit.setPatient( patient2.getSelf() );
+        visit.setPatient( patient2.getUsername() );
         v = new OfficeVisit( visit );
         assertNotNull( v );
 
@@ -396,7 +396,7 @@ public class APIOfficeVisitTest {
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( patient3 ) ) );
         visit.setHeadCircumference( 20.0f );
-        visit.setPatient( patient3.getSelf() );
+        visit.setPatient( patient3.getUsername() );
         v = new OfficeVisit( visit );
         assertNotNull( v );
 
@@ -404,7 +404,7 @@ public class APIOfficeVisitTest {
          * We need the ID of the office visit that actually got _saved_ when
          * calling the API above. This will get it
          */
-        final Long id = OfficeVisit.getForPatient( patient.getUsername() ).get( 0 ).getId();
+        final Long id = OfficeVisit.getForPatient( patient.getUsername() ).get( 0 ).getUsername();
 
         visit.setId( id.toString() );
 

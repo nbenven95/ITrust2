@@ -75,7 +75,7 @@ public class Drug extends DomainObject<Drug> {
      * @return the id
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

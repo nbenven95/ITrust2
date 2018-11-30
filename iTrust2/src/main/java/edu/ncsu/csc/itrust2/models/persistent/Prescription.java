@@ -126,7 +126,7 @@ public class Prescription extends DomainObject<Prescription> {
      * @return the prescription id
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

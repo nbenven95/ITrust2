@@ -189,7 +189,7 @@ public class OfficeVisitForm implements Serializable {
         final SimpleDateFormat tempTime = new SimpleDateFormat( "hh:mm aaa", Locale.ENGLISH );
         setTime( tempTime.format( ov.getDate().getTime() ) );
         setNotes( ov.getNotes() );
-        setId( ov.getId().toString() );
+        setId( ov.getUsername().toString() );
         setPreScheduled( ( (Boolean) ( ov.getAppointment() != null ) ).toString() );
         setType( ov.getType().toString() );
         if ( ov instanceof GeneralCheckup ) {

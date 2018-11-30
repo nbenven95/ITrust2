@@ -467,7 +467,7 @@ public class FoodDiaryEntry extends DomainObject<FoodDiaryEntry> implements Seri
      * @return the ID of this DiaryEntry
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

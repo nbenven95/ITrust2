@@ -9,9 +9,9 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
@@ -33,6 +33,7 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
  *
  */
 @Entity
+@Inheritance ( strategy = InheritanceType.SINGLE_TABLE )
 @Table ( name = "Users" )
 public class User extends DomainObject<User> implements Serializable {
 
@@ -104,15 +105,6 @@ public class User extends DomainObject<User> implements Serializable {
     }
 
     /**
-     * Get all patients in the database
-     *
-     * @return all patients in the database
-     */
-    public static List<User> getPatients () {
-        return getByRole( Role.ROLE_PATIENT );
-    }
-
-    /**
      * Get users where the passed query is true
      *
      * @SuppressWarnings for Unchecked cast from List<capture#1-of ? extends
@@ -155,7 +147,7 @@ public class User extends DomainObject<User> implements Serializable {
      * @param enabled
      *            1 if the user is enabled 0 if not
      */
-    public User ( final String username, final String password, final Role role, final Integer enabled ) {
+    public User ( final String username, final String password, final Role role, final boolean enabled ) {
         setUsername( username );
         setPassword( password );
         setRole( role );
@@ -175,7 +167,7 @@ public class User extends DomainObject<User> implements Serializable {
         }
         final PasswordEncoder pe = new BCryptPasswordEncoder();
         setPassword( pe.encode( form.getPassword() ) );
-        setEnabled( null != form.getEnabled() ? 1 : 0 );
+        setEnabled( null != form.getEnabled() );
         setRole( Role.valueOf( form.getRole() ) );
 
     }
@@ -195,9 +187,7 @@ public class User extends DomainObject<User> implements Serializable {
     /**
      * Whether or not the user is enabled
      */
-    @Min ( 0 )
-    @Max ( 1 )
-    private Integer enabled;
+    private boolean enabled;
 
     /**
      * The role of the user
@@ -210,6 +200,7 @@ public class User extends DomainObject<User> implements Serializable {
      *
      * @return the username of this user
      */
+    @Override
     public String getUsername () {
         return username;
     }
@@ -248,7 +239,7 @@ public class User extends DomainObject<User> implements Serializable {
      *
      * @return Whether or not the user is enabled
      */
-    public Integer getEnabled () {
+    public boolean getEnabled () {
         return enabled;
     }
 
@@ -258,7 +249,7 @@ public class User extends DomainObject<User> implements Serializable {
      * @param enabled
      *            Whether or not the user is enabled
      */
-    public void setEnabled ( final Integer enabled ) {
+    public void setEnabled ( final boolean enabled ) {
         this.enabled = enabled;
     }
 
@@ -290,7 +281,7 @@ public class User extends DomainObject<User> implements Serializable {
     public int hashCode () {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ( ( enabled == null ) ? 0 : enabled.hashCode() );
+        result = prime * result + ( ( enabled ) ? 0 : 1 );
         result = prime * result + ( ( password == null ) ? 0 : password.hashCode() );
         result = prime * result + ( ( role == null ) ? 0 : role.hashCode() );
         result = prime * result + ( ( username == null ) ? 0 : username.hashCode() );
@@ -315,12 +306,7 @@ public class User extends DomainObject<User> implements Serializable {
             return false;
         }
         final User other = (User) obj;
-        if ( enabled == null ) {
-            if ( other.enabled != null ) {
-                return false;
-            }
-        }
-        else if ( !enabled.equals( other.enabled ) ) {
+        if ( enabled != other.enabled ) {
             return false;
         }
         if ( password == null ) {
@@ -343,14 +329,6 @@ public class User extends DomainObject<User> implements Serializable {
             return false;
         }
         return true;
-    }
-
-    /**
-     * Get the id of this user (aka, the username)
-     */
-    @Override
-    public String getId () {
-        return getUsername();
     }
 
     @Override

@@ -126,7 +126,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
     @SuppressWarnings ( "unchecked" )
     public static List<BasicEyeMetrics> getBasicEyeMetrics () {
         final List<BasicEyeMetrics> requests = (List<BasicEyeMetrics>) getAll( BasicEyeMetrics.class );
-        requests.sort( ( x1, x2 ) -> x1.getId().compareTo( x2.getId() ) );
+        requests.sort( ( x1, x2 ) -> x1.getUsername().compareTo( x2.getUsername() ) );
         return requests;
     }
 
@@ -224,7 +224,7 @@ public class BasicEyeMetrics extends DomainObject<BasicEyeMetrics> {
      * @return the id
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

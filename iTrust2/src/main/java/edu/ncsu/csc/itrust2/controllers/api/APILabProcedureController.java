@@ -189,9 +189,9 @@ public class APILabProcedureController extends APIController {
     public ResponseEntity createLabProcedure ( @RequestBody final LabProcedureForm procF ) {
         try {
             final LabProcedure proc = new LabProcedure( procF );
-            if ( LabProcedure.getById( proc.getId() ) != null ) {
+            if ( LabProcedure.getById( proc.getUsername() ) != null ) {
                 return new ResponseEntity(
-                        errorResponse( "LabProcedure with the id " + proc.getId() + " already exists" ),
+                        errorResponse( "LabProcedure with the id " + proc.getUsername() + " already exists" ),
                         HttpStatus.CONFLICT );
             }
             proc.save();
@@ -258,14 +258,14 @@ public class APILabProcedureController extends APIController {
     public ResponseEntity updateLabProcedure ( @PathVariable final Long id, @RequestBody final LabProcedureForm form ) {
         try {
             final LabProcedure original = LabProcedure.getById( id );
-            form.setVisitId( original.getVisit().getId() );
-            form.setLoincId( original.getLoinc().getId() );
+            form.setVisitId( original.getVisit().getUsername() );
+            form.setLoincId( original.getLoinc().getUsername() );
             form.setPatient( original.getPatient().getUsername() );
             form.setPriority( Integer.toString( original.getPriority().getCode() ) );
             final LabProcedure lp = new LabProcedure( form );
-            if ( lp.getId() != null && !id.equals( lp.getId() ) ) {
+            if ( lp.getUsername() != null && !id.equals( lp.getUsername() ) ) {
                 return new ResponseEntity(
-                        errorResponse( "The ID provided (" + lp.getId()
+                        errorResponse( "The ID provided (" + lp.getUsername()
                                 + ") does not match the ID of the LabProcedure provided (" + id + ")" ),
                         HttpStatus.CONFLICT );
             }

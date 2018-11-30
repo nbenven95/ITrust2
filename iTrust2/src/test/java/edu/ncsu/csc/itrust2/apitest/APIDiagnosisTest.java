@@ -152,7 +152,7 @@ public class APIDiagnosisTest {
         }
         // get the list of diagnoses for this office visit and make sure both
         // are there
-        content = mvc.perform( get( "/api/v1/diagnosesforvisit/" + visit.getId() )
+        content = mvc.perform( get( "/api/v1/diagnosesforvisit/" + visit.getUsername() )
                 .contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( codeForm ) ) ).andReturn()
                 .getResponse().getContentAsString();
         List<Diagnosis> dlist = gson.fromJson( content, new TypeToken<ArrayList<Diagnosis>>() {
@@ -160,9 +160,9 @@ public class APIDiagnosisTest {
         boolean flag = false;
         for ( final Diagnosis dd : dlist ) {
             if ( dd.getCode().equals( d.getCode() ) && dd.getNote().equals( d.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) ) {
                 flag = true;
-                d.setId( dd.getId() );
+                d.setId( dd.getUsername() );
 
             }
         }
@@ -170,9 +170,9 @@ public class APIDiagnosisTest {
         flag = false;
         for ( final Diagnosis dd : dlist ) {
             if ( dd.getCode().equals( d2.getCode() ) && dd.getNote().equals( d2.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) ) {
                 flag = true;
-                d2.setId( dd.getId() );
+                d2.setId( dd.getUsername() );
             }
         }
         assertTrue( flag );
@@ -183,7 +183,7 @@ public class APIDiagnosisTest {
         flag = false;
         for ( final Diagnosis dd : forPatient ) {
             if ( dd.getCode().equals( d.getCode() ) && dd.getNote().equals( d.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) ) {
                 flag = true;
             }
         }
@@ -191,7 +191,7 @@ public class APIDiagnosisTest {
         flag = false;
         for ( final Diagnosis dd : forPatient ) {
             if ( dd.getCode().equals( d2.getCode() ) && dd.getNote().equals( d2.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) ) {
                 flag = true;
             }
         }
@@ -199,12 +199,12 @@ public class APIDiagnosisTest {
 
         // edit a diagnosis within the editing of office visit and check they
         // work.
-        form.setId( visit.getId() + "" );
+        form.setId( visit.getUsername() + "" );
         d.setNote( "Edited" );
-        content = mvc.perform( put( "/api/v1/officevisits/" + visit.getId() ).contentType( MediaType.APPLICATION_JSON )
+        content = mvc.perform( put( "/api/v1/officevisits/" + visit.getUsername() ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( form ) ) ).andReturn().getResponse().getContentAsString();
 
-        content = mvc.perform( get( "/api/v1/diagnosesforvisit/" + visit.getId() )
+        content = mvc.perform( get( "/api/v1/diagnosesforvisit/" + visit.getUsername() )
                 .contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( codeForm ) ) ).andReturn()
                 .getResponse().getContentAsString();
         dlist = gson.fromJson( content, new TypeToken<ArrayList<Diagnosis>>() {
@@ -212,7 +212,7 @@ public class APIDiagnosisTest {
         flag = false;
         for ( final Diagnosis dd : dlist ) {
             if ( dd.getCode().equals( d.getCode() ) && dd.getNote().equals( d.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) ) {
                 flag = true;
             }
         }
@@ -220,7 +220,7 @@ public class APIDiagnosisTest {
         flag = false;
         for ( final Diagnosis dd : dlist ) {
             if ( dd.getCode().equals( d2.getCode() ) && dd.getNote().equals( d2.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) ) {
                 flag = true;
             }
         }
@@ -229,31 +229,31 @@ public class APIDiagnosisTest {
         // edit the office visit and remove a diagnosis
 
         list.remove( d );
-        content = mvc.perform( put( "/api/v1/officevisits/" + visit.getId() ).contentType( MediaType.APPLICATION_JSON )
+        content = mvc.perform( put( "/api/v1/officevisits/" + visit.getUsername() ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( form ) ) ).andReturn().getResponse().getContentAsString();
 
         // check that the removed one is gone
-        content = mvc.perform( get( "/api/v1/diagnosesforvisit/" + visit.getId() )
+        content = mvc.perform( get( "/api/v1/diagnosesforvisit/" + visit.getUsername() )
                 .contentType( MediaType.APPLICATION_JSON ).content( TestUtils.asJsonString( codeForm ) ) ).andReturn()
                 .getResponse().getContentAsString();
         dlist = gson.fromJson( content, new TypeToken<ArrayList<Diagnosis>>() {
         }.getType() );
         for ( final Diagnosis dd : dlist ) {
             if ( dd.getCode().equals( d.getCode() ) && dd.getNote().equals( d.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) && dd.getId().equals( d.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) && dd.getUsername().equals( d.getUsername() ) ) {
                 fail( "Was not deleted!" );
             }
         }
         flag = false;
         for ( final Diagnosis dd : dlist ) {
             if ( dd.getCode().equals( d2.getCode() ) && dd.getNote().equals( d2.getNote() )
-                    && dd.getVisit().getId().equals( visit.getId() ) ) {
+                    && dd.getVisit().getUsername().equals( visit.getUsername() ) ) {
                 flag = true;
             }
         }
         assertTrue( flag );
         // delete all resources involved with this test
-        mvc.perform( delete( "/api/v1/officevisits/" + visit.getId() ) );
+        mvc.perform( delete( "/api/v1/officevisits/" + visit.getUsername() ) );
 
     }
 

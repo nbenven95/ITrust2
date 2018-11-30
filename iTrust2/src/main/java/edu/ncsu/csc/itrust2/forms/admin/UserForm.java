@@ -94,7 +94,7 @@ public class UserForm {
         setUsername( u.getUsername() );
         setRole( u.getRole().toString() );
 
-        setEnabled( u.getEnabled().toString() );
+        setEnabled( Boolean.toString( u.getEnabled() ) );
     }
 
     /**
@@ -175,7 +175,7 @@ public class UserForm {
 
     /**
      * Gets the specialty of the User
-     * 
+     *
      * @return Specialty of the user
      */
     public String getSpecialty () {
@@ -184,7 +184,7 @@ public class UserForm {
 
     /**
      * Sets the Specialty of the new User
-     * 
+     *
      * @param specialty
      *            Specialty of the user
      */

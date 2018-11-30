@@ -137,8 +137,8 @@ public class GeneralCheckupTest {
         visit.save();
 
         // Test the visit's persistence
-        final OfficeVisit copy = OfficeVisit.getById( visit.getId() );
-        assertEquals( visit.getId(), copy.getId() );
+        final OfficeVisit copy = OfficeVisit.getById( visit.getUsername() );
+        assertEquals( visit.getUsername(), copy.getUsername() );
         assertEquals( visit.getAppointment(), copy.getAppointment() );
         assertEquals( visit.getBasicHealthMetrics(), copy.getBasicHealthMetrics() );
         assertEquals( visit.getHcp(), copy.getHcp() );
@@ -148,7 +148,7 @@ public class GeneralCheckupTest {
         // Test the form object
         final OfficeVisitForm form = new OfficeVisitForm( visit );
         form.setPreScheduled( null );
-        assertEquals( visit.getId().toString(), form.getId() );
+        assertEquals( visit.getUsername().toString(), form.getId() );
         assertEquals( visit.getHcp().getUsername(), form.getHcp() );
         assertEquals( visit.getHospital().getName(), form.getHospital() );
         assertEquals( visit.getPatient().getUsername(), form.getPatient() );
@@ -156,7 +156,7 @@ public class GeneralCheckupTest {
         assertEquals( visit.getLabProcedures(), form.getLabProcedures() );
 
         final OfficeVisit clone = new OfficeVisit( form );
-        assertEquals( visit.getId(), clone.getId() );
+        assertEquals( visit.getUsername(), clone.getUsername() );
         assertEquals( visit.getAppointment(), clone.getAppointment() );
         assertEquals( visit.getBasicHealthMetrics().getDiastolic(), clone.getBasicHealthMetrics().getDiastolic() );
         assertEquals( visit.getHcp(), clone.getHcp() );

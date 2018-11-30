@@ -114,7 +114,7 @@ public class APIDrugTest {
                         .content( TestUtils.asJsonString( drug1 ) ) )
                 .andExpect( status().isOk() ).andReturn().getResponse().getContentAsString();
         final Drug editedDrug = gson.fromJson( editContent, Drug.class );
-        assertEquals( drug1.getId(), editedDrug.getId() );
+        assertEquals( drug1.getUsername(), editedDrug.getUsername() );
         assertEquals( drug1.getCode(), editedDrug.getCode() );
         assertEquals( drug1.getName(), editedDrug.getName() );
         assertEquals( "This is a better description", editedDrug.getDescription() );
@@ -130,10 +130,10 @@ public class APIDrugTest {
                 .content( TestUtils.asJsonString( drug2 ) ) ).andExpect( status().isOk() );
 
         // Delete test drugs
-        mvc.perform( delete( "/api/v1/drugs/" + drug1.getId() ) ).andExpect( status().isOk() )
-                .andExpect( content().string( drug1.getId().toString() ) );
-        mvc.perform( delete( "/api/v1/drugs/" + drug2.getId() ) ).andExpect( status().isOk() )
-                .andExpect( content().string( drug2.getId().toString() ) );
+        mvc.perform( delete( "/api/v1/drugs/" + drug1.getUsername() ) ).andExpect( status().isOk() )
+                .andExpect( content().string( drug1.getUsername().toString() ) );
+        mvc.perform( delete( "/api/v1/drugs/" + drug2.getUsername() ) ).andExpect( status().isOk() )
+                .andExpect( content().string( drug2.getUsername().toString() ) );
     }
 
 }

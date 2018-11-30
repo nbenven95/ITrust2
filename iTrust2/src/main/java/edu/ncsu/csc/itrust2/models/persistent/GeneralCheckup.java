@@ -164,23 +164,23 @@ public class GeneralCheckup extends OfficeVisit {
         final GeneralCheckup oldVisit = (GeneralCheckup) OfficeVisit.getById( id );
 
         // Get prescription ids included in this office visit
-        final Set<Long> currentIds = this.getPrescriptions().stream().map( Prescription::getId )
+        final Set<Long> currentIds = this.getPrescriptions().stream().map( Prescription::getUsername )
                 .collect( Collectors.toSet() );
 
         // Get prescription ids saved previously
         final Set<Long> savedIds = oldVisit == null ? Collections.emptySet()
-                : oldVisit.getPrescriptions().stream().map( Prescription::getId ).collect( Collectors.toSet() );
+                : oldVisit.getPrescriptions().stream().map( Prescription::getUsername ).collect( Collectors.toSet() );
 
         // Save each of the prescriptions
         this.getPrescriptions().forEach( p -> {
-            final boolean isSaved = savedIds.contains( p.getId() );
+            final boolean isSaved = savedIds.contains( p.getUsername() );
             if ( isSaved ) {
                 LoggerUtil.log( TransactionType.PRESCRIPTION_EDIT, LoggerUtil.currentUser(), getPatient().getUsername(),
-                        "Editing prescription with id " + p.getId() );
+                        "Editing prescription with id " + p.getUsername() );
             }
             else {
                 LoggerUtil.log( TransactionType.PRESCRIPTION_CREATE, LoggerUtil.currentUser(),
-                        getPatient().getUsername(), "Creating prescription with id " + p.getId() );
+                        getPatient().getUsername(), "Creating prescription with id " + p.getUsername() );
             }
             p.save();
         } );
@@ -203,7 +203,7 @@ public class GeneralCheckup extends OfficeVisit {
 
         // get list of ids associated with this visit if this visit already
         // exists
-        final Set<Long> previous = Diagnosis.getByVisit( id ).stream().map( Diagnosis::getId )
+        final Set<Long> previous = Diagnosis.getByVisit( id ).stream().map( Diagnosis::getUsername )
                 .collect( Collectors.toSet() );
         if ( getDiagnoses() != null ) {
             for ( final Diagnosis d : getDiagnoses() ) {
@@ -211,7 +211,7 @@ public class GeneralCheckup extends OfficeVisit {
                     continue;
                 }
 
-                final boolean had = previous.remove( d.getId() );
+                final boolean had = previous.remove( d.getUsername() );
                 try {
                     if ( !had ) {
                         // new Diagnosis
@@ -220,7 +220,7 @@ public class GeneralCheckup extends OfficeVisit {
                     }
                     else {
                         // already had - check if edited
-                        final Diagnosis old = Diagnosis.getById( d.getId() );
+                        final Diagnosis old = Diagnosis.getById( d.getUsername() );
                         if ( !old.getCode().getCode().equals( d.getCode().getCode() )
                                 || !old.getNote().equals( d.getNote() ) ) {
                             // was edited:
@@ -255,7 +255,7 @@ public class GeneralCheckup extends OfficeVisit {
 
         // get list of ids associated with this visit if this visit already
         // exists
-        final Set<Long> prev = LabProcedure.getByVisit( id ).stream().map( LabProcedure::getId )
+        final Set<Long> prev = LabProcedure.getByVisit( id ).stream().map( LabProcedure::getUsername )
                 .collect( Collectors.toSet() );
         if ( getLabProcedures() != null ) {
             for ( final LabProcedure d : getLabProcedures() ) {
@@ -263,7 +263,7 @@ public class GeneralCheckup extends OfficeVisit {
                     continue;
                 }
 
-                final boolean had = prev.remove( d.getId() );
+                final boolean had = prev.remove( d.getUsername() );
                 try {
                     if ( !had ) {
                         // new Lab Procedure
@@ -273,7 +273,7 @@ public class GeneralCheckup extends OfficeVisit {
                     }
                     else {
                         // already had - check if edited
-                        final LabProcedure old = LabProcedure.getById( d.getId() );
+                        final LabProcedure old = LabProcedure.getById( d.getUsername() );
                         if ( !old.getLoinc().getCode().equals( d.getLoinc().getCode() )
                                 || !old.getComments().equals( d.getComments() )
                                 || !old.getAssignedTech().equals( d.getAssignedTech() )

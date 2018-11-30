@@ -134,7 +134,7 @@ public class BasicHealthMetrics extends DomainObject<BasicHealthMetrics> {
     @SuppressWarnings ( "unchecked" )
     public static List<BasicHealthMetrics> getBasicHealthMetrics () {
         final List<BasicHealthMetrics> requests = (List<BasicHealthMetrics>) getAll( BasicHealthMetrics.class );
-        requests.sort( ( x1, x2 ) -> x1.getId().compareTo( x2.getId() ) );
+        requests.sort( ( x1, x2 ) -> x1.getUsername().compareTo( x2.getUsername() ) );
         return requests;
     }
 
@@ -231,7 +231,7 @@ public class BasicHealthMetrics extends DomainObject<BasicHealthMetrics> {
      * Retrieves the ID of the AppointmentRequest
      */
     @Override
-    public Long getId () {
+    public Long getUsername () {
         return id;
     }
 

@@ -124,11 +124,11 @@ public class APILabProcedureTest {
         l.setComponent( "Jump jump jump" );
         l.setProperty( "JUMP" );
         l.save();
-        form.setLoincId( l.getId() );
-        assertEquals( form.getLoincId(), l.getId() );
+        form.setLoincId( l.getUsername() );
+        assertEquals( form.getLoincId(), l.getUsername() );
         final OfficeVisit of = makeOfficeVisit();
-        form.setVisitId( of.getId() );
-        assertEquals( of.getId(), form.getVisitId() );
+        form.setVisitId( of.getUsername() );
+        assertEquals( of.getUsername(), form.getVisitId() );
 
         // Make a LabProcedure from the form
         final LabProcedure lp = new LabProcedure( form );
@@ -318,8 +318,8 @@ public class APILabProcedureTest {
         form.setPriority( "1" );
         form.setStatus( "1" );
         form.setAssignedTech( labtech.getUsername() );
-        form.setLoincId( l.getId() );
-        form.setVisitId( visit.getId() );
+        form.setLoincId( l.getUsername() );
+        form.setVisitId( visit.getUsername() );
 
         /* Create the Lab Procedure */
         mvc.perform( post( "/api/v1/labprocedures" ).contentType( MediaType.APPLICATION_JSON )
@@ -331,11 +331,11 @@ public class APILabProcedureTest {
         assertEquals( 1, lp.getPriority().getCode() );
         assertEquals( 1, lp.getStatus().getCode() );
         assertEquals( "labtech", lp.getAssignedTech().getUsername() );
-        assertEquals( form.getLoincId(), lp.getLoinc().getId() );
-        assertEquals( form.getVisitId(), lp.getVisit().getId() );
+        assertEquals( form.getLoincId(), lp.getLoinc().getUsername() );
+        assertEquals( form.getVisitId(), lp.getVisit().getUsername() );
 
         /* Attempt to repost LabProcedure */
-        form.setId( lp.getId() );
+        form.setId( lp.getUsername() );
         mvc.perform( post( "/api/v1/labprocedures" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( form ) ) ).andExpect( status().isConflict() );
 
@@ -363,11 +363,11 @@ public class APILabProcedureTest {
         mvc.perform( get( "/api/v1/labprocedures/byVisit/-1" ) ).andExpect( status().isNotFound() );
 
         /* Test getProcedureById */
-        mvc.perform( get( "/api/v1/labprocedures/" + lp.getId() ) ).andExpect( status().isOk() )
+        mvc.perform( get( "/api/v1/labprocedures/" + lp.getUsername() ) ).andExpect( status().isOk() )
                 .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
 
         /* Delete the LabProcedure */
-        mvc.perform( delete( "/api/v1/labprocedures/" + lp.getId() ) ).andExpect( status().isOk() );
+        mvc.perform( delete( "/api/v1/labprocedures/" + lp.getUsername() ) ).andExpect( status().isOk() );
 
         /* Attempt to delete a LabProcedure that doesn't exist */
         mvc.perform( delete( "/api/v1/labprocedures/-1" ) ).andExpect( status().isNotFound() );
@@ -384,13 +384,13 @@ public class APILabProcedureTest {
     public void testLabProcedureLabTechAPI () throws Exception {
 
         final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
+                Role.ROLE_PATIENT, true );
         final User assignedTech = new User( "assignedTech",
-                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_LABTECH, 1 );
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_LABTECH, true );
         final User assignedTech2 = new User( "assignedTech2",
-                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_LABTECH, 1 );
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_LABTECH, true );
         final User patient2 = new User( "patient2", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_LABTECH, 1 );
+                Role.ROLE_LABTECH, true );
 
         assignedTech.save();
         assignedTech2.save();
@@ -399,7 +399,7 @@ public class APILabProcedureTest {
         LabProcedure lp = createLabProcedure();
 
         /* Test getProcedureById */
-        mvc.perform( get( "/api/v1/labprocedures/" + lp.getId() ) ).andExpect( status().isOk() )
+        mvc.perform( get( "/api/v1/labprocedures/" + lp.getUsername() ) ).andExpect( status().isOk() )
                 .andExpect( content().contentType( MediaType.APPLICATION_JSON_UTF8_VALUE ) );
 
         /* Test BAD getProcedureById */
@@ -415,7 +415,7 @@ public class APILabProcedureTest {
          * We need the ID of the office visit that actually got _saved_ when
          * calling the API above. This will get it
          */
-        final Long id = LabProcedure.getByVisit( lp.getVisit().getId() ).get( 0 ).getId();
+        final Long id = LabProcedure.getByVisit( lp.getVisit().getUsername() ).get( 0 ).getUsername();
 
         form.setId( id );
         mvc.perform( put( "/api/v1/labprocedures/" + id ).contentType( MediaType.APPLICATION_JSON )
@@ -425,14 +425,14 @@ public class APILabProcedureTest {
         /* Assert the LabProcedure was updated */
         final OfficeVisit visit = lp.getVisit();
         final LOINC l = lp.getLoinc();
-        lp = LabProcedure.getByVisit( visit.getId() ).get( 0 );
+        lp = LabProcedure.getByVisit( visit.getUsername() ).get( 0 );
         assertEquals( "patient", lp.getPatient().getUsername() );
         assertEquals( "Comments.", lp.getComments() );
         assertEquals( 1, lp.getPriority().getCode() );
         assertEquals( 2, lp.getStatus().getCode() );
         assertEquals( "assignedTech2", lp.getAssignedTech().getUsername() );
-        assertEquals( l.getId(), lp.getLoinc().getId() );
-        assertEquals( visit.getId(), lp.getVisit().getId() );
+        assertEquals( l.getUsername(), lp.getLoinc().getUsername() );
+        assertEquals( visit.getUsername(), lp.getVisit().getUsername() );
 
         /* Attempt invalid updates */
         form.setPatient( "patient2" );
@@ -440,8 +440,8 @@ public class APILabProcedureTest {
         form.setPriority( "4" );
         form.setStatus( "2" );
         form.setAssignedTech( assignedTech2.getUsername() );
-        form.setLoincId( lp.getLoinc().getId() );
-        form.setVisitId( lp.getVisit().getId() );
+        form.setLoincId( lp.getLoinc().getUsername() );
+        form.setVisitId( lp.getVisit().getUsername() );
 
         mvc.perform( put( "/api/v1/labprocedures/" + id ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( form ) ) ).andExpect( status().isOk() )
@@ -453,12 +453,12 @@ public class APILabProcedureTest {
         assertEquals( 1, lp.getPriority().getCode() );
         assertEquals( 2, lp.getStatus().getCode() );
         assertEquals( "assignedTech2", lp.getAssignedTech().getUsername() );
-        assertEquals( l.getId(), lp.getLoinc().getId() );
-        assertEquals( visit.getId(), lp.getVisit().getId() );
+        assertEquals( l.getUsername(), lp.getLoinc().getUsername() );
+        assertEquals( visit.getUsername(), lp.getVisit().getUsername() );
 
         /* Try a bad update */
         form.setStatus( "4" );
-        mvc.perform( put( "/api/v1/labprocedures/" + lp.getId() ).contentType( MediaType.APPLICATION_JSON )
+        mvc.perform( put( "/api/v1/labprocedures/" + lp.getUsername() ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( form ) ) ).andExpect( status().isBadRequest() );
 
         /* Form with non-matching ID should conflict */
