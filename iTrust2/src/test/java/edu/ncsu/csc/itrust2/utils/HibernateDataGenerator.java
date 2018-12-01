@@ -142,7 +142,7 @@ public class HibernateDataGenerator {
         optp.setSpecialty( Specialty.SPECIALTY_OPTOMETRY );
         optp.save();
 
-        final User patient = new User( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final User patient = new Patient( "patient", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
         patient.save();
 
@@ -158,12 +158,12 @@ public class HibernateDataGenerator {
                 Role.ROLE_ADMIN, 1 );
         alminister.save();
 
-        final User jbean = new User( "jbean", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final User jbean = new Patient( "jbean", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
         jbean.save();
 
-        final User nsanderson = new User( "nsanderson", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
+        final User nsanderson = new Patient( "nsanderson",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, 1 );
         nsanderson.save();
 
         final User svang = new User( "svang", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
@@ -216,24 +216,18 @@ public class HibernateDataGenerator {
         larryTechPerson.setLastName( "Teacher" );
         larryTechPerson.save();
 
-        final Patient billy = new Patient();
-        billy.setFirstName( "Billy" );
-        final User billyUser = new User( "BillyBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Patient billy = new Patient( "BillyBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
-        billyUser.save();
-        billy.setSelf( billyUser );
+        billy.setFirstName( "Billy" );
         billy.setLastName( "Bob" );
         final Calendar billyBirth = Calendar.getInstance();
         billyBirth.add( Calendar.YEAR, -40 ); // billy is 40 years old
         billy.setDateOfBirth( billyBirth );
         billy.save();
 
-        final Patient jill = new Patient();
-        jill.setFirstName( "Jill" );
-        final User jillUser = new User( "JillBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Patient jill = new Patient( "JillBob", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
-        jillUser.save();
-        jill.setSelf( jillUser );
+        jill.setFirstName( "Jill" );
         jill.setLastName( "Bob" );
         final Calendar jillBirth = Calendar.getInstance();
         jillBirth.add( Calendar.YEAR, -40 ); // jill is 40 years old
@@ -248,11 +242,8 @@ public class HibernateDataGenerator {
      * @throws NumberFormatException
      */
     public static void generateTestFaculties () throws NumberFormatException, ParseException {
-        final Patient tim = new Patient();
-        final User timUser = new User( "TimTheOneYearOld",
+        final Patient tim = new Patient( "TimTheOneYearOld",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, 1 );
-        timUser.save();
-        tim.setSelf( timUser );
         tim.setFirstName( "TimTheOneYearOld" );
         tim.setLastName( "Smith" );
         final Calendar timBirth = Calendar.getInstance();
@@ -260,24 +251,18 @@ public class HibernateDataGenerator {
         tim.setDateOfBirth( timBirth );
         tim.save();
 
-        final Patient bob = new Patient();
-        bob.setFirstName( "BobTheFourYearOld" );
-        final User bobUser = new User( "BobTheFourYearOld",
+        final Patient bob = new Patient( "BobTheFourYearOld",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, 1 );
-        bobUser.save();
-        bob.setSelf( bobUser );
+        bob.setFirstName( "BobTheFourYearOld" );
         bob.setLastName( "Smith" );
         final Calendar bobBirth = Calendar.getInstance();
         bobBirth.add( Calendar.YEAR, -4 ); // bob is four years old
         bob.setDateOfBirth( bobBirth );
         bob.save();
 
-        final Patient alice = new Patient();
-        alice.setFirstName( "AliceThirteen" );
-        final User aliceUser = new User( "AliceThirteen",
+        final Patient alice = new Patient( "AliceThirteen",
                 "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, 1 );
-        aliceUser.save();
-        alice.setSelf( aliceUser );
+        alice.setFirstName( "AliceThirteen" );
         alice.setLastName( "Smith" );
         final Calendar aliceBirth = Calendar.getInstance();
         aliceBirth.add( Calendar.YEAR, -13 ); // alice is thirteen years old
@@ -362,12 +347,9 @@ public class HibernateDataGenerator {
     public static void generateTestEHR () throws NumberFormatException, ParseException {
 
         // Used for APIEmergencyRecordFormTest
-        final Patient siegward = new Patient();
+        final Patient siegward = new Patient( "onionman",
+                "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, 1 );
         siegward.setFirstName( "SiegwardOf" );
-        final User siegwardUser = new User( "onionman", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
-                Role.ROLE_PATIENT, 1 );
-        siegwardUser.save();
-        siegward.setSelf( siegwardUser );
         siegward.setLastName( "Catarina" );
         siegward.setGender( Gender.Male );
         siegward.setBloodType( BloodType.OPos );
@@ -377,12 +359,9 @@ public class HibernateDataGenerator {
         siegward.setDateOfBirth( siegBirth );
         siegward.save();
 
-        final Patient king1 = new Patient();
-        king1.setFirstName( "King" );
-        final User king1User = new User( "kingone", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Patient king1 = new Patient( "kingone", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
-        king1User.save();
-        king1.setSelf( king1User );
+        king1.setFirstName( "King" );
         king1.setLastName( "One" );
         king1.setGender( Gender.Male );
         king1.setBloodType( BloodType.OPos );
@@ -392,12 +371,9 @@ public class HibernateDataGenerator {
         king1.setDateOfBirth( king1Birth );
         king1.save();
 
-        final Patient king2 = new Patient();
-        king2.setFirstName( "King" );
-        final User king2User = new User( "kingtwo", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Patient king2 = new Patient( "kingtwo", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
-        king2User.save();
-        king2.setSelf( king2User );
+        king2.setFirstName( "King" );
         king2.setLastName( "Two" );
         king2.setGender( Gender.Male );
         king2.setBloodType( BloodType.OPos );
@@ -407,12 +383,9 @@ public class HibernateDataGenerator {
         king2.setDateOfBirth( king2Birth );
         king2.save();
 
-        final Patient king3 = new Patient();
-        king3.setFirstName( "King" );
-        final User king3User = new User( "kingthree", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Patient king3 = new Patient( "kingthree", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
-        king3User.save();
-        king3.setSelf( king3User );
+        king3.setFirstName( "King" );
         king3.setLastName( "Three" );
         king3.setGender( Gender.Male );
         king3.setBloodType( BloodType.OPos );
@@ -422,12 +395,9 @@ public class HibernateDataGenerator {
         king3.setDateOfBirth( king3Birth );
         king3.save();
 
-        final Patient king4 = new Patient();
-        king4.setFirstName( "King" );
-        final User king4User = new User( "kingfour", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
+        final Patient king4 = new Patient( "kingfour", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.",
                 Role.ROLE_PATIENT, 1 );
-        king4User.save();
-        king4.setSelf( king4User );
+        king4.setFirstName( "King" );
         king4.setLastName( "Four" );
         king4.setGender( Gender.Male );
         king4.setBloodType( BloodType.OPos );
@@ -454,7 +424,7 @@ public class HibernateDataGenerator {
         Calendar endDate = Calendar.getInstance();
         endDate.add( Calendar.DAY_OF_MONTH, 60 ); // Ends in 60 days
         estusPresc.setEndDate( endDate );
-        estusPresc.setPatient( siegwardUser );
+        estusPresc.setPatient( siegward );
         estusPresc.save();
 
         // Second Prescription for APIEmergencyRecordFormTest
@@ -474,7 +444,7 @@ public class HibernateDataGenerator {
         endDate = Calendar.getInstance();
         endDate.add( Calendar.DAY_OF_MONTH, 30 ); // Ends in 30 days
         purpMossPresc.setEndDate( endDate );
-        purpMossPresc.setPatient( siegwardUser );
+        purpMossPresc.setPatient( siegward );
         purpMossPresc.save();
 
         // Set First Diagnosis Code for APIEmergencyRecordFormTest

@@ -107,14 +107,14 @@ public class APIPatientController extends APIController {
     @PostMapping ( BASE_PATH + "/patients" )
     public ResponseEntity createPatient ( @RequestBody final PatientForm patientF ) {
         try {
-            if ( patientF.getSelf() == null ) {
+            if ( patientF == null ) {
                 final User self = User.getByName( LoggerUtil.currentUser() );
                 patientF.setSelf( self.getUsername() );
             }
             final Patient patient = new Patient( patientF );
-            if ( null != Patient.getPatient( patient.getSelf() ) ) {
+            if ( null != Patient.getPatient( patient ) ) {
                 return new ResponseEntity(
-                        errorResponse( "Patient with the id " + patient.getSelf().getUsername() + " already exists" ),
+                        errorResponse( "Patient with the id " + patient.getUsername() + " already exists" ),
                         HttpStatus.CONFLICT );
             }
             patient.save();
@@ -164,7 +164,7 @@ public class APIPatientController extends APIController {
 
         try {
             final Patient patient = new Patient( patientF );
-            if ( null != patient.getSelf().getUsername() && !id.equals( patient.getSelf().getUsername() ) ) {
+            if ( null != patient.getUsername() && !id.equals( patient.getUsername() ) ) {
                 return new ResponseEntity(
                         errorResponse( "The ID provided does not match the ID of the Patient provided" ),
                         HttpStatus.CONFLICT );
@@ -178,12 +178,12 @@ public class APIPatientController extends APIController {
             // Log based on whether user or hcp edited demographics
             if ( userEdit ) {
                 LoggerUtil.log( TransactionType.EDIT_DEMOGRAPHICS, LoggerUtil.currentUser(),
-                        "User with username " + patient.getSelf().getUsername() + "updated their demographics" );
+                        "User with username " + patient.getUsername() + "updated their demographics" );
             }
             else {
                 LoggerUtil.log( TransactionType.PATIENT_DEMOGRAPHICS_EDIT, LoggerUtil.currentUser(),
-                        patient.getSelf().getUsername(),
-                        "HCP edited demographics for patient with username " + patient.getSelf().getUsername() );
+                        patient.getUsername(),
+                        "HCP edited demographics for patient with username " + patient.getUsername() );
             }
             patient.setRepresentatives( null );
             patient.setRepresented( null );
@@ -309,7 +309,7 @@ public class APIPatientController extends APIController {
                     HttpStatus.NOT_FOUND );
         }
         for ( final Patient pat : patPat.getRepresentatives() ) {
-            if ( pat.getSelf().getUsername().equals( representative ) ) {
+            if ( pat.getUsername().equals( representative ) ) {
                 return new ResponseEntity( errorResponse( representative + " is already a representative" ),
                         HttpStatus.BAD_REQUEST );
             }
@@ -375,7 +375,7 @@ public class APIPatientController extends APIController {
         }
         else {
             for ( final Patient xPat : patPat.getRepresentatives() ) {
-                if ( xPat.getSelf().getUsername().equals( representative ) ) {
+                if ( xPat.getUsername().equals( representative ) ) {
                     try {
                         patPat.removeRepresentative( xPat );
                     }

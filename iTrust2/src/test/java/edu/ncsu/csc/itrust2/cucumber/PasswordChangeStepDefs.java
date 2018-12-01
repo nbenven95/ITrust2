@@ -133,7 +133,6 @@ public class PasswordChangeStepDefs extends CucumberTest {
                 if ( null == dbPatient ) {
                     dbPatient = new Patient();
                 }
-                dbPatient.setSelf( user );
                 dbPatient.setFirstName( "Test" );
                 dbPatient.setLastName( "User" );
                 dbPatient.setEmail( email );

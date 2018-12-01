@@ -117,7 +117,7 @@ public class APIEmergencyRecordFormTest {
         final Patient comparison = Patient.getByName( "onionman" );
 
         // Assert that the getPatient returns the correct patient.
-        assertEquals( form.getPatient().getSelf().getId(), comparison.getSelf().getId() );
+        assertEquals( form.getPatient().getId(), comparison.getId() );
 
         // Assert that the getDiagnoses fetch the right Diagnoses
         final List<Diagnosis> recordDiagnoses = form.getDiagnoses();

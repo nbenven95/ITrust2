@@ -66,8 +66,7 @@ public class DiagnosesStepDefs extends CucumberTest {
 
         /* Create patient record */
 
-        final Patient patient = new Patient();
-        patient.setSelf( User.getByName( "patient" ) );
+        final Patient patient = new Patient( User.getByName( "patient" ) );
         patient.setFirstName( name.split( " " )[0] );
         patient.setLastName( name.split( " " )[1] );
         patient.setEmail( "email@mail.com" );

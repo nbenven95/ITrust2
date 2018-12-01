@@ -3,7 +3,6 @@ package edu.ncsu.csc.itrust2.models.persistent;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -15,15 +14,10 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
@@ -44,36 +38,12 @@ import edu.ncsu.csc.itrust2.models.enums.State;
  *
  */
 @Entity
-@Table ( name = "Patients" )
-public class Patient extends DomainObject<Patient> implements Serializable {
+public class Patient extends User implements Serializable {
 
     /**
      * Randomly generated ID.
      */
     private static final long serialVersionUID = 4617248041239679701L;
-
-    /**
-     * Get all patients in the database
-     *
-     * @SuppressWarnings for Unchecked cast from List<capture#1-of ? extends
-     *                   DomainObject> to List<Patient> Because get all just
-     *                   returns a list of DomainObjects, the cast is okay.
-     *
-     * @return all patients in the database
-     */
-    @SuppressWarnings ( "unchecked" )
-    public static List<Patient> getPatients () {
-        final List<Patient> pats = (List<Patient>) getAll( Patient.class );
-        final List<Patient> rPats = new ArrayList<Patient>();
-        final Set<User> usernames = new HashSet<User>();
-        for ( int i = 0; i < pats.size(); i++ ) {
-            if ( !usernames.contains( pats.get( i ).getSelf() ) ) {
-                usernames.add( pats.get( i ).getSelf() );
-                rPats.add( pats.get( i ) );
-            }
-        }
-        return rPats;
-    }
 
     /**
      * Get a specific patient by username
@@ -129,7 +99,23 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      *            the user record
      */
     public Patient ( final User self ) {
-        setSelf( self );
+        this( self.getUsername(), self.getPassword(), self.getRole(), self.getEnabled() );
+    }
+
+    /**
+     * All-argument constructor for User
+     *
+     * @param username
+     *            Username
+     * @param password
+     *            The _already encoded_ password of the user.
+     * @param role
+     *            Role of the user
+     * @param enabled
+     *            1 if the user is enabled 0 if not
+     */
+    public Patient ( final String username, final String password, final Role role, final Integer enabled ) {
+        super( username, password, role, enabled );
     }
 
     /**
@@ -198,8 +184,6 @@ public class Patient extends DomainObject<Patient> implements Serializable {
 
         setGender( Gender.parse( form.getGender() ) );
 
-        setId( form.getId() );
-
         final HashSet<Patient> reps = new HashSet<Patient>();
         for ( final String pat : form.getRepresentatives() ) {
             reps.add( Patient.getByName( pat ) );
@@ -211,15 +195,6 @@ public class Patient extends DomainObject<Patient> implements Serializable {
         }
         setRepresented( repd );
     }
-
-    /**
-     * This stores a reference to the User object that this patient is.
-     * Mandatory.
-     */
-    @OneToOne
-    @JoinColumn ( name = "self_id", columnDefinition = "varchar(100)" )
-    @Id
-    private User         self;
 
     /**
      * For keeping track of the User who is the mother of this patient.
@@ -346,51 +321,6 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      */
     @Enumerated ( EnumType.STRING )
     private Gender       gender;
-
-    /**
-     * The id of this patient
-     */
-    @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long         id;
-
-    /**
-     * Set the id of this patient
-     *
-     * @param id
-     *            the id to set this patient to
-     */
-    public void setId ( final Long id ) {
-        this.id = id;
-    }
-
-    /**
-     * Get the id of this patient
-     *
-     * @return the id of this patient
-     */
-    @Override
-    public Long getId () {
-        return this.id;
-    }
-
-    /**
-     * Get the user representation of this patient
-     *
-     * @return the user representation of this patient
-     */
-    public User getSelf () {
-        return self;
-    }
-
-    /**
-     * Set the user representation of this patient
-     *
-     * @param self
-     *            representation the user representation to set this patient to
-     */
-    public void setSelf ( final User self ) {
-        this.self = self;
-    }
 
     /**
      * Get the mother of this patient
@@ -839,7 +769,7 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      * @return the prescriptions for this patient.
      */
     public List<Prescription> getPrescriptions () {
-        return Prescription.getForPatient( this.self.getUsername() );
+        return Prescription.getForPatient( this.getUsername() );
     }
 
     /**
@@ -848,6 +778,6 @@ public class Patient extends DomainObject<Patient> implements Serializable {
      * @return the diagnoses for this patient.
      */
     public List<Diagnosis> getDiagnoses () {
-        return Diagnosis.getForPatient( this.self );
+        return Diagnosis.getForPatient( this );
     }
 }

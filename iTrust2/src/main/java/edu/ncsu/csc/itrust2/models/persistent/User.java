@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -34,6 +36,7 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
  */
 @Entity
 @Table ( name = "Users" )
+@Inheritance ( strategy = InheritanceType.SINGLE_TABLE )
 public class User extends DomainObject<User> implements Serializable {
 
     /**
@@ -108,8 +111,9 @@ public class User extends DomainObject<User> implements Serializable {
      *
      * @return all patients in the database
      */
-    public static List<User> getPatients () {
-        return getByRole( Role.ROLE_PATIENT );
+    @SuppressWarnings ( "unchecked" )
+    public static List<Patient> getPatients () {
+        return (List<Patient>) getAll( Patient.class );
     }
 
     /**

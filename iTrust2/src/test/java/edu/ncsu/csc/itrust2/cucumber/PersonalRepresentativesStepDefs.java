@@ -56,9 +56,8 @@ public class PersonalRepresentativesStepDefs extends CucumberTest {
         dropdown.selectByVisibleText( "Patient" );
         driver.findElement( By.name( "enabled" ) ).click();
         driver.findElement( By.id( "submit" ) ).click();
-        final Patient wario = new Patient();
+        final Patient wario = new Patient( User.getByName( "Wario" ) );
         waitForAngular();
-        wario.setSelf( User.getByName( "Wario" ) );
         wario.setFirstName( "wario" );
         wario.setLastName( "Smith" );
         final Calendar warioBirth = Calendar.getInstance();
@@ -78,9 +77,8 @@ public class PersonalRepresentativesStepDefs extends CucumberTest {
         driver.findElement( By.name( "enabled" ) ).click();
         driver.findElement( By.id( "submit" ) ).click();
 
-        final Patient waluigi = new Patient();
+        final Patient waluigi = new Patient( User.getByName( "Waluigi" ) );
         waitForAngular();
-        waluigi.setSelf( User.getByName( "Waluigi" ) );
         waluigi.setFirstName( "waluigi" );
         waluigi.setLastName( "Smith" );
         final Calendar waluigiBirth = Calendar.getInstance();

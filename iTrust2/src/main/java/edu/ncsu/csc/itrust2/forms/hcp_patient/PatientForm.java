@@ -73,17 +73,17 @@ public class PatientForm {
 
         setId( patient.getId() );
 
-        setSelf( patient.getSelf().getUsername() );
+        setSelf( patient.getUsername() );
 
         final Set<String> reps = new HashSet<String>();
         for ( final Patient pat : patient.getRepresentatives() ) {
-            reps.add( pat.getSelf().getUsername() );
+            reps.add( pat.getUsername() );
         }
         setRepresentatives( reps );
 
         final Set<String> repd = new HashSet<String>();
         for ( final Patient pat : patient.getRepresented() ) {
-            repd.add( pat.getSelf().getUsername() );
+            repd.add( pat.getUsername() );
         }
         setRepresenting( repd );
 
@@ -180,7 +180,7 @@ public class PatientForm {
     private String      gender;
 
     /** The id of the patient **/
-    private Long        id;
+    private String      id;
 
     /**
      * Constructor generates empty sets.
@@ -575,7 +575,7 @@ public class PatientForm {
      *
      * @return the id of the patient
      */
-    public Long getId () {
+    public String getId () {
         return id;
     }
 
@@ -585,7 +585,7 @@ public class PatientForm {
      * @param id
      *            the id of the patient
      */
-    public void setId ( final Long id ) {
+    public void setId ( final String id ) {
         this.id = id;
     }
 

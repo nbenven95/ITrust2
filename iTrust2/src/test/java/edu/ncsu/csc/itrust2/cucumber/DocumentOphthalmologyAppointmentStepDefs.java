@@ -49,8 +49,7 @@ public class DocumentOphthalmologyAppointmentStepDefs extends CucumberTest {
                 Role.ROLE_PATIENT, 1 );
         pt.save();
 
-        final Patient patient = new Patient();
-        patient.setSelf( User.getByName( patientName ) );
+        final Patient patient = new Patient( User.getByName( patientName ) );
         patient.setFirstName( "Karl" );
         patient.setLastName( "Liebknecht" );
         patient.setEmail( "karl_liebknecht@mail.de" );
