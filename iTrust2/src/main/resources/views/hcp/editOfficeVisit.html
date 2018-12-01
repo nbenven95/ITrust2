@@ -89,27 +89,15 @@
             }
 
 
-//        	$scope.surgeryTypes = ["CATARACT", "LASER", "REFRACTIVE"];
             $http.get("/iTrust2/api/v1/surgeryTypes")
            .then(function (response) {
-          	/* TODO: This is is just to mock the different types of appointments until
-          	   they get implemented on the backend. Uncomment the line directly
-          	   below this one and comment the line two down when backend
-          	   is implemented. */
               $scope.surgeryTypes = response.data;
-              //$scope.selectedVisit.surgeryType = $scope.surgeryTypes[0];
             });
 
             $http.get("/iTrust2/api/v1/ophicdcodes").then(
             function (response) {
               $scope.icdcodes_oph = response.data;
  			  });
-
-//          	{"id":100,"code":"O10","description":"Cataracts"},
-//         	{"id":100,"code":"O11","description":"Age-related macular degeneration"},
-//          	{"id":100,"code":"O12","description":"Amblyopia"},
-//          	{"id":100,"code":"O13","description":"Glaucoma"}
-//         	];
 
             $scope.noVisitSelected = true;
             $scope.loadingVisits = true;
@@ -484,7 +472,6 @@
            		delete $scope.selectedVisit.diagnoses;
               }
 
-							console.log($scope.selectedVisit);
               $http({
                 method: 'PUT',
                 url: '/iTrust2/api/v1/officevisits/' + $scope.selectedVisitID,
@@ -632,7 +619,7 @@
 											<div class="form-group col-md-2 text-right">
 												<div class="checkbox">
 													<label> <input type="checkbox" name="preScheduled"
-														class="checkbox" ng-model="selectedVisit.prescheduled">Prescheduled?
+														class="checkbox" ng-model="selectedVisit.preScheduled">Prescheduled?
 													</label>
 												</div>
 											</div>
@@ -972,7 +959,6 @@
 													</div>
 												</div>
 											</div>
-										</div>
 
 										<!-- Basic Eye Metrics Panel -->
 										<div ng-show="selectedVisit.type === 'OPHTHALMOLOGY_VISIT' || selectedVisit.type === 'OPHTHALMOLOGY_SURGERY'" class="col-md-4">
@@ -1153,6 +1139,7 @@
 											</div>
 										</div>
 
+										</div>
 									</div>
 
 										<!-- Procedures panel -->

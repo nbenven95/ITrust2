@@ -103,10 +103,10 @@
             	var visit = $scope.visit;
 
             	// check visual acuity to be integers
-            	if (!visualAcuityMatcher.test(visit.visualAcuityOS)) {
+            	if (!visualAcuityMatcher.test(visit.leftVisualAcuity)) {
                 	err.push("Visual Acuity OS must be an \"#/#\"");
             	}
-            	if (!visualAcuityMatcher.test(visit.visualAcuityOD)) {
+            	if (!visualAcuityMatcher.test(visit.rightVisualAcuity)) {
                 	err.push("Visual Acuity OD must be an \"#/#\"");
             	}
 
@@ -427,47 +427,6 @@
            		delete $scope.visit.diagnoses;
               }
 
-
-              if (/^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.weight).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Weight can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-              }
-              if ($scope.three && /^[0-9]{1,3}(\.[0-9]?)?$/.test(String($scope.visit.headCircumference).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Head circumference can be up to a 3-digit positive number and potentially one digit of decimal precision\n"
-              }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.systolic).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Systolic blood pressure can be up to a 3-digit positive number\n"
-              }
-              if ($scope.threeAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.diastolic).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Diastolic blood pressure can be up to a 3-digit positive number\n"
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,2}$/.test(String($scope.visit.hdl).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-              } else if ($scope.twelveAndUp) {
-                var hdlInt = parseInt($scope.visit.hdl);
-                if (hdlInt > 90) {
-                  $scope.errorMsg += "HDL cholesterol can be a number between 0 and 90\n"
-                }
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.ldl).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-              } else if ($scope.twelveAndUp) {
-                var ldlInt = parseInt($scope.visit.ldl);
-                if (ldlInt > 600) {
-                  $scope.errorMsg += "LDL cholesterol can be a number between 0 and 600\n"
-                }
-              }
-              //handle invalid and outside of range
-              if ($scope.twelveAndUp && /^[0-9]{1,3}$/.test(String($scope.visit.tri).replace(/^0+/, '')) == false) {
-                $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-              } else if ($scope.twelveAndUp) {
-                var triInt = parseInt($scope.visit.tri);
-                if (triInt > 600 || triInt < 100) {
-                  $scope.errorMsg += "Triglycerides can be a number between 100 and 600\n"
-                }
-              }
-
               $scope.visit.diagnoses = $scope.diagnoses;
               $scope.visit.prescriptions = $scope.prescriptions;
               $scope.visit.prescriptions.forEach(function (p) {
@@ -487,8 +446,6 @@
                 $scope.message = "Error occurred creating office visit";
               })
 
-              console.log("OFFICE VISIT:");
-              console.log($scope.visit);
               $scope.message = "Office visit created successfully";
 
             } //end submit function
@@ -630,7 +587,7 @@
 									<div class="form-group col-md-2 text-right">
 										<div class="checkbox">
 											<label> <input type="checkbox" name="preScheduled"
-												class="checkbox" ng-model="visit.prescheduled">Prescheduled?
+												class="checkbox" ng-model="visit.preScheduled">Prescheduled?
 											</label>
 										</div>
 									</div>
@@ -695,7 +652,7 @@
 								<div class="row">
 
 									<!-- Basic Health Metrics Panel -->
-									<div class="col-md-4">
+									<div class="col-md-4" ng-show="visit.appointmentType">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Basic Health Metrics</h4>
@@ -815,7 +772,7 @@
 									</div>
 
 									<!-- Diagnosis Panel  -->
-									<div ng-show="visit.appointmentType == null || visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Diagnosis</h4>
@@ -836,12 +793,6 @@
 															</ul>
 														</div>
 													</div>
-												</div>
-												<div class="form-group row">
-													<div class="col-xs-6">
-														<label>Date:</label>
-													</div>
-													<div class="col-xs-4">{{visit.date}}</div>
 												</div>
 												<div class="form-group row">
 													<div class="col-xs-6">
@@ -886,7 +837,7 @@
 									</div>
 
 									<!-- Prescription Panel -->
-									<div ng-show="visit.appointmentType == null || visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Prescription</h4>
@@ -1117,12 +1068,6 @@
 												</div>
 												<div class="form-group row">
 													<div class="col-xs-4">
-														<label>Date:</label>
-													</div>
-													<div class="col-xs-6">{{visit.date}}</div>
-												</div>
-												<div class="form-group row">
-													<div class="col-xs-4">
 														<label>Notes:</label>
 													</div>
 													<div class="col-xs-6">
@@ -1166,7 +1111,7 @@
 								</div>
 
 								<!-- Lab Procedures Panel -->
-								<div ng-show="visit.appointmentType == null || visit.appointmentType === 'GENERAL_CHECKUP'" class="row">
+								<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="row">
 									<div class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
@@ -1178,7 +1123,7 @@
 														<label>Procedure Code:</label>
 													</div>
 													<div class="col-xs-6">
-														<ul>
+														<ul style="list-style: none;">
 															<li ng-repeat="l in loinccodes"><label> <input
 																	type="radio" ng-model="procedure.loinc"
 																	name="{{l.commonName}}" ng-value="l" value="{{l.code}}"
