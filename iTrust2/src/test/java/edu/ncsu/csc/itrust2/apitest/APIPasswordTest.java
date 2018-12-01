@@ -82,7 +82,7 @@ public class APIPasswordTest {
         personnel.setFirstName( "Test" );
         personnel.setLastName( "HCP" );
         personnel.setPhone( "123-456-7890" );
-        personnel.setSelf( user.getUsername() );
+        personnel.setUsername( user.getUsername() );
         personnel.setState( State.NC.toString() );
         personnel.setZip( "27514" );
         mvc.perform( post( "/api/v1/personnel" ).contentType( MediaType.APPLICATION_JSON )
@@ -124,7 +124,7 @@ public class APIPasswordTest {
         personnel.setFirstName( "Test" );
         personnel.setLastName( "HCP" );
         personnel.setPhone( "123-456-7890" );
-        personnel.setSelf( user.getUsername() );
+        personnel.setUsername( user.getUsername() );
         personnel.setState( State.NC.toString() );
         personnel.setZip( "27514" );
         mvc.perform( post( "/api/v1/personnel" ).contentType( MediaType.APPLICATION_JSON )

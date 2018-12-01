@@ -27,14 +27,14 @@ public class PersonnelForm {
     public PersonnelForm ( final User u ) {
         this();
         if ( null != u ) {
-            setSelf( u.getUsername() );
+            setUsername( u.getUsername() );
         }
     }
 
     /**
      * Username of the iTrust2 personnel to make a Personnel object for
      */
-    private String  self;
+    private String  username;
 
     /**
      * <<<<<<< HEAD Whether the Personnel is enabled or not
@@ -132,7 +132,7 @@ public class PersonnelForm {
             return;
         }
         if ( null != p.getUsername() ) {
-            p.setUsername( p.getUsername() );
+            setUsername( p.getUsername() );
         }
         if ( p.getEnabled() ) {
             setEnabled( p.getEnabled() );
@@ -149,7 +149,7 @@ public class PersonnelForm {
         setPhone( p.getPhone() );
         setSpecialty( p.getSpecialty().toString() );
         setEmail( p.getEmail() );
-        setId( p.getUsername().toString() );
+        setId( Long.toString( p.getId() ) );
     }
 
     /**
@@ -157,8 +157,8 @@ public class PersonnelForm {
      *
      * @return The Personnel's username
      */
-    public String getSelf () {
-        return self;
+    public String getUsername () {
+        return username;
     }
 
     /**
@@ -167,8 +167,8 @@ public class PersonnelForm {
      * @param self
      *            The personnel's username
      */
-    public void setSelf ( final String self ) {
-        this.self = self;
+    public void setUsername ( final String username ) {
+        this.username = username;
     }
 
     /**

@@ -85,7 +85,7 @@ public class APIPersonnelTest {
         personnel.setFirstName( "Test" );
         personnel.setLastName( "HCP" );
         personnel.setPhone( "123-456-7890" );
-        personnel.setSelf( "hcp" );
+        personnel.setUsername( "hcp" );
         personnel.setState( State.NC.toString() );
         personnel.setZip( "27514" );
 
@@ -113,7 +113,7 @@ public class APIPersonnelTest {
                 .content( TestUtils.asJsonString( personnel ) ) ).andExpect( status().isConflict() );
 
         // Edit with matching, but nonexistent ID should fail.
-        personnel.setSelf( "badhcp" );
+        personnel.setUsername( "badhcp" );
         mvc.perform( put( "/api/v1/personnel/badhcp" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( personnel ) ) ).andExpect( status().isNotFound() );
 

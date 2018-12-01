@@ -98,7 +98,7 @@ public class APIPersonnelController extends APIController {
     @PostMapping ( BASE_PATH + "/personnel" )
     public ResponseEntity createPersonnel ( @RequestBody final PersonnelForm personnelF ) {
         final User self = User.getByName( LoggerUtil.currentUser() );
-        personnelF.setSelf( self.getUsername() );
+        personnelF.setUsername( self.getUsername() );
         final Personnel personnel = new Personnel( personnelF );
         if ( null != Personnel.getByName( personnel.getUsername() ) ) {
             return new ResponseEntity(

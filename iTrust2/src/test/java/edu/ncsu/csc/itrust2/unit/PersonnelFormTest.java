@@ -36,7 +36,7 @@ public class PersonnelFormTest {
         person.setEmail( "email@email.com" );
         person.setId( 1L );
         final PersonnelForm form = new PersonnelForm( person );
-        assertEquals( "username", form.getSelf() );
+        assertEquals( "username", form.getUsername() );
         assertEquals( "first", form.getFirstName() );
         assertEquals( "last", form.getLastName() );
         assertEquals( "address1", form.getAddress1() );

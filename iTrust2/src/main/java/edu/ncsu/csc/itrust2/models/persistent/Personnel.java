@@ -211,6 +211,10 @@ public class Personnel extends User {
         super( username, password, role, enabled );
     }
 
+    public long getId () {
+        return id;
+    }
+
     /**
      * Set the id of this personnel
      *
