@@ -136,6 +136,7 @@ public class Patient extends User {
      *             if there is an issue in parsing the date
      */
     public Patient ( final PatientForm form ) throws ParseException {
+        super( form );
         setMother( User.getByNameAndRole( form.getMother(), Role.ROLE_PATIENT ) );
         setFather( User.getByNameAndRole( form.getFather(), Role.ROLE_PATIENT ) );
         setFirstName( form.getFirstName() );

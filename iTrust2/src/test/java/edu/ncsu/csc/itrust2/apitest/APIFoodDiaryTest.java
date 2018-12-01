@@ -28,14 +28,12 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.ncsu.csc.itrust2.config.RootConfiguration;
-import edu.ncsu.csc.itrust2.forms.admin.UserForm;
 import edu.ncsu.csc.itrust2.forms.hcp_patient.PatientForm;
 import edu.ncsu.csc.itrust2.forms.patient.FoodDiaryEntryForm;
 import edu.ncsu.csc.itrust2.models.enums.BloodType;
 import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
 import edu.ncsu.csc.itrust2.models.enums.Gender;
 import edu.ncsu.csc.itrust2.models.enums.MealType;
-import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
 import edu.ncsu.csc.itrust2.models.persistent.LogEntry;
@@ -78,11 +76,8 @@ public class APIFoodDiaryTest {
     @Test
     @WithMockUser ( username = "patent", roles = { "PATIENT" } )
     public void testFoodDiaryAPIInvalidEntry () throws Exception {
-        final UserForm uForm = new UserForm( "patient", "123456", Role.ROLE_PATIENT, 1 );
-        mvc.perform( post( "/api/v1/users" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( uForm ) ) );
 
-        final PatientForm patient = new PatientForm();
+        final PatientForm patient = new PatientForm( "patient", "123456", true );
         patient.setAddress1( "1 Test Street" );
         patient.setAddress2( "Some Location" );
         patient.setBloodType( BloodType.APos.toString() );
@@ -98,7 +93,7 @@ public class APIFoodDiaryTest {
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( patient ) ) );
+                .content( TestUtils.asJsonString( patient ) ) ).andExpect( status().is2xxSuccessful() );
 
         final FoodDiaryEntryForm def = new FoodDiaryEntryForm();
 
@@ -127,11 +122,8 @@ public class APIFoodDiaryTest {
     @Test
     @WithMockUser ( username = "patient", roles = { "PATIENT" } )
     public void testFoodDiaryAPIAsPatient () throws Exception {
-        final UserForm uForm = new UserForm( "patient", "123456", Role.ROLE_PATIENT, 1 );
-        mvc.perform( post( "/api/v1/users" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( uForm ) ) );
 
-        final PatientForm patient = new PatientForm();
+        final PatientForm patient = new PatientForm( "patient", "123456", true );
         patient.setAddress1( "1 Test Street" );
         patient.setAddress2( "Some Location" );
         patient.setBloodType( BloodType.APos.toString() );
@@ -194,11 +186,8 @@ public class APIFoodDiaryTest {
     @Test
     @WithMockUser ( username = "hcp", roles = { "HCP" } )
     public void testFoodDiaryAPIAsHCP () throws Exception {
-        final UserForm uForm = new UserForm( "patient", "123456", Role.ROLE_PATIENT, 1 );
-        mvc.perform( post( "/api/v1/users" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( uForm ) ) );
 
-        final PatientForm patient = new PatientForm();
+        final PatientForm patient = new PatientForm( "patient", "123456", true );
         patient.setAddress1( "1 Test Street" );
         patient.setAddress2( "Some Location" );
         patient.setBloodType( BloodType.APos.toString() );

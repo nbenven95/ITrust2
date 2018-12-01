@@ -10,6 +10,7 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import edu.ncsu.csc.itrust2.forms.admin.UserForm;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
 
 /**
@@ -18,7 +19,17 @@ import edu.ncsu.csc.itrust2.models.persistent.Patient;
  * @author Kai Presler-Marshall
  *
  */
-public class PatientForm {
+public class PatientForm extends UserForm {
+
+    public PatientForm ( String username, String password, boolean enabled ) {
+        setUsername( username );
+        setPassword( password );
+        setPassword2( password );
+        setRole( "ROLE_PATIENT" );
+        setEnabled( Boolean.toString( enabled ) );
+        representatives = new HashSet<String>();
+        representing = new HashSet<String>();
+    }
 
     /**
      * Populate the patient form from a patient object
@@ -73,6 +84,8 @@ public class PatientForm {
 
         setUsername( patient.getUsername() );
 
+        representatives = new HashSet<String>();
+        representing = new HashSet<String>();
         final Set<String> reps = new HashSet<String>();
         for ( final Patient pat : patient.getRepresentatives() ) {
             reps.add( pat.getUsername() );
@@ -566,25 +579,6 @@ public class PatientForm {
      */
     public void setGender ( final String gender ) {
         this.gender = gender;
-    }
-
-    /**
-     * Get the username of the patient
-     *
-     * @return the username of the patient
-     */
-    public String getUsername () {
-        return self;
-    }
-
-    /**
-     * Set the username of the patient
-     *
-     * @param self
-     *            the username of the patient
-     */
-    public void setUsername ( final String username ) {
-        this.username = username;
     }
 
 }
