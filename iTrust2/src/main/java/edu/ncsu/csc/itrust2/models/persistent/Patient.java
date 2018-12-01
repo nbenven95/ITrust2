@@ -3,6 +3,7 @@ package edu.ncsu.csc.itrust2.models.persistent;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
@@ -22,6 +23,7 @@ import javax.persistence.ManyToOne;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 
+import edu.ncsu.csc.itrust2.forms.admin.UserForm;
 import edu.ncsu.csc.itrust2.forms.hcp_patient.PatientForm;
 import edu.ncsu.csc.itrust2.models.enums.BloodType;
 import edu.ncsu.csc.itrust2.models.enums.Ethnicity;
@@ -53,12 +55,9 @@ public class Patient extends User implements Serializable {
      * @return the patient with the queried username
      */
     public static Patient getByName ( final String username ) {
-        try {
-            return getWhere( eqList( "self", User.getByNameAndRole( username, Role.ROLE_PATIENT ) ) ).get( 0 );
-        }
-        catch ( final Exception e ) {
-            return null;
-        }
+        final List<Criterion> criteria = new ArrayList<>();
+        criteria.add( eq( "username", username ) );
+        return getWhere( criteria ).get( 0 );
     }
 
     /**
@@ -71,7 +70,8 @@ public class Patient extends User implements Serializable {
      */
     @SuppressWarnings ( "unchecked" )
     private static List<Patient> getWhere ( final List<Criterion> where ) {
-        return (List<Patient>) getWhere( Patient.class, where );
+        where.add( eq( "role", Role.ROLE_PATIENT ) );
+        return (List<Patient>) getWhere( User.class, where );
     }
 
     /**
@@ -194,6 +194,16 @@ public class Patient extends User implements Serializable {
             repd.add( Patient.getByName( pat ) );
         }
         setRepresented( repd );
+    }
+
+    /**
+     * Creates a patient from a user form
+     * 
+     * @param userF
+     *            The user form
+     */
+    public Patient ( final UserForm userF ) {
+        super( userF );
     }
 
     /**

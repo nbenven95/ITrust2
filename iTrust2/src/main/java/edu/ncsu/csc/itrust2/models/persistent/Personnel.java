@@ -1,16 +1,11 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
@@ -29,8 +24,12 @@ import edu.ncsu.csc.itrust2.models.enums.State;
  *
  */
 @Entity
-@Table ( name = "Personnel" )
-public class Personnel extends DomainObject<Personnel> {
+public class Personnel extends User implements Serializable {
+
+    /**
+     * Randomly generated ID
+     */
+    private static final long serialVersionUID = -1148284277567971259L;
 
     /**
      * Get the personnel by username
@@ -90,19 +89,6 @@ public class Personnel extends DomainObject<Personnel> {
     private static List<Personnel> getWhere ( final List<Criterion> where ) {
         return (List<Personnel>) getWhere( Personnel.class, where );
     }
-
-    /**
-     * This stores a reference to the User object that this personnel is.
-     * Mandatory.
-     */
-    @JoinColumn ( name = "self_id", columnDefinition = "varchar(100)" )
-    @OneToOne
-    private User      self;
-
-    /**
-     * Whether or not the personnel is enabled
-     */
-    private boolean   enabled;
 
     /**
      * The first name of the personnel
@@ -165,11 +151,30 @@ public class Personnel extends DomainObject<Personnel> {
     private String    email;
 
     /**
-     * The id of the personnel
+     * Creates a Personnel based off of a user
+     *
+     * @param u
+     *            The user
      */
-    @Id
-    @GeneratedValue ( strategy = GenerationType.AUTO )
-    private Long      id;
+    public Personnel ( final User u ) {
+        super( u.getUsername(), u.getPassword(), u.getRole(), u.getEnabled() );
+    }
+
+    /**
+     * A user-like constructor for personnel
+     *
+     * @param username
+     *            Username
+     * @param password
+     *            The _already encoded_ password of the user.
+     * @param role
+     *            Role of the user
+     * @param enabled
+     *            1 if the user is enabled 0 if not
+     */
+    public Personnel ( final String username, final String password, final Role role, final Integer enabled ) {
+        super( username, password, role, enabled );
+    }
 
     /**
      * Create a new personnel based off of the PersonnelForm
@@ -178,8 +183,8 @@ public class Personnel extends DomainObject<Personnel> {
      *            the filled-in personnel form with personnel information
      */
     public Personnel ( final PersonnelForm form ) {
-        setSelf( User.getByName( form.getSelf() ) );
-        setEnabled( form.getEnabled() );
+        this( User.getByName( form.getSelf() ) );
+        setEnabled( form.getEnabled() ? 1 : 0 );
 
         setFirstName( form.getFirstName() );
         setLastName( form.getLastName() );
@@ -191,12 +196,6 @@ public class Personnel extends DomainObject<Personnel> {
         setPhone( form.getPhone() );
         setSpecialty( Specialty.parse( form.getSpecialty() ) );
         setEmail( form.getEmail() );
-        try {
-            setId( Long.valueOf( form.getId() ) );
-        }
-        catch ( NullPointerException | NumberFormatException npe ) {
-            /* Will not have ID set if fresh form */
-        }
     }
 
     /**
@@ -208,11 +207,10 @@ public class Personnel extends DomainObject<Personnel> {
      *            The userForm associated with the created user
      */
     public Personnel ( final User user, final UserForm userForm ) {
-        setSelf( user );
+        this( user );
         if ( user.getRole().equals( Role.ROLE_HCP ) ) {
             setSpecialty( Specialty.valueOf( userForm.getSpecialty() ) );
         }
-        setEnabled( user.getEnabled() == 1 ? true : false );
     }
 
     /**
@@ -223,65 +221,7 @@ public class Personnel extends DomainObject<Personnel> {
     }
 
     /**
-     * Get the id of this personnel
-     *
-     * @return the id of this personnel
-     */
-    @Override
-    public Long getId () {
-        return id;
-    }
-
-    /**
-     * Set the id of this personnel
-     *
-     * @param id
-     *            the id to set this personnel to
-     */
-    public void setId ( final Long id ) {
-        this.id = id;
-    }
-
-    /**
-     * Get the user representation of this personnel
-     *
-     * @return the user representation of this personnel
-     */
-    public User getSelf () {
-        return self;
-    }
-
-    /**
-     * Set the user representation of this personnel
-     *
-     * @param self
-     *            the user representation to set this personnel to
-     */
-    public void setSelf ( final User self ) {
-        this.self = self;
-    }
-
-    /**
-     * Get whether or not this personnel is enabled
-     *
-     * @return whether or not this personnel is enabled
-     */
-    public boolean getEnabled () {
-        return enabled;
-    }
-
-    /**
-     * Set whether or not this personnel is enabled
-     *
-     * @param enabled
-     *            whether or not this personnel is enabled
-     */
-    public void setEnabled ( final boolean enabled ) {
-        this.enabled = enabled;
-    }
-
-    /**
-     * ======= >>>>>>> master Get the first name of this personnel
+     * Get the first name of this personnel
      *
      * @return the first name of this personnel
      */

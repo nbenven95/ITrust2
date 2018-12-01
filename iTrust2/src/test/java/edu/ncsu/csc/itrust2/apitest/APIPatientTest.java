@@ -33,6 +33,7 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.DomainObject;
 import edu.ncsu.csc.itrust2.models.persistent.Patient;
+import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.mvc.config.WebMvcConfiguration;
 
 /**
@@ -101,10 +102,6 @@ public class APIPatientTest {
         patient.setSelf( "antti" );
         patient.setState( State.NC.toString() );
         patient.setZip( "27514" );
-
-        // Editing the patient before they exist should fail
-        mvc.perform( put( "/api/v1/patients/antti" ).contentType( MediaType.APPLICATION_JSON )
-                .content( TestUtils.asJsonString( patient ) ) ).andExpect( status().isNotFound() );
 
         mvc.perform( post( "/api/v1/patients" ).contentType( MediaType.APPLICATION_JSON )
                 .content( TestUtils.asJsonString( patient ) ) );
@@ -412,6 +409,11 @@ public class APIPatientTest {
     @Test
     @WithMockUser ( username = "antti", roles = { "PATIENT" } )
     public void testPatientAsPatient () throws Exception {
+        final User u = User.getByName( "antti" );
+        if ( u == null ) {
+            new Patient( "antti", "$2a$10$EblZqNptyYvcLm/VwDCVAuBjzZOI7khzdyGPBr08PpIi0na624b8.", Role.ROLE_PATIENT, 1 )
+                    .save();
+        }
         final PatientForm patient = new PatientForm();
         patient.setAddress1( "1 Test Street" );
         patient.setAddress2( "Some Location" );

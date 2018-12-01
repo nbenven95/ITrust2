@@ -9,7 +9,6 @@ import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.Specialty;
 import edu.ncsu.csc.itrust2.models.enums.State;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
-import edu.ncsu.csc.itrust2.models.persistent.User;
 
 /**
  * Tests for the PersonnelForm class
@@ -24,8 +23,7 @@ public class PersonnelFormTest {
      */
     @Test
     public void testPersonnelForm () {
-        final Personnel person = new Personnel();
-        person.setSelf( new User( "username", "password", Role.ROLE_PATIENT, 1 ) );
+        final Personnel person = new Personnel( "username", "password", Role.ROLE_HCP, 1 );
         person.setFirstName( "first" );
         person.setLastName( "last" );
         person.setAddress1( "address1" );
@@ -36,7 +34,6 @@ public class PersonnelFormTest {
         person.setPhone( "111-111-1111" );
         person.setSpecialty( Specialty.SPECIALTY_NONE );
         person.setEmail( "email@email.com" );
-        person.setId( 1L );
         final PersonnelForm form = new PersonnelForm( person );
         assertEquals( "username", form.getSelf() );
         assertEquals( "first", form.getFirstName() );

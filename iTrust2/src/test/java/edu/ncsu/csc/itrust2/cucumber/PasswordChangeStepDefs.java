@@ -148,7 +148,6 @@ public class PasswordChangeStepDefs extends CucumberTest {
                 if ( null == dbPersonnel ) {
                     dbPersonnel = new Personnel();
                 }
-                dbPersonnel.setSelf( user );
                 dbPersonnel.setFirstName( "Test" );
                 dbPersonnel.setLastName( "User" );
                 dbPersonnel.setEmail( email );
@@ -156,7 +155,7 @@ public class PasswordChangeStepDefs extends CucumberTest {
                 dbPersonnel.setCity( "city" );
                 dbPersonnel.setZip( "12345" );
                 dbPersonnel.setPhone( "123-456-7890" );
-                dbPersonnel.setEnabled( true );
+                dbPersonnel.setEnabled( 1 );
                 dbPersonnel.save();
                 break;
         }

@@ -85,7 +85,7 @@ public class RequestAppointmentWithSpecialistStepDefs extends CucumberTest {
 
         // Create the personnel object associated with the above User object
         // with the specified specialty
-        final Personnel specialHCPPersonnel = new Personnel();
+        final Personnel specialHCPPersonnel = new Personnel( specialHCPUser );
         specialHCPPersonnel.setFirstName( "First" );
         specialHCPPersonnel.setLastName( "Last" );
         specialHCPPersonnel.setEmail( "someEmail@gmail.com" );
@@ -95,7 +95,6 @@ public class RequestAppointmentWithSpecialistStepDefs extends CucumberTest {
         specialHCPPersonnel.setZip( "12345" );
         specialHCPPersonnel.setPhone( "111-222-3333" );
         specialHCPPersonnel.setSpecialty( Specialty.parse( specialty ) );
-        specialHCPPersonnel.setSelf( specialHCPUser );
         specialHCPPersonnel.save();
 
         assertNotNull( Personnel.getByName( specialHCPUser ) );

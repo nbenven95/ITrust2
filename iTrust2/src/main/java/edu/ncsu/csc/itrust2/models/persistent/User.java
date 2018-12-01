@@ -1,6 +1,7 @@
 package edu.ncsu.csc.itrust2.models.persistent;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.stream.Collectors;
@@ -11,10 +12,13 @@ import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -284,6 +288,10 @@ public class User extends DomainObject<User> implements Serializable {
     public void setRole ( final Role role ) {
         this.role = role;
     }
+
+    @OneToMany ( mappedBy = "patient" )
+    @Cascade ( CascadeType.DELETE )
+    private final List<Prescription> prescriptions = new ArrayList<Prescription>();
 
     /**
      * Get the hashCode of this user

@@ -74,7 +74,7 @@ public class APIOfficeVisitController extends APIController {
     public List<OfficeVisit> getMyOfficeVisits () {
         final User self = User.getByName( LoggerUtil.currentUser() );
         LoggerUtil.log( TransactionType.OFFICE_VISIT_PATIENT_VIEW, self );
-        return OfficeVisit.getForPatient( self.getId() );
+        return OfficeVisit.getForPatient( self.getUsername() );
     }
 
     /**

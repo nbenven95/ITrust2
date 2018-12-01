@@ -124,6 +124,7 @@ public class APIPatientController extends APIController {
             return new ResponseEntity( patient, HttpStatus.OK );
         }
         catch ( final Exception e ) {
+            e.printStackTrace();
             return new ResponseEntity(
                     errorResponse( "Could not create " + patientF.toString() + " because of " + e.getMessage() ),
                     HttpStatus.BAD_REQUEST );

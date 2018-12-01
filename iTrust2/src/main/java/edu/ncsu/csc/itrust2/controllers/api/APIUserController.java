@@ -18,7 +18,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.ncsu.csc.itrust2.forms.admin.UserForm;
+import edu.ncsu.csc.itrust2.models.enums.Role;
 import edu.ncsu.csc.itrust2.models.enums.TransactionType;
+import edu.ncsu.csc.itrust2.models.persistent.Patient;
 import edu.ncsu.csc.itrust2.models.persistent.Personnel;
 import edu.ncsu.csc.itrust2.models.persistent.User;
 import edu.ncsu.csc.itrust2.utils.LoggerUtil;
@@ -87,7 +89,13 @@ public class APIUserController extends APIController {
      */
     @PostMapping ( BASE_PATH + "/users" )
     public ResponseEntity createUser ( @RequestBody final UserForm userF ) {
-        final User user = new User( userF );
+        User user;
+        if ( Role.valueOf( userF.getRole() ).equals( Role.ROLE_PATIENT ) ) {
+            user = new Patient( userF );
+        }
+        else {
+            user = new User( userF );
+        }
         if ( null != User.getByName( user.getUsername() ) ) {
             return new ResponseEntity( errorResponse( "User with the id " + user.getUsername() + " already exists" ),
                     HttpStatus.CONFLICT );
