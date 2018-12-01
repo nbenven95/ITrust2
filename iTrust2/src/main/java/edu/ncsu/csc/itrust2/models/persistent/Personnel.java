@@ -160,6 +160,10 @@ public class Personnel extends User implements Serializable {
         super( u.getUsername(), u.getPassword(), u.getRole(), u.getEnabled() );
     }
 
+    public Personnel ( final UserForm uf ) {
+        super( uf );
+    }
+
     /**
      * A user-like constructor for personnel
      *

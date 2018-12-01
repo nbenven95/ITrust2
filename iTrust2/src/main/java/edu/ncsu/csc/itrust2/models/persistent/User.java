@@ -19,6 +19,8 @@ import javax.validation.constraints.Min;
 
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -289,10 +291,6 @@ public class User extends DomainObject<User> implements Serializable {
         this.role = role;
     }
 
-    @OneToMany ( mappedBy = "patient" )
-    @Cascade ( CascadeType.DELETE )
-    private final List<Prescription> prescriptions = new ArrayList<Prescription>();
-
     /**
      * Get the hashCode of this user
      *
@@ -367,14 +365,6 @@ public class User extends DomainObject<User> implements Serializable {
 
     @Override
     public void delete () {
-        if ( Personnel.getByName( this.username ) != null ) {
-            final Personnel personnel = Personnel.getByName( this.username );
-            personnel.delete();
-        }
-        if ( Patient.getByName( this.username ) != null ) {
-            final Patient patient = Patient.getByName( this.username );
-            patient.delete();
-        }
         try {
             @SuppressWarnings ( "unchecked" )
             final List<PasswordResetToken> list = (List<PasswordResetToken>) DomainObject
@@ -389,5 +379,33 @@ public class User extends DomainObject<User> implements Serializable {
         }
         super.delete();
     }
+
+    /*
+     * All of the things that depend on users existing
+     */
+    @OneToMany ( mappedBy = "patient" )
+    @Cascade ( CascadeType.DELETE )
+    @LazyCollection ( LazyCollectionOption.FALSE )
+    private final List<Prescription>       prescriptions        = new ArrayList<Prescription>();
+
+    @OneToMany ( mappedBy = "patient" )
+    @Cascade ( CascadeType.DELETE )
+    @LazyCollection ( LazyCollectionOption.FALSE )
+    private final List<BasicHealthMetrics> patientHealthMetrics = new ArrayList<BasicHealthMetrics>();
+
+    @OneToMany ( mappedBy = "hcp" )
+    @Cascade ( CascadeType.DELETE )
+    @LazyCollection ( LazyCollectionOption.FALSE )
+    private final List<BasicHealthMetrics> hcpHealthMetrics     = new ArrayList<BasicHealthMetrics>();
+
+    @OneToMany ( mappedBy = "patient" )
+    @Cascade ( CascadeType.DELETE )
+    @LazyCollection ( LazyCollectionOption.FALSE )
+    private final List<BasicEyeMetrics>    patientEyeMetrics    = new ArrayList<BasicEyeMetrics>();
+
+    @OneToMany ( mappedBy = "hcp" )
+    @Cascade ( CascadeType.DELETE )
+    @LazyCollection ( LazyCollectionOption.FALSE )
+    private final List<BasicEyeMetrics>    hcpEyeMetrics        = new ArrayList<BasicEyeMetrics>();
 
 }

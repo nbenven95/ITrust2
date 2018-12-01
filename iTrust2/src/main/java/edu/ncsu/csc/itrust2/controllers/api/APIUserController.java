@@ -94,7 +94,7 @@ public class APIUserController extends APIController {
             user = new Patient( userF );
         }
         else {
-            user = new User( userF );
+            user = new Personnel( userF );
         }
         if ( null != User.getByName( user.getUsername() ) ) {
             return new ResponseEntity( errorResponse( "User with the id " + user.getUsername() + " already exists" ),
@@ -102,10 +102,6 @@ public class APIUserController extends APIController {
         }
         try {
             user.save();
-            if ( !user.getRole().equals( ROLE_PATIENT ) ) {
-                final Personnel personnel = new Personnel( user, userF );
-                personnel.save();
-            }
             LoggerUtil.log( TransactionType.CREATE_USER, LoggerUtil.currentUser(), user.getUsername(), null );
             return new ResponseEntity( user, HttpStatus.OK );
         }

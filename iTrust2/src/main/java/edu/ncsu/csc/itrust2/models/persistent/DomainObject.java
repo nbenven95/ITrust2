@@ -150,6 +150,9 @@ public abstract class DomainObject <D extends DomainObject<D>> {
             }
             results = c.list();
         }
+        catch ( final Exception e ) {
+            e.printStackTrace();
+        }
         finally {
             try {
                 session.getTransaction().commit();
