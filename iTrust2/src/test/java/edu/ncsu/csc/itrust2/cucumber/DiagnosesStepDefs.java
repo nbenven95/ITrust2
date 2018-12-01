@@ -21,6 +21,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import edu.ncsu.csc.itrust2.models.enums.AppointmentType;
 import edu.ncsu.csc.itrust2.models.enums.HouseholdSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.PatientSmokingStatus;
 import edu.ncsu.csc.itrust2.models.enums.State;
@@ -330,6 +331,11 @@ public class DiagnosesStepDefs extends CucumberTest {
     @When ( "I add a diagnosis without a code" )
     public void addDiagnosisNoCode () {
         waitForAngular();
+        final WebElement typeEle = driver
+                .findElement( By.cssSelector( "input[value=\"" + AppointmentType.GENERAL_CHECKUP.toString() + "\"]" ) );
+        // By.cssSelector( "input[value=\"" +
+        // AppointmentType.OPHTHALMOLOGY_SURGERY.toString() + "\"]" ) );
+        typeEle.click();
 
         setTextField( By.name( "notesEntry" ), "Fun note" );
         driver.findElement( By.name( "fillDiagnosis" ) ).click();
