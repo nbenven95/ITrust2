@@ -446,8 +446,6 @@
                 $scope.message = "Error occurred creating office visit";
               })
 
-              console.log("OFFICE VISIT:");
-              console.log($scope.visit);
               $scope.message = "Office visit created successfully";
 
             } //end submit function
@@ -654,7 +652,7 @@
 								<div class="row">
 
 									<!-- Basic Health Metrics Panel -->
-									<div class="col-md-4">
+									<div class="col-md-4" ng-show="visit.appointmentType">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Basic Health Metrics</h4>
@@ -774,7 +772,7 @@
 									</div>
 
 									<!-- Diagnosis Panel  -->
-									<div ng-show="visit.appointmentType == null || visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Diagnosis</h4>
@@ -795,12 +793,6 @@
 															</ul>
 														</div>
 													</div>
-												</div>
-												<div class="form-group row">
-													<div class="col-xs-6">
-														<label>Date:</label>
-													</div>
-													<div class="col-xs-4">{{visit.date}}</div>
 												</div>
 												<div class="form-group row">
 													<div class="col-xs-6">
@@ -845,7 +837,7 @@
 									</div>
 
 									<!-- Prescription Panel -->
-									<div ng-show="visit.appointmentType == null || visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
+									<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
 												<h4>Prescription</h4>
@@ -1076,12 +1068,6 @@
 												</div>
 												<div class="form-group row">
 													<div class="col-xs-4">
-														<label>Date:</label>
-													</div>
-													<div class="col-xs-6">{{visit.date}}</div>
-												</div>
-												<div class="form-group row">
-													<div class="col-xs-4">
 														<label>Notes:</label>
 													</div>
 													<div class="col-xs-6">
@@ -1125,7 +1111,7 @@
 								</div>
 
 								<!-- Lab Procedures Panel -->
-								<div ng-show="visit.appointmentType == null || visit.appointmentType === 'GENERAL_CHECKUP'" class="row">
+								<div ng-show="visit.appointmentType === 'GENERAL_CHECKUP'" class="row">
 									<div class="col-md-4">
 										<div class="panel panel-info">
 											<div class="panel-heading">
@@ -1137,7 +1123,7 @@
 														<label>Procedure Code:</label>
 													</div>
 													<div class="col-xs-6">
-														<ul>
+														<ul style="list-style: none;">
 															<li ng-repeat="l in loinccodes"><label> <input
 																	type="radio" ng-model="procedure.loinc"
 																	name="{{l.commonName}}" ng-value="l" value="{{l.code}}"
