@@ -17,7 +17,7 @@
 			var app = angular.module("manageAppointmentRequestApp", []);
 			app.controller('manageAppointmentRequestCtrl', function($scope, $http) {
 				$scope.appointment = {};
-				$scope.hcps = [];
+				$scope.HCPs= [];
 				
 				/**
 					Called when the "Type" dropdown box changes values (i.e. 
@@ -28,14 +28,17 @@
 				$scope.getHCPs = function() {
 						$http.get("/iTrust2/api/v1/personnel/getbyspecialty/" + $scope.appointment.type).then(
 						function(response) {
-							$scope.hcps = response.data;
+							$scope.HCPs = response.data;
 							$scope.message = "";
 						}, function(rejection) {
-							$scope.hcps = [];
+							$scope.HCPs = [];
 							$scope.message = "HCP not found";
 						});
 				}
 				
+				/**
+					API call to get list of accepted appointment requests.
+				*/
 				$scope.incomingAppointments = [];
 				$scope.loadIncomingAppointments = function() {
 					$http
@@ -54,11 +57,17 @@
 
 				$scope.loadIncomingAppointments();
 				
+				/**
+					Loads values of AppointmentType enum into $scope.types.
+				*/
 				$http.get("/iTrust2/api/v1/appointmenttype")
 	              .then(function (response) {
 	                $scope.types = response.data;
 	              });
 				
+				/**
+					Validates inputs and submits form $scope.appointment.
+				*/
 				$scope.submit = function() {
 					$scope.errorMsg = "";
 					$scope.appointment.patient = /*[[${#httpServletRequest.remoteUser}]]*/null;
@@ -79,7 +88,7 @@
 		                $scope.message1 = "";
 		            }
 		            
-		            if ($scope.appointment.hcp == null) {
+		            if ($scope.appointment.HCP == null) {
 		            	$scope.errorMsg += "Please select an HCP\n";
 		            	$scope.message = "";
 		                $scope.message1 = "";
@@ -99,6 +108,10 @@
 		            	$scope.message1 = "";
 		            }
 		            
+		            /**
+		            	Attempts to make the appointment request stores in $scope.appointment.
+		            	A message is displayed according to success or failure of request.
+		            */
 					$http.post("/iTrust2/api/v1/appointmentrequests", $scope.appointment).then( 
 							function(response) {
 								$scope.loadAppointments();
@@ -114,6 +127,9 @@
 							});
 				}
 				
+				/**
+					Pads single digit number with a 0 for date formatting.
+				*/
 				function twoDigit(num) {
 		              if (num < 10) {
 		            	  return "0" + num;
@@ -121,6 +137,9 @@
 		              return num;
 		            }
 				
+				/**
+					Function returns the current time as "HH:MM [AM|PM]".
+				*/
 				$scope.getTime = function getTime(date) {
 		              var hour = date.hourOfDay;
 		              var suffix;
@@ -133,6 +152,9 @@
 		              return twoDigit(hour) + ":" + twoDigit(date.minute) + " " + suffix;
 		        }
 				
+		        /**
+		       		Returns current month as "MM/DD/YYYY".
+		        */
 				$scope.getDate = function getDate(date) {
 		              /* The months start at 0... only the months.  So we have to add 1 to get the correct input.*/
 		              month = date.month + 1;
@@ -142,6 +164,10 @@
 				$scope.selectedAppointment = {};
 				$scope.appointments = [];
 				$scope.patient = /*[[${#httpServletRequest.remoteUser}]]*/null;
+				/**
+					Loads all pending appointment requests into $scope.appointments via
+					a GET request handled by APIAppointmentRequestController.
+				*/
 				$scope.loadAppointments = function() {
 					$http.get("/iTrust2/api/v1/appointmentrequest").then(
 							function(response) {
@@ -153,6 +179,10 @@
 							});	
 				}
 				
+				/**
+					Deletes the selected appointment with a DELETE request
+					handled by APIAppointmentRequestController.deleteAppointmentRequest().
+				*/
 				$scope.deleteAppointment = function() {
 					$http.delete("/iTrust2/api/v1/appointmentrequests/" + $scope.selectedAppointment.id).then(
 						function (response) {
@@ -184,7 +214,7 @@
 								<ul style="list-style: none;">
 									<li ng-repeat="appt in incomingAppointments"><label>
 											Type: {{appt.type}} </br> Date: {{getDate(appt.date)}} </br> Time:
-											{{getTime(appt.date)}} </br> Doctor: {{appt.hcp.username}} </br>
+											{{getTime(appt.date)}} </br> Doctor: {{appt.HCP.username}} </br>
 									</label></li>
 								</ul>
 							</tr>
@@ -248,8 +278,8 @@
 							
 							<tr ng-show="appointment.type">
 								<td>HCP:</td>
-								<td><select ng-model="appointment.hcp" name="hcp" id="hcp">
-										<option ng-repeat="hcp in hcps">{{hcp.self.username}}</option>
+								<td><select ng-model="appointment.HCP" name="hcp" id="hcp">
+										<option ng-repeat="HCP in HCPs">{{HCP.self.username}}</option>
 								</select></td>
 							</tr>
 
@@ -266,6 +296,7 @@
 					</td>
 				</tr>
 			</table>
+		</div>
 		</div>
 </body>
 </html>
